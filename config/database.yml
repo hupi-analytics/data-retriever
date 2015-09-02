@@ -1,0 +1,28 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: hdr_development
+  pool: 5
+  username: hupi_data_retriever
+  password:
+
+test: &test
+  adapter: postgresql
+  encoding: unicode
+  database: hdr_test
+  pool: 5
+  username: test
+  password: test
+  host: <%= ENV["HDR_DATABASE_HOST"] %>
+
+production: &production
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV["HDR_DATABASE_HOST"] %>
+  database: <%= ENV["HDR_DATABASE_NAME"] %>
+  pool: 5
+  username: <%= ENV["HDR_DATABASE_USERNAME"] %>
+  password: <%= ENV["HDR_DATABASE_PASSWORD"] %>
+
+staging:
+  <<: *production

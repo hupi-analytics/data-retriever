@@ -1,0 +1,17 @@
+defaults: &defaults
+  errbit:
+    api_key: ''
+    host: '127.0.0.1'
+    port: 80
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production: &production
+  <<: *defaults
+
+staging:
+  <<: *production
