@@ -7,9 +7,10 @@ class HdrFilter < ActiveRecord::Base
 
   class Entity < Grape::Entity
     expose :id, if: { type: :full }
-    expose :name, :render_types
-    expose :pattern, :render_types, unless: { type: :preview }
-    expose :default_operator, :render_types, unless: { type: :preview }
-    expose :field, :render_types, unless: { type: :preview }
+    expose :name
+    expose :pattern, unless: { type: :preview }
+    expose :default_operator, unless: { type: :preview }
+    expose :field, unless: { type: :preview }
+    expose :value_type, unless: { type: :preview }
   end
 end

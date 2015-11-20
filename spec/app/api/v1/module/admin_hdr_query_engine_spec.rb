@@ -5,12 +5,12 @@ describe DataRetriever::API do
     DataRetriever::API
   end
 
-  let!(:hdr_query_engine_test) { FactoryGirl.create(:hdr_query_engine, :impala) }
+  let!(:hdr_query_engine_test) { FactoryGirl.create(:hdr_query_engine, :csv) }
   describe "GET hdr_query_engines" do
     let(:url) { "admin/hdr_query_engines" }
 
     before(:all) do
-      4.times { FactoryGirl.create(:hdr_query_engine, :impala) }
+      4.times { FactoryGirl.create(:hdr_query_engine, :csv) }
     end
 
     context "when read all hdr_query_engine" do
@@ -70,7 +70,7 @@ describe DataRetriever::API do
     let(:url) { "admin/hdr_query_engine" }
 
     context "when create valid hdr_query_engine" do
-      let(:new_hdr_query_engine) { attributes_for(:hdr_query_engine, :impala) }
+      let(:new_hdr_query_engine) { attributes_for(:hdr_query_engine, :csv) }
 
       it "return object" do
         post url, hdr_query_engine: new_hdr_query_engine
@@ -96,7 +96,7 @@ describe DataRetriever::API do
   end
 
   describe "PUT hdr_query_engine" do
-    let(:update_hdr_query_engine) { attributes_for(:hdr_query_engine, :impala) }
+    let(:update_hdr_query_engine) { attributes_for(:hdr_query_engine, :csv) }
 
     context "when update existing hdr_query_engine" do
       let(:url) { "admin/hdr_query_engine/#{hdr_query_engine_test.id}" }

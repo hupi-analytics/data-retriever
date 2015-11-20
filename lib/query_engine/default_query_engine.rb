@@ -1,8 +1,7 @@
 class DefaultQueryEngine
   def initialize(settings)
-    settings.keys.each{ |key| settings[key.to_sym] = settings.delete(key) }
+    settings.keys.each { |key| settings[key.to_sym] = settings.delete(key) }
     @settings = settings
-    # connect
   end
 
   def connect; end
@@ -10,5 +9,7 @@ class DefaultQueryEngine
   def close; end
 
   # should return an enumerator
-  def execute(query); end
+  def execute(query, client); end
+
+  def decorate(query, client, filters = {}, query_params = {}); end
 end

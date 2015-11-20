@@ -1,19 +1,17 @@
 require "pg"
+require "query_engine/sql_query_engine"
+
 class PostgresqlQueryEngine < SQLQueryEngine
   def connect
-    @conn = PG.connect(@settings)
-    @conn.type_map_for_results = PG::BasicTypeMapForResults.new @conn
+    @connexion = PG.connect(@settings)
+    @connexion.type_map_for_results = PG::BasicTypeMapForResults.new @connexion
   end
 
-  def execute(query, client, filters = {})
-    cursor = []
-    @conn.exec(decorate(query, client, filters)).each do |row|
-      cursor << row.inject({}) { |memo, (k,v)| memo[k.to_sym] = v; memo }
-    end
-    cursor
+  def execute(query, client)
+    @connexion.exec(query)
   end
 
   def close
-    @conn.close
+    @connexion.close
   end
 end

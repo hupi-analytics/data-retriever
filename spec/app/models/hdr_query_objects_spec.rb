@@ -28,8 +28,8 @@ RSpec.describe HdrQueryObject, type: :model do
     let(:filter_array) do
       {
         'where_f1' => [
-          { operator: '<=', value: '20151231', field: 'entity_createat_int' },
-          { operator: '>', value: '20150101', field: 'entity_createat_int' }
+          { operator: '<=', value: '20151231', field: 'entity_createat_int', value_type: 'int' },
+          { operator: '>', value: '20150101', field: 'entity_createat_int', value_type: 'int' }
         ]
       }
     end
@@ -39,12 +39,28 @@ RSpec.describe HdrQueryObject, type: :model do
     end
   end
 
-  describe "when call get_filters with empty value" do
+  describe "when call get_filters with nil value" do
     let(:query) { create(:hdr_query_object, :csv, :date_filters) }
     let(:filter_params) do
       {
         start_date: nil,
         end_date: { operator: '<=', value: nil },
+        unvalid_filter: 'toto'
+      }
+    end
+    let(:filter_array) { { 'where_f1' => [] } }
+
+    it "should return an empty array of filters" do
+      expect(query.get_filters(filter_params)['where_f1']).to match_array(filter_array['where_f1'])
+    end
+  end
+
+  describe "when call get_filters with empty value" do
+    let(:query) { create(:hdr_query_object, :csv, :date_filters) }
+    let(:filter_params) do
+      {
+        start_date: '',
+        end_date: { operator: '<=', value: '' },
         unvalid_filter: 'toto'
       }
     end

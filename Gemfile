@@ -2,17 +2,21 @@ source "https://rubygems.org"
 ruby "2.2.1"
 
 gem "json", "~> 1.8.0"
-gem "impala", "~> 0.4.3"
 gem "grape", "~> 0.10.1"
-gem "puma"
+gem "grape-entity"
 gem "grape-swagger"
+
+gem "puma"
 gem "virtus"
 gem "settingslogic"
 gem "pry"
 gem "activerecord"
 gem "pg"
+gem "impala", "~> 0.4.3"
+gem "mongo"
+
 gem "airbrake"
-gem "grape-entity"
+gem "grape_logging"
 
 group :development do
   gem "rubocop"

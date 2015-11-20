@@ -2,11 +2,10 @@
 module DataRetriever
   module V1
     class AdminEndpoint < Grape::API
-      # version "v1", using: :accept_version_header
       format :json
 
       params do
-        requires :class_called, type: String, values: %w(hdr_endpoint hdr_endpoints hdr_export_type hdr_export_types hdr_query_engine hdr_query_engines hdr_query_object hdr_query_objects)
+        requires :class_called, type: String, values: %w(hdr_endpoint hdr_endpoints hdr_export_type hdr_export_types hdr_query_engine hdr_query_engines hdr_query_object hdr_query_objects hdr_filters hdr_filter)
       end
       namespace "admin" do
         # index

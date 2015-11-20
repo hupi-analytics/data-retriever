@@ -8,10 +8,6 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-
 # Ignore all logfiles and tempfiles.
 /log/*
 !/log/.keep
@@ -20,36 +16,14 @@
 # Ignore rubymine file
 /.idea/
 
-*.rbc
-capybara-*.html
 .rspec
-/log
 /tmp
 /public/system
+/public/*
+!/public/test/**
 /coverage/
 /spec/tmp
-**.orig
-rerun.txt
-pickle-email-*.html
-
-# Ignore secret
-config/initializers/secret_token.rb
-config/secrets.yml
 
 ## Environment normalisation:
 /.bundle
 /vendor/bundle
-
-# these should all be checked in to normalise the environment:
-# Gemfile.lock, .ruby-version, .ruby-gemset
-
-# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
-.rvmrc
-
-# if using bower-rails ignore default bower_components path bower.json files
-/vendor/assets/bower_components
-*.bowerrc
-bower.json
-
-#Ignore pow environment settings
-.powenv

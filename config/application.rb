@@ -1,42 +1,36 @@
 # -*- encoding : utf-8 -*-
 require "grape"
 require "grape-entity"
-require "impala"
+require 'grape_logging'
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "api"))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
+Grape::ROOT = File.expand_path("../..", __FILE__)
+$LOAD_PATH.unshift(Grape::ROOT)
+$LOAD_PATH.unshift(File.join(Grape::ROOT,'lib'))
 
-# require all lib
-Dir[File.expand_path("../../lib/*.rb", __FILE__)].each do |lib|
+#require all lib
+Dir[File.expand_path("lib/**/*.rb", Grape::ROOT)].each do |lib|
   require lib
 end
-Dir[File.expand_path("../../lib/**/default_*.rb", __FILE__)].each do |lib|
-  require lib
-end
-Dir[File.expand_path("../../lib/**/sql_*.rb", __FILE__)].each do |lib|
-  require lib
-end
-Dir[File.expand_path("../../lib/**/*.rb", __FILE__)].each do |lib|
+Dir[File.expand_path("lib/*.rb", Grape::ROOT)].each do |lib|
   require lib
 end
 
-Dir[File.expand_path("../../app/models/*.rb", __FILE__)].each do |model|
+#require models
+Dir[File.expand_path("app/models/*.rb", Grape::ROOT)].each do |model|
   require model
 end
 
-# require all module
-Dir[File.expand_path("../../app/api/*/module/*.rb", __FILE__)].each do |api_module|
-  require api_module
+#require all module
+Dir[File.expand_path("app/api/*/*/*.rb", Grape::ROOT)].each do |modul|
+  require modul
 end
 
-# require endpoint
-Dir[File.expand_path("../../app/api/*/base.rb", __FILE__)].each do |api_base|
+#require endpoint
+Dir[File.expand_path("app/api/*/*.rb", Grape::ROOT)].each do |api_base|
   require api_base
 end
 
-# require all api versions
-Dir[File.expand_path("../../app/api/*.rb", __FILE__)].each do |api|
+#require all api versions
+Dir[File.expand_path("app/api/*.rb", Grape::ROOT)].each do |api|
   require api
 end
-
-# require "api"

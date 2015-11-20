@@ -5,6 +5,7 @@ FactoryGirl.define do
       pattern "where_f1"
       default_operator ">"
       field "entity_createat_int"
+      value_type "int"
     end
 
     factory :end_date_filter do
@@ -12,6 +13,7 @@ FactoryGirl.define do
       pattern "where_f1"
       default_operator "<"
       field "entity_createat_int"
+      value_type "int"
     end
   end
 end

@@ -1,14 +1,21 @@
 require "impala"
+require "query_engine/sql_query_engine"
+
 class ImpalaQueryEngine < SQLQueryEngine
   def connect
-    @conn = Impala.connect(@settings[:host], @settings[:port])
+    @connexion = Impala.connect(@settings[:host], @settings[:port])
   end
 
-  def execute(query, client, filters = {})
-    @conn.execute(decorate(query, client, filters))
+  def execute(query, client)
+    cursor = []
+    @connexion.execute("use #{client}")
+    @connexion.execute(query).each do |row|
+      cursor << row.inject({}) { |memo, (k,v)| memo[k.to_s] = v; memo }
+    end
+    cursor
   end
 
   def close
-    @conn.close
+    @connexion.close
   end
 end

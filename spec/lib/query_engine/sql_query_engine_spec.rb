@@ -2,17 +2,20 @@ require "spec_helper"
 
 describe SQLQueryEngine do
   let(:qe){ SQLQueryEngine.new({}) }
+  let(:client) { "hdr_test" }
   let(:where_query) { "select * from #_client_#.entitystatstable #_where_f1_#" }
-  let(:and_query) { 'select * from #_client_#.entitystatstable WHERE entity_type="customer" #_and_f1_#' }
+  let(:and_query) { "select * from #_client_#.entitystatstable WHERE entity_type='customer' #_and_f1_#" }
+  let(:and_query_with_params) { "select * from #_client_#.entitystatstable WHERE entity_type='#_value_#' #_and_f1_#" }
   let(:filter_array) do
     {
       "where_f1" => [
-        { operator: ">", value: "20150101", field: "entity_createat_int" },
-        { operator: "<=", value: "20151231", field: "entity_createat_int" }
+        { operator: ">", value: "20150101", field: "entity_createat_int", value_type: "int" },
+        { operator: "<=", value: "20151231", field: "entity_createat_int", value_type: "int" },
+        { operator: "=", value: "paul", field: "entity_name", value_type: "string" }
       ],
       "and_f1" => [
-        { operator: ">", value: "20150101", field: "entity_createat_int" },
-        { operator: "<=", value: "20151231", field: "entity_createat_int" }
+        { operator: ">", value: "20150101", field: "entity_createat_int", value_type: "int" },
+        { operator: "<=", value: "20151231", field: "entity_createat_int", value_type: "int" }
       ]
     }
   end
@@ -24,48 +27,27 @@ describe SQLQueryEngine do
     }
   end
 
-  describe "apply_filters" do
-    let(:where_query_res) do
-      "select * from #_client_#.entitystatstable WHERE entity_createat_int > 20150101 AND entity_createat_int <= 20151231"
-    end
-    let(:and_query_res) do
-      'select * from #_client_#.entitystatstable WHERE entity_type="customer" AND entity_createat_int > 20150101 AND entity_createat_int <= 20151231'
-    end
-
-    context "with filters" do
-      it { expect(qe.apply_filters(where_query, filter_array)).to eq(where_query_res) }
-      it { expect(qe.apply_filters(and_query, filter_array)).to eq(and_query_res) }
-    end
-
-    context "without filters" do
-      it { expect(qe.apply_filters(where_query)).to eq("select * from #_client_#.entitystatstable ") }
-      it { expect(qe.apply_filters(and_query)).to eq('select * from #_client_#.entitystatstable WHERE entity_type="customer" ') }
-    end
-
-    context "with empty filters" do
-      it { expect(qe.apply_filters(where_query, empty_filter_array)).to eq("select * from #_client_#.entitystatstable ") }
-      it { expect(qe.apply_filters(and_query, empty_filter_array)).to eq('select * from #_client_#.entitystatstable WHERE entity_type="customer" ') }
-    end
-  end
-
   describe "decorate query" do
     let(:where_query_res) do
-      "select * from hdr_test.entitystatstable WHERE entity_createat_int > 20150101 AND entity_createat_int <= 20151231"
+      "select * from hdr_test.entitystatstable WHERE (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231) AND (entity_name = 'paul')"
     end
     let(:and_query_res) do
-      'select * from hdr_test.entitystatstable WHERE entity_type="customer" AND entity_createat_int > 20150101 AND entity_createat_int <= 20151231'
+      "select * from hdr_test.entitystatstable WHERE entity_type='customer' AND (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231)"
     end
     let(:where_query_res1) do
       "select * from hdr_test.entitystatstable "
     end
     let(:and_query_res1) do
-      'select * from hdr_test.entitystatstable WHERE entity_type="customer" '
+      "select * from hdr_test.entitystatstable WHERE entity_type='customer' "
+    end
+    let(:and_query_with_params) do
+      "select * from hdr_test.entitystatstable WHERE entity_type='customer' AND (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231)"
     end
 
-    it { expect(qe.decorate(where_query, "hdr_test", filter_array)).to eq(where_query_res) }
-    it { expect(qe.decorate(and_query, "hdr_test", filter_array)).to eq(and_query_res) }
-    it { expect(qe.decorate(where_query, "hdr_test", {})).to eq(where_query_res1) }
-    it { expect(qe.decorate(and_query, "hdr_test", {})).to eq(and_query_res1) }
-
+    it { expect(qe.decorate(where_query, client, filter_array)).to eq(where_query_res) }
+    it { expect(qe.decorate(and_query, client, filter_array)).to eq(and_query_res) }
+    it { expect(qe.decorate(where_query, client, {})).to eq(where_query_res1) }
+    it { expect(qe.decorate(and_query, client, {})).to eq(and_query_res1) }
+    it { expect(qe.decorate(and_query_with_params, client, filter_array, value: "customer")).to eq(and_query_with_params) }
   end
 end

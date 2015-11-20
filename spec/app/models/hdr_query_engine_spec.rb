@@ -4,7 +4,7 @@ RSpec.describe HdrQueryEngine, type: :model do
   it { is_expected.to validate_presence_of :engine }
   it { is_expected.to validate_uniqueness_of :name }
   it "should init query_engine" do |variable|
-    qe = build(:hdr_query_engine, :postgres)
+    qe = build(:hdr_query_engine, :csv)
     expect(qe.init).to be_kind_of(DefaultQueryEngine)
   end
 end

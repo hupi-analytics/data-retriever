@@ -6,7 +6,7 @@ describe DataRetriever::API do
   end
 
   let!(:endpoint_test) { FactoryGirl.create(:hdr_endpoint) }
-  let(:client) { "hdr_test_data" }
+  let(:client) { "hdr_test" }
 
   describe "POST test" do
     let(:url) { "#{endpoint_test.module_name}/#{endpoint_test.method_name}" }
@@ -43,9 +43,9 @@ describe DataRetriever::API do
         {
           data: {
             rows: [
-              ["manufacturer1", true, 1, "college1", "", 2014_01_01, 2014_01_01, 1.0, 2.0, "supplier"],
-              ["manufacturer2", true, 14, "college1", "", 2014_02_02, 2014_01_01, 1.0, 2.0, "supplier"],
-              ["manufacturer3", false, 0, "college1", "", nil, 2014_01_01, 1.0, 2.0, "supplier"],
+              ["manufacturer1", true, 1, "college1", nil, 2014_01_01, 2014_01_01, 1.0, 2.0, "supplier"],
+              ["manufacturer2", true, 14, "college1", nil, 2014_02_02, 2014_01_01, 1.0, 2.0, "supplier"],
+              ["manufacturer3", false, 0, "college1", nil, nil, 2014_01_01, 1.0, 2.0, "supplier"],
               ["client1", false, 10, "college2", "homme", nil, 2014_01_01, 1.0, 2.0, "customer"],
               ["client2", true, 5, "college2", "homme", 2014_01_01, 2014_01_01, 1.0, 2.0, "customer"],
               ["client3", true, 1, "college2", "homme", 2014_02_02, 2014_01_01, 1.0, 2.0, "customer"],
@@ -66,48 +66,48 @@ describe DataRetriever::API do
       end
     end
 
-    context "with filter" do
-      let(:res) do
-        {
-          data: {
-            categories: %w(college2),
-            series: [
-              { name: "femme", data: [2] },
-              { name: "homme", data: [5] }
-            ]
-          }
-        }
-      end
-      let(:filters) do
-        {
-          start_date: 2014_01_01,
-          end_date: { operator: "<=", value: 2014_02_02 }
-        }
-      end
-      it "return filtered data" do
-        post url, client: client, render_type: "column_stacked_normal", filters: filters
-        expect_json(res)
-      end
-    end
+    # context "with filter" do
+    #   let(:res) do
+    #     {
+    #       data: {
+    #         categories: %w(college2),
+    #         series: [
+    #           { name: "femme", data: [2] },
+    #           { name: "homme", data: [5] }
+    #         ]
+    #       }
+    #     }
+    #   end
+    #   let(:filters) do
+    #     {
+    #       start_date: 2014_01_01,
+    #       end_date: { operator: "<=", value: 2014_02_02 }
+    #     }
+    #   end
+    #   it "return filtered data" do
+    #     post url, client: client, render_type: "column_stacked_normal", filters: filters
+    #     expect_json(res)
+    #   end
+    # end
 
-    context "when render_type = column_stacked_normal" do
-      let(:res) do
-        {
-          data: {
-            categories: %w(college1 college2),
-            series: [
-              { name: "none", data: [15, 0] },
-              { name: "femme", data: [0, 14] },
-              { name: "homme", data: [0, 21] }
-            ]
-          }
-        }
-      end
-
-      it "returns 'category serie value' format" do
-        post url, client: client, render_type: "column_stacked_normal"
-        expect_json(res)
-      end
-    end
+    # context "when render_type = column_stacked_normal" do
+    #   let(:res) do
+    #     {
+    #       data: {
+    #         categories: %w(college1 college2),
+    #         series: [
+    #           { name: "none", data: [15, 0] },
+    #           { name: "femme", data: [0, 14] },
+    #           { name: "homme", data: [0, 21] }
+    #         ]
+    #       }
+    #     }
+    #   end
+    #
+    #   it "returns 'category serie value' format" do
+    #     post url, client: client, render_type: "column_stacked_normal"
+    #     expect_json(res)
+    #   end
+    # end
   end
 end

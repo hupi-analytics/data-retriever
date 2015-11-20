@@ -1,5 +1,6 @@
 require_relative "hdr_query_engine"
 require_relative "hdr_export_type"
+require_relative "hdr_filter"
 class HdrQueryObject < ActiveRecord::Base
   belongs_to :hdr_query_engine
   belongs_to :hdr_endpoint
@@ -31,7 +32,8 @@ class HdrQueryObject < ActiveRecord::Base
         tmp[:value] = query_filters[f.name.to_sym]
       end
       tmp[:field] = f.field
-      pattern_filter[f.pattern] << tmp if tmp[:value]
+      tmp[:value_type] = f.value_type
+      pattern_filter[f.pattern] << tmp if tmp[:value] && !tmp[:value].empty?
     end
     pattern_filter
   end
@@ -41,5 +43,6 @@ class HdrQueryObject < ActiveRecord::Base
     expose :name, safe: true
     expose :hdr_query_engine, using: HdrQueryEngine::Entity, unless: { type: :preview }
     expose :hdr_export_types, using: HdrExportType::Entity, unless: { type: :preview }
+    expose :hdr_filters, using: HdrFilter::Entity, unless: { type: :preview }
   end
 end

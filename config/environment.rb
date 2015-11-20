@@ -2,9 +2,12 @@
 
 module DataRetriever
   ENV["RACK_ENV"] ||= "development"
-  require_relative "initializer/settings"
-  require_relative "initializer/errbit"
-  require_relative "initializer/database"
-  require_relative "environments/#{ENV['RACK_ENV']}"
-  require_relative "application"
+
+  $LOAD_PATH.unshift(File.dirname(__FILE__))
+
+  require "initializer/settings"
+  require "initializer/errbit"
+  require "initializer/database"
+  require "environments/#{ENV['RACK_ENV']}"
+  require "application"
 end
