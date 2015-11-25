@@ -6,8 +6,8 @@ class MongoQueryEngine < DefaultQueryEngine
     @connexion = Mongo::Client.new(@settings[:hosts], @settings)
   end
 
-  def execute(query, client)
-    result = @connexion.use(client)[query["collection"]]
+  def execute(query)
+    result = @connexion.use(@client)[query["collection"]]
     query["query"].each do |operation|
       result = case operation["operator"]
       when "aggregate"
@@ -25,7 +25,7 @@ class MongoQueryEngine < DefaultQueryEngine
     @connexion.close
   end
 
-  def decorate(query, client, filters = {}, query_params = {})
+  def decorate(query, filters = {}, query_params = {})
     apply_params(query, query_params)
     apply_filters(query, filters)
     JSON.parse(query)

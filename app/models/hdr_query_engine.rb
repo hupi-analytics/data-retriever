@@ -4,9 +4,9 @@ class HdrQueryEngine < ActiveRecord::Base
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :engine, presence: true
 
-  def init
-    qe = Object.const_get("#{self.engine.capitalize}QueryEngine").new(self.settings)
-    qe.connect
+  def init(client)
+    qe = Object.const_get("#{self.engine.capitalize}QueryEngine").new(client, self.settings)
+    qe.connect()
     qe
   end
 

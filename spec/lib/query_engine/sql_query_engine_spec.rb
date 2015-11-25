@@ -1,8 +1,7 @@
 require "spec_helper"
 
 describe SQLQueryEngine do
-  let(:qe){ SQLQueryEngine.new({}) }
-  let(:client) { "hdr_test" }
+  let(:qe){ SQLQueryEngine.new("hdr_test", {}) }
   let(:where_query) { "select * from #_client_#.entitystatstable #_where_f1_#" }
   let(:and_query) { "select * from #_client_#.entitystatstable WHERE entity_type='customer' #_and_f1_#" }
   let(:and_query_with_params) { "select * from #_client_#.entitystatstable WHERE entity_type='#_value_#' #_and_f1_#" }
@@ -44,10 +43,10 @@ describe SQLQueryEngine do
       "select * from hdr_test.entitystatstable WHERE entity_type='customer' AND (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231)"
     end
 
-    it { expect(qe.decorate(where_query, client, filter_array)).to eq(where_query_res) }
-    it { expect(qe.decorate(and_query, client, filter_array)).to eq(and_query_res) }
-    it { expect(qe.decorate(where_query, client, {})).to eq(where_query_res1) }
-    it { expect(qe.decorate(and_query, client, {})).to eq(and_query_res1) }
-    it { expect(qe.decorate(and_query_with_params, client, filter_array, value: "customer")).to eq(and_query_with_params) }
+    it { expect(qe.decorate(where_query, filter_array)).to eq(where_query_res) }
+    it { expect(qe.decorate(and_query, filter_array)).to eq(and_query_res) }
+    it { expect(qe.decorate(where_query, {})).to eq(where_query_res1) }
+    it { expect(qe.decorate(and_query, {})).to eq(and_query_res1) }
+    it { expect(qe.decorate(and_query_with_params, filter_array, value: "customer")).to eq(and_query_with_params) }
   end
 end

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe MongoQueryEngine do
-  let(:qe) { MongoQueryEngine.new({}) }
+  let(:qe) { MongoQueryEngine.new("test_client", {}) }
   let(:match_query) do
     <<-REQ.gsub(/^ {4}/, "")
     {
@@ -122,7 +122,6 @@ describe MongoQueryEngine do
       "and_f1" => []
     }
   end
-  let(:client) { "test_client" }
   let(:query_params) { { "params1" => "year" } }
 
   context "decorate" do
@@ -162,7 +161,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(match_query, client, filter_array)).to eq(match_query_res) }
+        it { expect(qe.decorate(match_query, filter_array)).to eq(match_query_res) }
       end
 
       context "without filters" do
@@ -199,7 +198,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(match_query, client)).to eq(match_query_res) }
+        it { expect(qe.decorate(match_query)).to eq(match_query_res) }
       end
 
       context "with empty filters" do
@@ -236,7 +235,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(match_query, client, empty_filter_array)).to eq(match_query_res) }
+        it { expect(qe.decorate(match_query, empty_filter_array)).to eq(match_query_res) }
       end
     end
 
@@ -261,7 +260,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(find_query, client, filter_array)).to eq(find_query_res) }
+        it { expect(qe.decorate(find_query, filter_array)).to eq(find_query_res) }
       end
 
       context "without filters" do
@@ -285,7 +284,7 @@ describe MongoQueryEngine do
 
         end
 
-        it { expect(qe.decorate(find_query, client)).to eq(find_query_res) }
+        it { expect(qe.decorate(find_query)).to eq(find_query_res) }
       end
 
       context "with empty filters" do
@@ -308,7 +307,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(find_query, client, empty_filter_array)).to eq(find_query_res) }
+        it { expect(qe.decorate(find_query, empty_filter_array)).to eq(find_query_res) }
       end
     end
 
@@ -333,7 +332,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(and_query, client, filter_array)).to eq(and_query_res) }
+        it { expect(qe.decorate(and_query, filter_array)).to eq(and_query_res) }
       end
 
       context "without filters" do
@@ -356,7 +355,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(and_query, client)).to eq(and_query_res) }
+        it { expect(qe.decorate(and_query)).to eq(and_query_res) }
       end
 
       context "with empty filters" do
@@ -379,7 +378,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(and_query, client, empty_filter_array)).to eq(and_query_res) }
+        it { expect(qe.decorate(and_query, empty_filter_array)).to eq(and_query_res) }
       end
     end
 
@@ -404,7 +403,7 @@ describe MongoQueryEngine do
           }
         end
 
-        it { expect(qe.decorate(find_query, client, filter_array, query_params)).to eq(find_query_res) }
+        it { expect(qe.decorate(find_query, filter_array, query_params)).to eq(find_query_res) }
       end
     end
   end

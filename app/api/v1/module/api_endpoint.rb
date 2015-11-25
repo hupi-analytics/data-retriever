@@ -20,13 +20,13 @@ module DataRetriever
         # if we have found the query we execute it with the linked query_engine
         # else we try to guess wich parameters are wrong
         if query
-          query_engine = DataRetriever::QueryEngines.get(query.hdr_query_engine)
+          query_engine = DataRetriever::QueryEngines.get(query.hdr_query_engine, params[:client])
           query_filter = query.get_filters(params[:filters])
           query_params = params[:query_params] || {}
           export_type = HdrExportType.find_by("'#{params[:render_type]}' = ANY (render_types)")
-          query_decorated = query_engine.decorate(query.query, params[:client], query_filter, query_params)
+          query_decorated = query_engine.decorate(query.query, query_filter, query_params)
           logger.debug("QUERY | #{query.hdr_query_engine.engine} | #{query.hdr_query_engine.name} | #{query_decorated}")
-          cursor = query_engine.execute(query_decorated, params[:client])
+          cursor = query_engine.execute(query_decorated)
           { data: Export.send(params[:render_type], cursor, query_params) }
         else
           endpoint = HdrEndpoint.find_by(module_name: params[:module_name], method_name: params[:method_name])

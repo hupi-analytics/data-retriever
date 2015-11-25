@@ -1,8 +1,8 @@
 require "query_engine/default_query_engine"
 
 class SQLQueryEngine < DefaultQueryEngine
-  def decorate(query, client, filters = {}, query_params = {})
-    query.gsub!("#_client_#", client)
+  def decorate(query, filters = {}, query_params = {})
+    query.gsub!("#_client_#", @client)
     apply_filters(query, filters)
     apply_params(query, query_params)
     query

@@ -2,14 +2,12 @@ require "csv"
 require "query_engine/default_query_engine"
 
 class CsvQueryEngine < DefaultQueryEngine
-  def connect
-  end
+  def connect;  end
 
-  def close
-  end
+  def close;  end
 
   # should return an enumerator
-  def execute(query, client)
+  def execute(query)
     col_sep = case query["col_sep"]
     when "tab"
       "\t"
@@ -46,7 +44,7 @@ class CsvQueryEngine < DefaultQueryEngine
     cursor
   end
 
-  def decorate(query, client, filters = {}, query_params = {})
+  def decorate(query, filters = {}, query_params = {})
     @filters = filters
     JSON.parse(query)
   end
