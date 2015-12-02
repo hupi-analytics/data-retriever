@@ -5,6 +5,8 @@ defaults: &defaults
     port: <%= ENV['HDR_ERRBIT_KEY'] %>
   log:
     level: "info"
+  estimate:
+    path: <%= File.join(Grape::ROOT, "public") %>
 
 development:
   <<: *defaults
@@ -18,6 +20,9 @@ test:
 
 production: &production
   <<: *defaults
+  estimate:
+    path: "/repos/data-retriever/"
+
 
 staging:
   <<: *production

@@ -12,5 +12,10 @@ class DefaultQueryEngine
   # should return an enumerator
   def execute(query); end
 
+  def reload
+    close
+    connect
+  end
+
   def decorate(query, filters = {}, query_params = {}); end
 end

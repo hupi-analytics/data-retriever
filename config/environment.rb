@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+require "grape"
+Grape::ROOT = File.expand_path("../..", __FILE__)
 
 module DataRetriever
   ENV["RACK_ENV"] ||= "development"

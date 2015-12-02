@@ -18,7 +18,7 @@ module DataRetriever
           logger.info("ESTIMATE | params subject is empty")
           error!("params #{params[:subject]} is missing or not an object", 400)
         end
-        regression_parameters = YAML.load_file(File.join(Grape::ROOT, "public", params[:client], "estimate", "#{params[:subject]}.yml"))
+        regression_parameters = YAML.load_file(File.join(Settings.estimate.path, params[:client], "estimate", "#{params[:subject]}.yml"))
         total = 0
         invalid = []
         params[subject_name].each do |k, v|

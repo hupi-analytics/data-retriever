@@ -1,9 +1,7 @@
 # -*- encoding : utf-8 -*-
-require "grape"
 require "grape-entity"
-require 'grape_logging'
+require "grape_logging"
 
-Grape::ROOT = File.expand_path("../..", __FILE__)
 $LOAD_PATH.unshift(Grape::ROOT)
 $LOAD_PATH.unshift(File.join(Grape::ROOT,'lib'))
 

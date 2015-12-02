@@ -26,7 +26,12 @@ module DataRetriever
           export_type = HdrExportType.find_by("'#{params[:render_type]}' = ANY (render_types)")
           query_decorated = query_engine.decorate(query.query, query_filter, query_params)
           logger.debug("QUERY | #{query.hdr_query_engine.engine} | #{query.hdr_query_engine.name} | #{query_decorated}")
-          cursor = query_engine.execute(query_decorated)
+          begin
+            cursor = query_engine.execute(query_decorated)
+          rescue IOError
+            query_engine.reload
+            cursor = query_engine.execute(query_decorated)
+          end
           { data: Export.send(params[:render_type], cursor, query_params) }
         else
           endpoint = HdrEndpoint.find_by(module_name: params[:module_name], method_name: params[:method_name])
