@@ -20,7 +20,7 @@
 /tmp
 /public/system
 /public/*
-!/public/test/**
+!/public/test/*
 /coverage/
 /spec/tmp
 
