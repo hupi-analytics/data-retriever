@@ -1,8 +1,8 @@
 defaults: &defaults
   errbit:
     api_key: <%= ENV['HDR_ERRBIT_KEY'] %>
-    host: <%= ENV['HDR_ERRBIT_KEY'] %>
-    port: <%= ENV['HDR_ERRBIT_KEY'] %>
+    host: <%= ENV['HDR_ERRBIT_HOST'] %>
+    port: <%= ENV['HDR_ERRBIT_PORT'] %>
   log:
     level: "info"
   estimate:
