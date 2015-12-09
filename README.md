@@ -16,6 +16,7 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
 * <u>module_name:</u> (String)
 * <u>method_name:</u> (String)
 * <u>body:</u>
+
   ```json
   {
     "client": client_name,
@@ -29,20 +30,22 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
   * <u>client:</u> (String) client name
   * <u>render_type:</u> (String) depends of the configuration of the hdr_endpoint
   * <u>filters:</u> (JSON) two acceptable way
-```json
-{
-  "filter_name": {
-    "operator": "<",
-    "value": "42"
-  },
-  "filter_name": "42"
-  }
-}
-```
+
+    ```json
+    {
+      "filter_name": {
+        "operator": "<",
+        "value": "42"
+      },
+      "filter_name": "42"
+      }
+    }
+    ```
 
 #### POST `http://api.dataretriever.hupi.io/estimate/(:subject)`
 * <u>subject:</u> (String)
 * <u>body: </u>
+
   ```json
   {
     "client": client_name,
@@ -137,7 +140,7 @@ you can create or update hdr_endpoint with nested attributes using the [rails wa
 
 in order to have a result formated for Highchart, query should rename field according to the desired render_type. Below we list the different renaming convention and the associated render type.
 
-If you want to better understand what each field does take a look in `lib/export/`
+If you want to better understand what each field does take a look in `lib/export/` and `spec/lib/export`
 
 #### Add filter
 To add filter in your query simply insert a pattern `#_your_pattern_#` at the desired place in the query, and add the corresponding hdr_filter. the pattern will be replaced by the filter given when you call the hdr_endpoint or if there is no filter given it will be replaced by an empty string.
@@ -147,9 +150,17 @@ write a valid sql query, you can use every function that your query_engine recog
 #### Filter Pattern
 filter recognize specific pattern:
 * `#_and_[something_else]_#`: Add `AND` at the beginning and `AND` between each filter that match the pattern
+  ```
+  select fruit as category, color as serie, quantity as value from fruit_table where color="red" #_and_f1_#
+  ```
+
 * `#_where_[something_else]_#`: Add `WHERE` at the beginning and `AND` between each filter that match the pattern
 
-### MongoDb Query
+  ```
+  select fruit as category, color as serie, quantity as value from fruit_table #_where_f1_#
+  ```
+
+### MongoDB Query
 since MongoDB only provide api to query their database, we use a JSON query that we match with their api.
 ```json
 {
@@ -161,6 +172,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
 #### operator
 
 * aggregate: `db.my_colleciton.aggregate(mongo_aggregate_query, mongo_options)`
+
   ```json
   {
     "operator": "aggregate",
@@ -169,6 +181,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 * find: `db.my_collection.find(mongo_find_query, mongo_options)`
+
   ```json
   {
     "operator": "find",
@@ -177,6 +190,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 * map_reduce: `db.my_collection.map_reduce(mongo_map, mongo_reduce, mongo_options)`
+
   ```json
   {
     "operator": "map_reduce",
@@ -188,38 +202,516 @@ since MongoDB only provide api to query their database, we use a JSON query that
 
 #### Filter Pattern
 * `#_match_[something_else]_#`: add a match `{ $match: { $and: [ filters_here ] } },`, join filters with `,`
+
+  ```json
+  {
+    "collection": "metrics",
+    "query": [
+      {
+        "operator": "aggregate",
+        "pipeline":[
+          #_match_f1_#
+          {
+            "$group": {
+              "_id": { "year": "$year", "month": "$month"},
+              "value": { "$sum": "$sessions"}
+            }
+          },
+          {
+            "$project": {
+              "_id": 0,
+              "category": "$_id.month",
+              "serie": "$_id.year",
+              "value": "$value"
+            }
+          },
+          {
+            "$sort": {
+              "category": 1,
+              "serie": 1
+            }
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
 * `#_find_[something_else]_#`: `$and: [ filters_here ]`, join filters with `,`
+
+  ```json
+  {
+    "collection": "metrics",
+    "query": [
+      {
+        "operator": "find",
+        "filter": {#_find_f1_#},
+        "opts": {
+          "$sort": {
+            "year": 1,
+            "month": 1,
+            "day": 1
+          }
+        }
+      }
+    ]
+  }
+  ```
+
 * `#_and_[something_else]_#`: start with `,` and join filters with `,`
 
+  ```json
+  {
+    "collection": "metrics",
+    "query": [
+      {
+        "operator": "find",
+        "filter": {"$and": [{ "year": 2014 } #_and_f1_#]},
+        "opts": {
+          "$sort": {
+            "year": 1,
+            "month": 1,
+            "day": 1
+          }
+        }
+      }
+    ]
+  }
+  ```
 
 ## Render type
 * Category Serie Value
-  + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, area_stacked_percent, multiple_column, windrose, spiderweb, column_stacked, fixed_placement_column
-  + <u>desired field in query result:</u> category, serie, value
+  + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, area_stacked_percent, multiple_column, windrose, spiderweb, column_stacked
+  + <u>required field in query result:</u> category, serie, value
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "ser1", "value": 10 },
+      { "category": "cat1", "serie": "ser2", "value": 9 },
+      { "category": "cat1", "serie": "ser3", "value": 6 },
+      { "category": "cat2", "serie": "ser1", "value": 8 },
+      { "category": "cat2", "serie": "ser2", "value": 7 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "series": [
+        { "name": "ser1", "data": [10, 8] },
+        { "name": "ser2", "data": [9, 7] },
+        { "name": "ser3", "data": [6, 0] }
+      ],
+      "categories": ["cat1", "cat2"]
+    }
+    ```
+* Fixed Placement Column
+  + <u>render type:</u> fixed_placement_column
+  + <u>required field in query result:</u> category, serie, value
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "ser1", "value": 10 },
+      { "category": "cat1", "serie": "ser2", "value": 9 },
+      { "category": "cat1", "serie": "ser3", "value": 8 },
+      { "category": "cat1", "serie": "ser4", "value": 7 },
+      { "category": "cat2", "serie": "ser1", "value": 1 },
+      { "category": "cat2", "serie": "ser2", "value": 2 },
+      { "category": "cat2", "serie": "ser3", "value": 3 },
+      { "category": "cat2", "serie": "ser4", "value": 4 }
+
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "categories": ["cat1", "cat2"],
+      "series": [
+        { "name": "ser1", "data": [10, 1], "color": "rgba(165,170,217,1)", "pointPlacement": -0.2,  "pointPadding": 0.3 },
+        { "name": "ser2", "data": [9, 2], "color": "rgba(248,161,63,1)", "pointPlacement": 0.2,  "pointPadding": 0.3 },
+        { "name": "ser3", "data": [8, 3], "color": "rgba(126,86,134,.9)", "pointPlacement": -0.2,  "pointPadding": 0.4, "yAxis": 1 },
+        { "name": "ser4", "data": [7, 4], "color": "rgba(186,60,61,.9)", "pointPlacement": 0.2,  "pointPadding": 0.4, "yAxis": 1 }
+      ]
+    }
+    ```
 * Serie Value
   + <u>render type:</u> serie_value, pie_chart, half_donuts, funnel, column
-  + <u>desired field in query result:</u> serie value
+  + <u>required field in query result:</u> serie, value
+  + <u>input:</u>
+
+    ```json
+    [
+      { "serie": "ser1", "value": 10 },
+      { "serie": "ser2", "value": 9 },
+      { "serie": "ser3", "value": 6 },
+      { "serie": "ser1", "value": 8 },
+      { "serie": "ser2", "value": 7 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "series": [
+        ["ser1", 10],
+        ["ser2", 9],
+        ["ser3", 6],
+        ["ser1", 8],
+        ["ser2", 7]
+      ]
+    }
+      ```
 * Column Stacked Grouped
   + <u>render type:</u> column_stacked_grouped
-  + <u>desired field in query result:</u> category, serie, value, stack
-* Datestamp Value
-  + <u>render type:</u> column_stacked_grouped
-  + <u>desired field in query result:</u> datestamp (yyyyMMdd), value
+  + <u>required field in query result:</u> category, serie, value, stack
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "Apples", "serie": "John", "stack": "male", "value": 5 },
+      { "category": "Oranges", "serie": "John", "stack": "male", "value": 3 },
+      { "category": "Pears", "serie": "John", "stack": "male", "value": 4 },
+      { "category": "Grapes", "serie": "John", "stack": "male", "value": 7 },
+      { "category": "Bananas", "serie": "John", "stack": "male", "value": 2 },
+
+      { "category": "Apples", "serie": "Joe", "stack": "male", "value": 3 },
+      { "category": "Oranges", "serie": "Joe", "stack": "male", "value": 4 },
+      { "category": "Pears", "serie": "Joe", "stack": "male", "value": 4 },
+      { "category": "Grapes", "serie": "Joe", "stack": "male", "value": 2 },
+
+      { "category": "Apples", "serie": "Jane", "stack": "female", "value": 2 },
+      { "category": "Oranges", "serie": "Jane", "stack": "female", "value": 5 },
+      { "category": "Pears", "serie": "Jane", "stack": "female", "value": 6 },
+      { "category": "Grapes", "serie": "Jane", "stack": "female", "value": 2 },
+      { "category": "Bananas", "serie": "Jane", "stack": "female", "value": 1 },
+
+      { "category": "Apples", "serie": "Janet", "stack": "female", "value": 3 },
+      { "category": "Pears", "serie": "Janet", "stack": "female", "value": 4 },
+      { "category": "Grapes", "serie": "Janet", "stack": "female", "value": 4 },
+      { "category": "Bananas", "serie": "Janet", "stack": "female", "value": 3 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "series": [
+        { "name": "Jane", "stack": "female", "data": [2, 5, 6, 2, 1] },
+        { "name": "Janet", "stack": "female", "data": [3, 0, 4, 4, 3] },
+        { "name": "Joe", "stack": "male", "data": [3, 4, 4, 2, 0] },
+        { "name": "John", "stack": "male", "data": [5, 3, 4, 7, 2] }
+      ],
+      "categories": ["Apples", "Oranges", "Pears", "Grapes", "Bananas"]
+    }
+    ```
+* timeseries
+  + <u>render type:</u> timeseries
+  + <u>required field in query result:</u> datestamp (yyyyMMdd), value
+  + <u>input:</u>
+
+    ```json
+    [
+      { "value": 10, "datestamp": 20141001 },
+      { "value": 9, "datestamp": 20141002 },
+      { "value": 6, "datestamp": 20141003 },
+      { "value": 8, "datestamp": 20141004 },
+      { "value": 7, "datestamp": 20141005 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "series": [
+        [1412121600000, 10],
+        [1412208000000, 9],
+        [1412294400000, 6],
+        [1412380800000, 8],
+        [1412467200000, 7],
+        [1449619200000, 7]
+      ]
+    }
+    ```
 * Boxplot
   + <u>render type:</u> boxplot
-  + <u>desired field in query result:</u> category, serie, min, first_quartil, median, third_quartil, max
-* Heatmap
-  + <u>render type:</u> small_heatmap, large_heatmap
-  + <u>desired field in query result:</u> x_category, y_category, value
+  + <u>required field in query result:</u> category, serie, min, first_quartil, median, third_quartil, max
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "observation1", "min": 1, "first_quartil": 6, "median": 12, "third_quartil": 31, "max": 45 },
+      { "category": "cat2", "serie": "observation1", "min": 2, "first_quartil": 7, "median": 22, "third_quartil": 32, "max": 46 },
+      { "category": "cat1", "serie": "observation2", "min": 3, "first_quartil": 8, "median": 32, "third_quartil": 33, "max": 47 },
+      { "category": "cat2", "serie": "observation2", "min": 4, "first_quartil": 9, "median": 42, "third_quartil": 34, "max": 48 },
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "categories": ["cat1", "cat2"],
+      "series": [
+        {
+          "name": "observation1",
+          "data": [
+            [1, 6, 12, 31, 45],
+            [2, 7, 22, 32, 46]
+          ]
+        },
+        {
+          "name": "observation2",
+          "data": [
+            [3, 8, 32, 33, 47],
+            [4, 9, 42, 34, 48]
+          ]
+        }
+      ]
+    }
+    ```
+* Small Heatmap
+  + <u>render type:</u> small_heatmap
+  + <u>required field in query result:</u> x_category, y_category, value
+  + <u>input:</u>
+
+    ```json
+    [
+      { "x_category": "cat1", "y_category": "ser1", "value": 1 },
+      { "x_category": "cat1", "y_category": "ser2", "value": 9 },
+      { "x_category": "cat1", "y_category": "ser3", "value": 6 },
+      { "x_category": "cat2", "y_category": "ser1", "value": 8 },
+      { "x_category": "cat2", "y_category": "ser2", "value": 7 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "x_category": ["cat1", "cat2"],
+      "y_category": ["ser1", "ser2", "ser3"],
+      "data": [
+        [0, 0, 1],
+        [0, 1, 9],
+        [0, 2, 6],
+        [1, 0, 8],
+        [1, 1, 7],
+        [1, 2, 0]
+      ]
+    }
+    ```
+* Large Heatmap
+  + <u>render type:</u> large_heatmap
+  + <u>required field in query result:</u> x_category, y_category, value
+  + <u>input:</u>
+
+    ```json
+    [
+      { "x_category": "cat1", "y_category": "ser1", "value": 1 },
+      { "x_category": "cat1", "y_category": "ser2", "value": 9 },
+      { "x_category": "cat1", "y_category": "ser3", "value": 6 },
+      { "x_category": "cat2", "y_category": "ser1", "value": 8 },
+      { "x_category": "cat2", "y_category": "ser2", "value": 7 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "x_category": ["cat1", "cat2"],
+      "y_category": ["ser1", "ser2", "ser3"],
+      "data": "0,0,1\n0,1,9\n0,2,6\n1,0,8\n1,1,7\n1,2,0\n"
+    }
+    ```
 * Scatter
   + <u>render type:</u> scatter
-  + <u>desired field in query result:</u> serie, x ,y
+  + <u>required field in query result:</u> serie, x ,y
+  + <u>input:</u>
+
+    ```json
+    [
+      { "serie": "ser1", "x": 1, "y": 1, "value": 1 },
+      { "serie": "ser1", "x": 1, "y": 2, "value": 9 },
+      { "serie": "ser2", "x": 1, "y": 3, "value": 6 },
+      { "serie": "ser2", "x": 2, "y": 1, "value": 8 },
+      { "serie": "ser1", "x": 2, "y": 2, "value": 7 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "series": [
+        { "name": "ser1", "color": "hsla(102, 70%, 50%, 0.5)", "data": [[1, 1], [1, 2], [2, 2]] },
+        { "name": "ser2", "color": "hsla(348, 70%, 50%, 0.5)", "data": [[1, 3], [2, 1]] }
+      ]
+    }
+    ```
 * Leaflet
   + <u>render type:</u> leaflet
-  + <u>desired field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties"
-* Other
-  + <u>render type:</u> csv, treemap2, treemap3, json_value, json_array
-  except for the csv, the order of fields will determine the output
+  + <u>required field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties"
+  + <u>input:</u>
+
+    ```json
+    [
+      { "collection": "features", "layer_name": "calque", "type": "Feature", "geometry_type": "Point", "lat": 10.00, "lng": 0.0, "data1": "ab", "data2": "bc" },
+      { "collection": "features", "layer_name": "calque", "type": "Feature", "geometry_type": "Point", "lat": 20.00, "lng": 1.0, "data1": "ac", "data2": "bd" },
+      { "collection": "features", "layer_name": "calque", "type": "Feature", "geometry_type": "Point", "lat": 30.00, "lng": 2.0, "data1": "ad", "data2": "be" }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "calque": {
+        "type": "FeatureCollection",
+        "features": [
+          { "type": "Feature", "geometry": { "type": "Point", "coordinates": [0.0, 10.0] }, "properties": { "data1": "ab", "data2": "bc" } },
+          { "type": "Feature", "geometry": { "type": "Point", "coordinates": [1.0, 20.0] }, "properties": { "data1": "ac", "data2": "bd" } },
+          { "type": "Feature", "geometry": { "type": "Point", "coordinates": [2.0, 30.0] }, "properties": { "data1": "ad", "data2": "be" } }
+        ]
+      }
+    }
+    ```
+* CSV
+  + <u>render type:</u> csv
+  + <u>required field in query result:</u> none
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "ser1", "value": 10, "datestamp": 20141001 },
+      { "category": "cat1", "serie": "ser2", "value": 9, "datestamp": 20141002 },
+      { "category": "cat1", "serie": "ser3", "value": 6, "datestamp": 20141003 },
+      { "category": "cat2", "serie": "ser1", "value": 8, "datestamp": 20141004 },
+      { "category": "cat2", "serie": "ser2", "value": 7, "datestamp": 20141005 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "rows": [
+        ["cat1", "ser1", 10, 20141001],
+        ["cat1", "ser2", 9, 20141002],
+        ["cat1", "ser3", 6, 20141003],
+        ["cat2", "ser1", 8, 20141004],
+        ["cat2", "ser2", 7, 20141005]
+      ],
+      "header": ["category", "serie", "value", "datestamp"]
+    }
+    ```
+* Multiple CSV
+  + <u>render type:</u> multiple_csv
+  + <u>required field in query result:</u> none
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "ser1", "value": 10, "datestamp": 20141001 },
+      { "category": "cat1", "serie": "ser2", "value": 9, "datestamp": 20141002 },
+      { "category": "cat1", "serie": "ser3", "value": 6, "datestamp": 20141003 },
+      { "category": "cat2", "serie": "ser1", "value": 8, "datestamp": 20141004 },
+      { "category": "cat2", "serie": "ser2", "value": 7, "datestamp": 20141005 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "header": ["serie", "value", "datestamp"],
+      "rows": {
+        "cat1": [
+          ["ser1", 10, 20141001],
+          ["ser2",  9, 20141002],
+          ["ser3",  6, 20141003]
+        ],
+        "cat2": [
+          ["ser1",  8, 20141004],
+          ["ser2",  7, 20141005]
+        ]
+      }
+    }
+    ```
+* JSON Value
+  + <u>render type:</u> treemap2, treemap3, json_value
+  + <u>required field in query result:</u> none
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "ser1", "ser": "s", "value": 10 },
+      { "category": "cat1", "serie": "ser1", "ser": "s", "value": 4 },
+      { "category": "cat1", "serie": "ser2", "ser": "s", "value": 9 },
+      { "category": "cat1", "serie": "ser3", "ser": "s", "value": 6 },
+      { "category": "cat2", "serie": "ser1", "ser": "s", "value": 8 },
+      { "category": "cat2", "serie": "ser2", "ser": "s1", "value": 7 },
+      { "category": "cat2", "serie": "ser2", "ser": "s2", "value": 5 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "cat1": {
+        "ser1": { "s": 4 },
+        "ser2": { "s": 9 },
+        "ser3": { "s": 6 }
+      },
+      "cat2": {
+        "ser1": { "s": 8 },
+        "ser2": { "s1": 7, "s2": 5 }
+      }
+    }
+    ```
+* JSON Array
+  + <u>render type:</u> json_array
+  + <u>required field in query result:</u> none
+  + <u>input:</u>
+
+    ```json
+    [
+      { "category": "cat1", "serie": "ser1", "ser": "s", "value": 10 },
+      { "category": "cat1", "serie": "ser1", "ser": "s", "value": 4 },
+      { "category": "cat1", "serie": "ser2", "ser": "s", "value": 9 },
+      { "category": "cat1", "serie": "ser3", "ser": "s", "value": 6 },
+      { "category": "cat2", "serie": "ser1", "ser": "s", "value": 8 },
+      { "category": "cat2", "serie": "ser2", "ser": "s1", "value": 7 },
+      { "category": "cat2", "serie": "ser2", "ser": "s2", "value": 5 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "cat1": {
+        "ser1": { "s": [10, 4] },
+        "ser2": { "s": [9] },
+        "ser3": { "s": [6] }
+      },
+      "cat2": {
+        "ser1": { "s": [8] },
+        "ser2": { "s1": [7], "s2": [5] }
+      }
+    }
+    ```
+* Value
+  + <u>render type:</u> value
+  + <u>required field in query result:</u> none
+  + <u>input:</u>
+
+    ```json
+    [
+      { "my_value": 14 },
+      { "my_value": 42 }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    { "value": 42 }
+    ```
 
 # Development
 
