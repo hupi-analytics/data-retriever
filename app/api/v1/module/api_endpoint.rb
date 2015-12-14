@@ -28,7 +28,7 @@ module DataRetriever
           logger.debug("QUERY | #{query.hdr_query_engine.engine} | #{query.hdr_query_engine.name} | #{query_decorated}")
           begin
             cursor = query_engine.execute(query_decorated)
-          rescue IOError
+          rescue IOError, Mysql2::Error
             query_engine.reload
             cursor = query_engine.execute(query_decorated)
           end

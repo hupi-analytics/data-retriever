@@ -3,6 +3,7 @@ require "query_engine/sql_query_engine"
 
 class MysqlQueryEngine < SQLQueryEngine
   def connect
+    @settings = { reconnect: true }.merge(@settings)
     @connexion = Mysql2::Client.new(@settings)
     @connexion.select_db(@client)
   end
