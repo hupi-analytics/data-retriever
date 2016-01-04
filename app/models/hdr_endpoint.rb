@@ -7,7 +7,7 @@ class HdrEndpoint < ActiveRecord::Base
   validates :module_name, :method_name, presence: true
   validates_uniqueness_of :method_name, scope: [:module_name]
 
-  accepts_nested_attributes_for :hdr_query_objects
+  accepts_nested_attributes_for :hdr_query_objects, allow_destroy: true
 
   def render_types
     hdr_query_objects.inject([]) do |memo, qo|

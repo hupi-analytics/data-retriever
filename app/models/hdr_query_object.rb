@@ -10,7 +10,7 @@ class HdrQueryObject < ActiveRecord::Base
 
   validates :query, presence: true
 
-  accepts_nested_attributes_for :hdr_filters
+  accepts_nested_attributes_for :hdr_filters, allow_destroy: true
 
   def render_types
     hdr_export_types.inject([]) do |memo, et|
