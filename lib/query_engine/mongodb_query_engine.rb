@@ -7,7 +7,7 @@ class MongoQueryEngine < DefaultQueryEngine
   end
 
   def execute(query)
-    result = @connexion.use(@client)[query["collection"]]
+    result = @connexion.use(@database)[query["collection"]]
     query["query"].each do |operation|
       result = case operation["operator"]
       when "aggregate"

@@ -4,7 +4,7 @@ require "query_engine/sql_query_engine"
 class ImpalaQueryEngine < SQLQueryEngine
   def connect
     @connexion = Impala.connect(@settings[:host], @settings[:port])
-    @connexion.execute("use #{@client}")
+    @connexion.execute("use #{@database}")
   end
 
   def execute(query)

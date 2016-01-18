@@ -29,6 +29,16 @@ module DataRetriever
       def logger
         DataRetriever::API.logger
       end
+
+      def authenticate!
+        error!("401 Unauthorized.", 401) unless current_account
+      end
+
+      def current_account
+        # find token. Check if valid
+        access_token = request.headers["X-Api-Token"] || params[:token]
+        @current_account ||= HdrAccount.find_by(access_token: access_token)
+      end
     end
 
     mount DataRetriever::V1::Base

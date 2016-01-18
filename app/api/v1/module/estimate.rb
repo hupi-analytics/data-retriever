@@ -7,6 +7,7 @@ module DataRetriever
 
       before do
         error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
+        authenticate!
       end
 
       params do
