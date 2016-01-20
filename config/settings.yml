@@ -26,3 +26,5 @@ production: &production
 
 staging:
   <<: *production
+  estimate:
+    path: "/repos/data-retriever/"
