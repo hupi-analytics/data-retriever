@@ -4,7 +4,7 @@ describe DataRetriever::API do
   def app
     DataRetriever::API
   end
-
+  let!(:account) { FactoryGirl.create(:hdr_account, :superadmin) }
   let(:client) { "test" }
 
   describe "POST estimate/vehicle" do
@@ -29,7 +29,7 @@ describe DataRetriever::API do
       end
 
       it "return price with bound" do
-        post url, valid_param
+        post url, valid_param.merge(token: account.access_token)
         expect_json(res)
       end
     end
@@ -48,7 +48,7 @@ describe DataRetriever::API do
       end
 
       it "return price with bound" do
-        post url, invalid_param
+        post url, invalid_param.merge(token: account.access_token)
         expect(response.status).to eq(400)
         expect_json(error: regex("vehicle settings not found:"))
       end
@@ -57,12 +57,12 @@ describe DataRetriever::API do
     context "when missing subject" do
       let(:invalid_param) do
         {
-          client: client,
+          client: client
         }
       end
 
       it "return price with bound" do
-        post url, invalid_param
+        post url, invalid_param.merge(token: account.access_token)
         expect(response.status).to eq(400)
         expect_json(error: regex("vehicle is missing"))
       end

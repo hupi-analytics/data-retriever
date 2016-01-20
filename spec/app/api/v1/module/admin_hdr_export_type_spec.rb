@@ -6,8 +6,9 @@ describe DataRetriever::API do
   end
 
   let!(:hdr_export_type_test) { FactoryGirl.create(:hdr_export_type, :csv) }
+  let!(:account) { FactoryGirl.create(:hdr_account, :superadmin) }
   describe "GET hdr_export_types" do
-    let(:url) { "admin/hdr_export_types" }
+    let(:url) { "admin/hdr_export_types?token=#{account.access_token}" }
 
     before(:all) do
       4.times { FactoryGirl.create(:hdr_export_type, :csv) }
@@ -22,7 +23,7 @@ describe DataRetriever::API do
     end
 
     context "when filter all hdr_export_types" do
-      let(:url) { "admin/hdr_export_types?filters[name]=#{hdr_export_type_test.name}" }
+      let(:url) { "admin/hdr_export_types?token=#{account.access_token}&filters[name]=#{hdr_export_type_test.name}" }
       it "return list of object" do
         get url
         expect_json_types(:array)
@@ -31,7 +32,7 @@ describe DataRetriever::API do
     end
 
     context "when order all hdr_export_type" do
-      let(:url) { "admin/hdr_export_types?order[name]=DESC" }
+      let(:url) { "admin/hdr_export_types?token=#{account.access_token}&order[name]=DESC" }
       it "return list of object" do
         get url
         expect_json_types(:array)
@@ -42,7 +43,7 @@ describe DataRetriever::API do
 
   describe "GET hdr_export_type" do
     context "when read existing hdr_export_type" do
-      let(:url) { "admin/hdr_export_type/#{hdr_export_type_test.id}" }
+      let(:url) { "admin/hdr_export_type/#{hdr_export_type_test.id}?token=#{account.access_token}" }
       let(:res) do
         hdr_export_type_test.attributes
           .except!("created_at", "updated_at")
@@ -56,7 +57,7 @@ describe DataRetriever::API do
     end
 
     context "when read unexisting hdr_export_type" do
-      let(:url) { "admin/hdr_export_type/0" }
+      let(:url) { "admin/hdr_export_type/0?token=#{account.access_token}" }
 
       it "return an error" do
         get url
@@ -73,13 +74,13 @@ describe DataRetriever::API do
       let(:new_hdr_export_type) { attributes_for(:hdr_export_type) }
 
       it "return object" do
-        post url, hdr_export_type: new_hdr_export_type
+        post url, hdr_export_type: new_hdr_export_type, token: account.access_token
         expect(response.status).to eq(201)
         expect_json(new_hdr_export_type)
       end
 
       describe "hdr_export_type create" do
-        subject { -> { post url, hdr_export_type: new_hdr_export_type } }
+        subject { -> { post url, hdr_export_type: new_hdr_export_type, token: account.access_token } }
         it { should change(HdrExportType, :count).by(1) }
       end
     end
@@ -88,7 +89,7 @@ describe DataRetriever::API do
       let(:invalid_new_hdr_export_type) { hdr_export_type_test.attributes.except!("id", "created_at", "updated_at") }
 
       it "return an error" do
-        post url, hdr_export_type: invalid_new_hdr_export_type
+        post url, hdr_export_type: invalid_new_hdr_export_type, token: account.access_token
         expect(response.status).to eq(409)
         expect_json(error: regex("Validation failed"))
       end
@@ -102,7 +103,7 @@ describe DataRetriever::API do
       let(:url) { "admin/hdr_export_type/#{hdr_export_type_test.id}" }
 
       it "return object" do
-        put url, hdr_export_type: update_hdr_export_type
+        put url, hdr_export_type: update_hdr_export_type, token: account.access_token
         expect(response.status).to eq(200)
         expect_json(update_hdr_export_type)
       end
@@ -112,7 +113,7 @@ describe DataRetriever::API do
       let(:url) { "admin/hdr_export_type/0" }
 
       it "return an error" do
-        put url, hdr_export_type: update_hdr_export_type
+        put url, hdr_export_type: update_hdr_export_type, token: account.access_token
         expect(response.status).to eq(404)
         expect_json(error: regex("Couldn't find HdrExportType"))
       end
@@ -121,7 +122,7 @@ describe DataRetriever::API do
 
   describe "DELETE hdr_export_type" do
     context "when delete hdr_export_type" do
-      let(:url) { "admin/hdr_export_type/#{hdr_export_type_test.id}" }
+      let(:url) { "admin/hdr_export_type/#{hdr_export_type_test.id}?token=#{account.access_token}" }
 
       it "return object" do
         delete url
@@ -136,7 +137,7 @@ describe DataRetriever::API do
     end
 
     context "when delete unexisting hdr_export_type" do
-      let(:url) { "admin/hdr_export_type/0" }
+      let(:url) { "admin/hdr_export_type/0?token=#{account.access_token}" }
 
       it "return an error" do
         delete url

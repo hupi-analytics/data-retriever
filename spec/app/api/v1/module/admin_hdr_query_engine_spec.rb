@@ -6,8 +6,9 @@ describe DataRetriever::API do
   end
 
   let!(:hdr_query_engine_test) { FactoryGirl.create(:hdr_query_engine, :csv) }
+  let!(:account) { FactoryGirl.create(:hdr_account, :superadmin) }
   describe "GET hdr_query_engines" do
-    let(:url) { "admin/hdr_query_engines" }
+    let(:url) { "admin/hdr_query_engines?token=#{account.access_token}" }
 
     before(:all) do
       4.times { FactoryGirl.create(:hdr_query_engine, :csv) }
@@ -22,7 +23,7 @@ describe DataRetriever::API do
     end
 
     context "when filter all hdr_query_engine" do
-      let(:url) { "admin/hdr_query_engines?filters[name]=#{hdr_query_engine_test.name}" }
+      let(:url) { "admin/hdr_query_engines?token=#{account.access_token}&filters[name]=#{hdr_query_engine_test.name}" }
       it "return list of object" do
         get url
         expect_json_types(:array)
@@ -31,7 +32,7 @@ describe DataRetriever::API do
     end
 
     context "when order all hdr_query_engine" do
-      let(:url) { "admin/hdr_query_engines?order[name]=DESC" }
+      let(:url) { "admin/hdr_query_engines?token=#{account.access_token}&order[name]=DESC" }
       it "return list of object" do
         get url
         expect_json_types(:array)
@@ -42,7 +43,7 @@ describe DataRetriever::API do
 
   describe "GET hdr_query_engine" do
     context "when read existing hdr_query_engine" do
-      let(:url) { "admin/hdr_query_engine/#{hdr_query_engine_test.id}" }
+      let(:url) { "admin/hdr_query_engine/#{hdr_query_engine_test.id}?token=#{account.access_token}" }
       let(:res) do
         hdr_query_engine_test.attributes
           .except!("created_at", "updated_at", "settings")
@@ -56,7 +57,7 @@ describe DataRetriever::API do
     end
 
     context "when read unexisting hdr_query_engine" do
-      let(:url) { "admin/hdr_query_engine/0" }
+      let(:url) { "admin/hdr_query_engine/0?token=#{account.access_token}" }
 
       it "return an error" do
         get url
@@ -73,13 +74,13 @@ describe DataRetriever::API do
       let(:new_hdr_query_engine) { attributes_for(:hdr_query_engine, :csv) }
 
       it "return object" do
-        post url, hdr_query_engine: new_hdr_query_engine
+        post url, hdr_query_engine: new_hdr_query_engine, token: account.access_token
         expect(response.status).to eq(201)
         expect_json(new_hdr_query_engine.reject { |k, _|  k == :settings })
       end
 
       describe "hdr_query_engine create" do
-        subject { -> { post url, hdr_query_engine: new_hdr_query_engine } }
+        subject { -> { post url, hdr_query_engine: new_hdr_query_engine, token: account.access_token } }
         it { should change(HdrQueryEngine, :count).by(1) }
       end
     end
@@ -88,7 +89,7 @@ describe DataRetriever::API do
       let(:invalid_new_hdr_query_engine) { hdr_query_engine_test.attributes.except!("id", "created_at", "updated_at") }
 
       it "return an error" do
-        post url, hdr_query_engine: invalid_new_hdr_query_engine
+        post url, hdr_query_engine: invalid_new_hdr_query_engine, token: account.access_token
         expect(response.status).to eq(409)
         expect_json(error: regex("Validation failed"))
       end
@@ -102,7 +103,7 @@ describe DataRetriever::API do
       let(:url) { "admin/hdr_query_engine/#{hdr_query_engine_test.id}" }
 
       it "return object" do
-        put url, hdr_query_engine: update_hdr_query_engine
+        put url, hdr_query_engine: update_hdr_query_engine, token: account.access_token
         expect(response.status).to eq(200)
         expect_json(update_hdr_query_engine.reject { |k, _| k == :settings })
       end
@@ -112,7 +113,7 @@ describe DataRetriever::API do
       let(:url) { "admin/hdr_query_engine/0" }
 
       it "return an error" do
-        put url, hdr_query_engine: update_hdr_query_engine
+        put url, hdr_query_engine: update_hdr_query_engine, token: account.access_token
         expect(response.status).to eq(404)
         expect_json(error: regex("Couldn't find HdrQueryEngine"))
       end
@@ -121,7 +122,7 @@ describe DataRetriever::API do
 
   describe "DELETE hdr_query_engine" do
     context "when delete hdr_query_engine" do
-      let(:url) { "admin/hdr_query_engine/#{hdr_query_engine_test.id}" }
+      let(:url) { "admin/hdr_query_engine/#{hdr_query_engine_test.id}?token=#{account.access_token}" }
 
       it "return object" do
         delete url
@@ -136,7 +137,7 @@ describe DataRetriever::API do
     end
 
     context "when delete unexisting hdr_query_engine" do
-      let(:url) { "admin/hdr_query_engine/0" }
+      let(:url) { "admin/hdr_query_engine/0?token=#{account.access_token}" }
 
       it "return an error" do
         delete url

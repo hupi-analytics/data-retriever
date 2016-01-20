@@ -2,7 +2,7 @@ source "https://rubygems.org"
 ruby "2.2.1"
 
 gem "json", "~> 1.8.0"
-gem "grape", "~> 0.10.1"
+gem "grape", "~> 0.14.0"
 gem "grape-entity"
 gem "grape-swagger"
 
