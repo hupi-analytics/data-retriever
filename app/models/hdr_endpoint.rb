@@ -14,7 +14,7 @@ class HdrEndpoint < ActiveRecord::Base
   def render_types
     hdr_query_objects.inject([]) do |memo, qo|
       memo + qo.render_types
-    end
+    end.uniq
   end
 
   def set_method_name_to_account
