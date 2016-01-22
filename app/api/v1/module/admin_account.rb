@@ -16,19 +16,8 @@ module DataRetriever
             optional :order, type: Hash
           end
           get "hdr_accounts" do
-            filters = case params[:filters].class.to_s
-            when "Hashie::Mash"
-              params[:filters].to_hash
-            else
-              params[:filters]
-            end
-
-            order = case params[:order].class.to_s
-            when "Hashie::Mash"
-              params[:order].to_hash
-            else
-              params[:order]
-            end
+            filters = convert_params(params[:filters])
+            order = convert_params(params[:order])
 
             begin
               results = HdrAccount.where(filters).order(order)

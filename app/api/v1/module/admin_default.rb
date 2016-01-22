@@ -17,35 +17,6 @@ module DataRetriever
                                                            hdr_filters hdr_filter)
         end
         namespace "admin" do
-          # index
-          params do
-            optional :filters, types: [String, Hash]
-            optional :order, types: [String, Hash]
-          end
-          get "(:class_called)" do
-            class_called = params[:class_called].singularize.camelize.constantize
-            filters = case params[:filters].class.to_s
-            when "Hashie::Mash"
-              params[:filters].to_hash
-            else
-              params[:filters]
-            end
-
-            order = case params[:order].class.to_s
-            when "Hashie::Mash"
-              params[:order].to_hash
-            else
-              params[:order]
-            end
-
-            begin
-              results = class_called.where(filters).order(order)
-              present results, with: class_called::Entity, type: :preview
-            rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
-            end
-          end
-
           # read
           params do
             requires :id, type: Integer
