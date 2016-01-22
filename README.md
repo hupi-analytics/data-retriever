@@ -9,10 +9,11 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
 ### Header Params
 * Content-Type: "application/json"
 * Accept-Version: "v1"
+* X-API-Token: "your_token"
 
 ### Endpoints
 
-#### POST `http://api.dataretriever.hupi.io/(:module_name)/(:method_name)`
+#### POST `http://api.dataretriever.hupi.io/private/(:module_name)/(:method_name)`
 * <u>module_name:</u> (String)
 * <u>method_name:</u> (String)
 * <u>body:</u>
@@ -55,31 +56,35 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
   * <u>client:</u> (String)
   * <u>(subject):</u> (JSON)
 
+#### GET `http://api.dataretriever.hupi.io/render_types/(:module_name)/(:method_name)`
+* <u>module_name:</u> (String)
+* <u>method_name:</u> (String)
+
 #### Admin
 admin endpoints follows REST convention.
-* index: GET `http://api.dataretriever.hupi.io/admin/(:model_name)`
+* index: GET `http://api.dataretriever.hupi.io/admin/(:model_name)s`
 * create: POST `http://api.dataretriever.hupi.io/admin/(:model_name)`
 * read: GET `http://api.dataretriever.hupi.io/admin/(:model_name)/(:id)`
 * update: PUT `http://api.dataretriever.hupi.io/admin/(:model_name)/(:id)`
 * delete: DELETE `http://api.dataretriever.hupi.io/admin/(:model)/(:id)`
 
 ```
-.
-                                     +----------------+
-                                     |hdr_query_engine|
-                                     +----------------+
-                                     |*name(String)   |
-                                     |*desc(String)   |
-                                     |*engine(String) |
-                                     |*settings(JSON) |
-                                     +----------------+
-                                             ^
-                                             |(1,n)
-                                             |
-                                             |
-                                             |(1,1)
-                                             |
-+--------------------+ (1,n)   (1,1) +-------+--------+ (1,n)   (1,n) +--------------------+
++---------------------+ (1,n)  (1,0) +----------------+
+|     hdr_account     |<-------------|hdr_query_engine|
++---------------------+              +----------------+
+|*id(uuid)            |              |*id(Int)        |
+|*name(String)        |              |*name(String)   |
+|*access_token(String)|              |*desc(String)   |
+|*role(String)        |              |*engine(String) |
++---------------------+              |*settings(JSON) |
+          ^                          +----------------+
+          |(1,n)                             ^
+          |                                  |(1,n)
+          |                                  |
+          |                                  |
+          |(1,0)                             |(1,1)
+          |                                  |
++---------+----------+ (1,n)   (1,1) +-------+--------+ (1,n)   (1,n) +--------------------+
 |    hdr_endpoint    |-------------->|hdr_query_object|-------------->|   hdr_export_type  |
 +--------------------+               +----------------+               +--------------------+
 |*module_name(String)|               |*name(String)   |               |*name(String)       |
