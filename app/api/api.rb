@@ -39,6 +39,15 @@ module DataRetriever
         access_token = request.headers["X-Api-Token"] || params[:token]
         @current_account ||= HdrAccount.find_by(access_token: access_token)
       end
+
+      def convert_params(my_param)
+        case my_param.class.to_s
+        when "Hashie::Mash"
+          my_param.to_hash
+        else
+          my_param
+        end
+      end
     end
 
     mount DataRetriever::V1::Base

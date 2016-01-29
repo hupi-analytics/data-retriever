@@ -9,10 +9,11 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
 ### Header Params
 * Content-Type: "application/json"
 * Accept-Version: "v1"
+* X-API-Token: "your_token"
 
 ### Endpoints
 
-#### POST `http://api.dataretriever.hupi.io/(:module_name)/(:method_name)`
+#### POST `http://api.dataretriever.hupi.io/private/(:module_name)/(:method_name)`
 * <u>module_name:</u> (String)
 * <u>method_name:</u> (String)
 * <u>body:</u>
@@ -55,31 +56,35 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
   * <u>client:</u> (String)
   * <u>(subject):</u> (JSON)
 
+#### GET `http://api.dataretriever.hupi.io/render_types/(:module_name)/(:method_name)`
+* <u>module_name:</u> (String)
+* <u>method_name:</u> (String)
+
 #### Admin
 admin endpoints follows REST convention.
-* index: GET `http://api.dataretriever.hupi.io/admin/(:model_name)`
+* index: GET `http://api.dataretriever.hupi.io/admin/(:model_name)s`
 * create: POST `http://api.dataretriever.hupi.io/admin/(:model_name)`
 * read: GET `http://api.dataretriever.hupi.io/admin/(:model_name)/(:id)`
 * update: PUT `http://api.dataretriever.hupi.io/admin/(:model_name)/(:id)`
 * delete: DELETE `http://api.dataretriever.hupi.io/admin/(:model)/(:id)`
 
 ```
-.
-                                     +----------------+
-                                     |hdr_query_engine|
-                                     +----------------+
-                                     |*name(String)   |
-                                     |*desc(String)   |
-                                     |*engine(String) |
-                                     |*settings(JSON) |
-                                     +----------------+
-                                             ^
-                                             |(1,n)
-                                             |
-                                             |
-                                             |(1,1)
-                                             |
-+--------------------+ (1,n)   (1,1) +-------+--------+ (1,n)   (1,n) +--------------------+
++---------------------+ (1,n)  (1,0) +----------------+
+|     hdr_account     |<-------------|hdr_query_engine|
++---------------------+              +----------------+
+|*id(uuid)            |              |*id(Int)        |
+|*name(String)        |              |*name(String)   |
+|*access_token(String)|              |*desc(String)   |
+|*role(String)        |              |*engine(String) |
++---------------------+              |*settings(JSON) |
+          ^                          +----------------+
+          |(1,n)                             ^
+          |                                  |(1,n)
+          |                                  |
+          |                                  |
+          |(1,0)                             |(1,1)
+          |                                  |
++---------+----------+ (1,n)   (1,1) +-------+--------+ (1,n)   (1,n) +--------------------+
 |    hdr_endpoint    |-------------->|hdr_query_object|-------------->|   hdr_export_type  |
 +--------------------+               +----------------+               +--------------------+
 |*module_name(String)|               |*name(String)   |               |*name(String)       |
@@ -280,7 +285,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
   ```
 
 ## Render type
-* Category Serie Value
+#### Category Serie Value
   + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, area_stacked_percent, multiple_column, windrose, spiderweb, column_stacked
   + <u>required field in query result:</u> category, serie, value
   + <u>input:</u>
@@ -306,7 +311,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       "categories": ["cat1", "cat2"]
     }
     ```
-* Fixed Placement Column
+
+#### Fixed Placement Column
   + <u>render type:</u> fixed_placement_column
   + <u>required field in query result:</u> category, serie, value
   + <u>input:</u>
@@ -337,7 +343,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       ]
     }
     ```
-* Serie Value
+
+#### Serie Value
   + <u>render type:</u> serie_value, pie_chart, half_donuts, funnel, column
   + <u>required field in query result:</u> serie, value
   + <u>input:</u>
@@ -364,7 +371,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       ]
     }
       ```
-* Column Stacked Grouped
+
+#### Column Stacked Grouped
   + <u>render type:</u> column_stacked_grouped
   + <u>required field in query result:</u> category, serie, value, stack
   + <u>input:</u>
@@ -407,7 +415,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       "categories": ["Apples", "Oranges", "Pears", "Grapes", "Bananas"]
     }
     ```
-* timeseries
+
+#### Timeseries
   + <u>render type:</u> timeseries
   + <u>required field in query result:</u> datestamp (yyyyMMdd), value
   + <u>input:</u>
@@ -435,7 +444,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       ]
     }
     ```
-* Boxplot
+
+#### Boxplot
   + <u>render type:</u> boxplot
   + <u>required field in query result:</u> category, serie, min, first_quartil, median, third_quartil, max
   + <u>input:</u>
@@ -471,7 +481,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       ]
     }
     ```
-* Small Heatmap
+
+#### Small Heatmap
   + <u>render type:</u> small_heatmap
   + <u>required field in query result:</u> x_category, y_category, value
   + <u>input:</u>
@@ -501,7 +512,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       ]
     }
     ```
-* Large Heatmap
+
+#### Large Heatmap
   + <u>render type:</u> large_heatmap
   + <u>required field in query result:</u> x_category, y_category, value
   + <u>input:</u>
@@ -524,7 +536,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       "data": "0,0,1\n0,1,9\n0,2,6\n1,0,8\n1,1,7\n1,2,0\n"
     }
     ```
-* Scatter
+
+#### Scatter
   + <u>render type:</u> scatter
   + <u>required field in query result:</u> serie, x ,y
   + <u>input:</u>
@@ -548,7 +561,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       ]
     }
     ```
-* Leaflet
+
+#### Leaflet
   + <u>render type:</u> leaflet
   + <u>required field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties"
   + <u>input:</u>
@@ -574,7 +588,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       }
     }
     ```
-* CSV
+
+#### CSV
   + <u>render type:</u> csv
   + <u>required field in query result:</u> none
   + <u>input:</u>
@@ -602,7 +617,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       "header": ["category", "serie", "value", "datestamp"]
     }
     ```
-* Multiple CSV
+
+#### Multiple CSV
   + <u>render type:</u> multiple_csv
   + <u>required field in query result:</u> none
   + <u>input:</u>
@@ -634,7 +650,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       }
     }
     ```
-* JSON Value
+
+#### JSON Value
   + <u>render type:</u> treemap2, treemap3, json_value
   + <u>required field in query result:</u> none
   + <u>input:</u>
@@ -665,7 +682,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       }
     }
     ```
-* JSON Array
+
+#### JSON Array
   + <u>render type:</u> json_array
   + <u>required field in query result:</u> none
   + <u>input:</u>
@@ -696,7 +714,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
       }
     }
     ```
-* Value
+
+#### Value
   + <u>render type:</u> value
   + <u>required field in query result:</u> none
   + <u>input:</u>
