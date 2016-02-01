@@ -9,6 +9,7 @@ class HdrQueryObject < ActiveRecord::Base
   has_many :hdr_filters, dependent: :destroy
 
   validates :query, presence: true
+  validates :hdr_query_engine, presence: true
 
   accepts_nested_attributes_for :hdr_filters, allow_destroy: true
 
