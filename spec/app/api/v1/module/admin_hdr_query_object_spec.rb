@@ -69,18 +69,21 @@ describe DataRetriever::API do
 
   describe "POST hdr_query_object" do
     let(:url) { "admin/hdr_query_object" }
+    before(:each) do
+      @query_engine = FactoryGirl.create(:hdr_query_engine, :csv)
+    end
 
     context "when create valid hdr_query_object" do
       let(:new_hdr_query_object) { attributes_for(:hdr_query_object, :csv) }
 
       it "return object" do
-        post url, hdr_query_object: new_hdr_query_object, token: account.access_token
+        post url, hdr_query_object: new_hdr_query_object.merge( hdr_query_engine_id: @query_engine.id), token: account.access_token
         expect(response.status).to eq(201)
         expect_json(new_hdr_query_object)
       end
 
       describe "hdr_query_object create" do
-        subject { -> { post url, hdr_query_object: new_hdr_query_object, token: account.access_token } }
+        subject { -> { post url, hdr_query_object: new_hdr_query_object.merge( hdr_query_engine_id: @query_engine.id), token: account.access_token } }
         it { should change(HdrQueryObject, :count).by(1) }
       end
     end
