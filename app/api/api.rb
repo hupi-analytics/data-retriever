@@ -4,7 +4,7 @@ require 'grape-swagger'
 module DataRetriever
   class API < Grape::API
     version 'v1', :using => :accept_version_header
-    rescue_from :all
+
     log_file = File.open(File.join(Grape::ROOT, "log", "#{ENV["RACK_ENV"]}.log"), "a")
     log_file.sync = true
     logger Logger.new GrapeLogging::MultiIO.new(STDOUT, log_file)
@@ -48,6 +48,12 @@ module DataRetriever
           my_param
         end
       end
+    end
+
+    rescue_from :all do |e|
+      Airbrake.notify(e)
+      DataRetriever::API.logger.error "#{e.message}\n-------- START BACKTRACE --------\n#{e.backtrace.join("\n")}\n-------- END   BACKTRACE --------"
+      error!({ error: e.message }, 500)
     end
 
     mount DataRetriever::V1::Base
