@@ -4,7 +4,7 @@ require 'grape-swagger'
 module DataRetriever
   class API < Grape::API
     version 'v1', :using => :accept_version_header
-
+    rescue_from :all
     log_file = File.open(File.join(Grape::ROOT, "log", "#{ENV["RACK_ENV"]}.log"), "a")
     log_file.sync = true
     logger Logger.new GrapeLogging::MultiIO.new(STDOUT, log_file)

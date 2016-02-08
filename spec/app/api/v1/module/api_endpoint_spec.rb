@@ -25,7 +25,7 @@ describe DataRetriever::API do
     context "when no render_type parameters" do
       it "return an error" do
         post url, client: client, token: account.access_token
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(500)
         expect_json(error: regex("render_type is missing"))
       end
     end

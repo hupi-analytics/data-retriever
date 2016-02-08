@@ -11,7 +11,7 @@ shared_examples "error in client parameters" do
   context "When missing client parameters" do
     it "returns error" do
       post url, token: account.access_token, render_type: ""
-      expect(response.status).to eq(400)
+      expect(response.status).to eq(500)
       expect_json(error: "client is missing")
     end
   end
