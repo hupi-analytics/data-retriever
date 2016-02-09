@@ -50,6 +50,12 @@ module DataRetriever
       end
     end
 
+    rescue_from :all do |e|
+      Airbrake.notify(e)
+      DataRetriever::API.logger.error "#{e.message}\n-------- START BACKTRACE --------\n#{e.backtrace.join("\n")}\n-------- END   BACKTRACE --------"
+      error!({ error: e.message }, 500)
+    end
+
     mount DataRetriever::V1::Base
     add_swagger_documentation
   end
