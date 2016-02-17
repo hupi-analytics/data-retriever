@@ -92,6 +92,10 @@ module Export
       value = Time.at(value).strftime(params["output_format"]) unless value.blank?
     when "round"
       value = value.round(params) unless value.blank?
+    when "multiply"
+      value *= params["by"]  unless value.blank?
+    when "divide"
+      value /= params["by"]  unless value.blank?
     end
 
     value
