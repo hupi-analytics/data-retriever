@@ -8,7 +8,7 @@ class HdrExportType < ActiveRecord::Base
   def add_name_to_render_types
     if self.render_types && !self.render_types.include?(name)
       self.render_types << name
-    else
+    elsif !self.render_types
       self.render_types = [name]
     end
   end

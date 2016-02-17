@@ -14,4 +14,11 @@ namespace :db do
       hqe.save
     end
   end
+
+  task rename_area_stacked: :load_grape do
+    het = HdrExportType.find_by(name: "category_serie_value")
+    het.render_types.delete("area_stacked_percent")
+    het.render_types << "stacked_area_percent"
+    het.save
+  end
 end

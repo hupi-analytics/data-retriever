@@ -15,9 +15,9 @@ describe Export do
     let(:column_stacked) do
       {
         series: [
-          { name: "ser1", data: [10, 8] },
-          { name: "ser2", data: [9, 7] },
-          { name: "ser3", data: [6, 0] }
+          { name: "ser1", data: [["cat1", 10], ["cat2", 8]] },
+          { name: "ser2", data: [["cat1",  9], ["cat2", 7]] },
+          { name: "ser3", data: [["cat1",  6], ["cat2", 0]] }
         ],
         categories: %w(cat1 cat2)
       }
