@@ -1,7 +1,7 @@
 require "mongo"
 require "query_engine/default_query_engine"
 
-class MongoQueryEngine < DefaultQueryEngine
+class MongodbQueryEngine < DefaultQueryEngine
   def connect
     @connexion = Mongo::Client.new(@settings[:hosts], @settings)
   end
