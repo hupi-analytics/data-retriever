@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe MongoQueryEngine do
-  let(:qe) { MongoQueryEngine.new("test_client", {}) }
+describe MongodbQueryEngine do
+  let(:qe) { MongodbQueryEngine.new("test_client", {}) }
   let(:match_query) do
     <<-REQ.gsub(/^ {4}/, "")
     {
