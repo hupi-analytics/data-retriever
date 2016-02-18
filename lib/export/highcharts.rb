@@ -71,17 +71,6 @@ module Export
     end
   end
 
-  def self.timeseries(cursor, opts = {})
-    val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
-    { series: [] }.tap do |hash|
-      cursor.each do |row|
-        row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
-        hash[:series] << [TimeHelper.datestamp_to_js(row["datestamp"]), row["value"]]
-      end
-      hash[:series] << [TimeHelper.datestamp_to_js(Time.now.strftime("%Y%m%d")), hash[:series].last[1]]
-    end
-  end
-
   class << self
     alias_method :treemap2, :json_value
     alias_method :treemap3, :json_value

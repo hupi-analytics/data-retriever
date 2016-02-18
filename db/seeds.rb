@@ -14,7 +14,6 @@ HdrExportType.find_or_create_by(name: "json_value")
 HdrExportType.find_or_create_by(name: "leaflet")
 HdrExportType.find_or_create_by(name: "multiple_csv")
 HdrExportType.find_or_create_by(name: "serie_value")
-HdrExportType.find_or_create_by(name: "timeseries")
 HdrExportType.find_or_create_by(name: "value")
 
 et = HdrExportType.find_by(name: "category_serie_value")

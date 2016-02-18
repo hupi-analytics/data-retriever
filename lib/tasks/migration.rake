@@ -21,4 +21,13 @@ namespace :db do
     het.render_types << "stacked_area_percent"
     het.save
   end
+
+  task remove_timeseries: :load_grape do
+    csv = HdrExportType.find_by(name: "csv")
+    HdrQueryObject.includes(:hdr_export_types).where(hdr_export_types: { name: "timeseries" }).each do |hqo|
+      hqo.hdr_export_types << csv unless hqo.hdr_export_types.include?(csv)
+      hqo.save
+    end
+    HdrExportType.find_by(name: "timeseries").destroy
+  end
 end

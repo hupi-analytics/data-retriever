@@ -97,34 +97,6 @@ describe Export do
     end
   end
 
-  describe "when timeseries" do
-    let(:cursor) do
-      [
-        { "value" => 10, "datestamp" => 2014_10_01 },
-        { "value" => 9, "datestamp" => 2014_10_02 },
-        { "value" => 6, "datestamp" => 2014_10_03 },
-        { "value" => 8, "datestamp" => 2014_10_04 },
-        { "value" => 7, "datestamp" => 2014_10_05 }
-      ]
-    end
-    let(:timeseries) do
-      {
-        series: [
-          [TimeHelper.datestamp_to_js(2014_10_01), 10],
-          [TimeHelper.datestamp_to_js(2014_10_02), 9],
-          [TimeHelper.datestamp_to_js(2014_10_03), 6],
-          [TimeHelper.datestamp_to_js(2014_10_04), 8],
-          [TimeHelper.datestamp_to_js(2014_10_05), 7],
-          [TimeHelper.datestamp_to_js(Time.now.strftime("%Y%m%d")), 7]
-        ]
-      }
-    end
-
-    it "returns highchart timeseries format" do
-      expect(Export.timeseries(cursor)).to eq(timeseries)
-    end
-  end
-
   describe "when boxplot" do
     let(:cursor) do
       [
