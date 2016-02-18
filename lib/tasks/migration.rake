@@ -24,10 +24,18 @@ namespace :db do
 
   task remove_timeseries: :load_grape do
     csv = HdrExportType.find_by(name: "csv")
-    HdrQueryObject.includes(:hdr_export_types).where(hdr_export_types: { name: "timeseries" }).each do |hqo|
-      hqo.hdr_export_types << csv unless hqo.hdr_export_types.include?(csv)
-      hqo.save
-    end
     HdrExportType.find_by(name: "timeseries").destroy
+    HdrQueryObject.includes(:hdr_export_types).where(hdr_export_types: { id: nil }).each do |hqo|
+      hqo.hdr_export_types << csv
+      hqo.save
+      hqo.reload
+      print hqo.id
+      puts hqo.export_types.map { |he| he.name }
+    end
+  end
+
+  task migrate_to_v0_2_1: :load_grape do
+    Rake::Task["db:rename_area_stacked"].execute
+    Rake::Task["db:remove_timeseries"].execute
   end
 end
