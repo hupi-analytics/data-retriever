@@ -30,11 +30,11 @@ namespace :db do
       hqo.save
       hqo.reload
       print hqo.id
-      puts hqo.export_types.map { |he| he.name }
+      puts hqo.export_types.map(&:name)
     end
   end
 
-  task migrate_to_v0_2_1: :load_grape do
+  task migrate_to_v0_3: :load_grape do
     Rake::Task["db:rename_area_stacked"].execute
     Rake::Task["db:remove_timeseries"].execute
   end
