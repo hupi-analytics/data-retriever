@@ -30,7 +30,7 @@ namespace :db do
       hqo.save
       hqo.reload
       print hqo.id
-      puts hqo.export_types.map(&:name)
+      puts hqo.hdr_export_types.map(&:name)
     end
   end
 
