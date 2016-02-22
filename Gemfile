@@ -15,7 +15,7 @@ gem "mysql2"
 gem "pg"
 gem "impala", "~> 0.4.3"
 gem "mongo"
-
+gem "rake"
 gem "airbrake"
 gem "grape_logging"
 

@@ -286,7 +286,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
 
 ## Render type
 #### Category Serie Value
-  + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, area_stacked_percent, multiple_column, windrose, spiderweb, column_stacked
+  + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, stacked_area_percent, multiple_column, windrose, spiderweb, column_stacked
   + <u>required field in query result:</u> category, serie, value
   + <u>input:</u>
 

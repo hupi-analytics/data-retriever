@@ -16,7 +16,7 @@ module Export
     series_name.each_with_object(categories: tmp.keys, series: []) do |sn, res|
       res[:series] << { name: sn.presence || "none", data: [] }.tap do |serie|
         serie[:data] = res[:categories].map do |cat|
-          tmp[cat][sn] || 0
+          tmp[cat][sn] ? [cat, tmp[cat][sn]] : [cat, 0]
         end
       end
     end
@@ -27,7 +27,7 @@ module Export
     alias_method :windrose, :category_serie_value
     alias_method :basic_area, :category_serie_value
     alias_method :stacked_area, :category_serie_value
-    alias_method :area_stacked_percent, :category_serie_value
+    alias_method :stacked_area_percent, :category_serie_value
     alias_method :basic_line, :category_serie_value
     alias_method :multiple_column, :category_serie_value
     alias_method :spiderweb, :category_serie_value
@@ -68,17 +68,6 @@ module Export
           tmp[cat][sn[:name]] || 0
         end
       end
-    end
-  end
-
-  def self.timeseries(cursor, opts = {})
-    val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
-    { series: [] }.tap do |hash|
-      cursor.each do |row|
-        row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
-        hash[:series] << [TimeHelper.datestamp_to_js(row["datestamp"]), row["value"]]
-      end
-      hash[:series] << [TimeHelper.datestamp_to_js(Time.now.strftime("%Y%m%d")), hash[:series].last[1]]
     end
   end
 

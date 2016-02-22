@@ -15,9 +15,9 @@ describe Export do
     let(:column_stacked) do
       {
         series: [
-          { name: "ser1", data: [10, 8] },
-          { name: "ser2", data: [9, 7] },
-          { name: "ser3", data: [6, 0] }
+          { name: "ser1", data: [["cat1", 10], ["cat2", 8]] },
+          { name: "ser2", data: [["cat1",  9], ["cat2", 7]] },
+          { name: "ser3", data: [["cat1",  6], ["cat2", 0]] }
         ],
         categories: %w(cat1 cat2)
       }
@@ -94,34 +94,6 @@ describe Export do
 
     it "return highchart column format" do
       expect(Export.serie_value(cursor)).to eq(column)
-    end
-  end
-
-  describe "when timeseries" do
-    let(:cursor) do
-      [
-        { "value" => 10, "datestamp" => 2014_10_01 },
-        { "value" => 9, "datestamp" => 2014_10_02 },
-        { "value" => 6, "datestamp" => 2014_10_03 },
-        { "value" => 8, "datestamp" => 2014_10_04 },
-        { "value" => 7, "datestamp" => 2014_10_05 }
-      ]
-    end
-    let(:timeseries) do
-      {
-        series: [
-          [TimeHelper.datestamp_to_js(2014_10_01), 10],
-          [TimeHelper.datestamp_to_js(2014_10_02), 9],
-          [TimeHelper.datestamp_to_js(2014_10_03), 6],
-          [TimeHelper.datestamp_to_js(2014_10_04), 8],
-          [TimeHelper.datestamp_to_js(2014_10_05), 7],
-          [TimeHelper.datestamp_to_js(Time.now.strftime("%Y%m%d")), 7]
-        ]
-      }
-    end
-
-    it "returns highchart timeseries format" do
-      expect(Export.timeseries(cursor)).to eq(timeseries)
     end
   end
 
