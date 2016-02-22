@@ -50,6 +50,12 @@ module DataRetriever
       end
     end
 
+    rescue_from ActiveRecord::RecordNotFound do |e|
+      Airbrake.notify(e, parameters: params)
+      DataRetriever::API.logger.error "#{e.message}\n-------- START BACKTRACE --------\n#{e.backtrace.join("\n")}\n-------- END   BACKTRACE --------"
+      error!({ error: e.message }, 404)
+    end
+
     rescue_from :all do |e|
       Airbrake.notify(e)
       DataRetriever::API.logger.error "#{e.message}\n-------- START BACKTRACE --------\n#{e.backtrace.join("\n")}\n-------- END   BACKTRACE --------"

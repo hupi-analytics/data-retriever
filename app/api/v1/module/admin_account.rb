@@ -54,9 +54,15 @@ module DataRetriever
           end
           put "hdr_account/(:id)" do
             begin
-              present HdrAccount.update(params[:id], params[:hdr_account].to_hash), with: HdrAccount::Entity, type: :full
+              error!("params empty", 400) if params[class_sym].nil?
+              hdr_account = HdrAccount.find(params[:id])
             rescue ActiveRecord::RecordNotFound => e
               error!("#{e}", 404)
+            end
+            if hdr_account.update_attributes(params[:hdr_account].to_hash)
+              present hdr_account, with: HdrAccount::Entity, type: :full
+            else
+              error!(hdr_account.errors.to_hash, 409)
             end
           end
 
