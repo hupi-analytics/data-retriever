@@ -32,3 +32,6 @@ end
 Dir[File.expand_path("app/api/*.rb", Grape::ROOT)].each do |api|
   require api
 end
+
+#serialize big decimal to float when json
+BigDecimal.prepend CoreExtensions::BigDecimal::Serialization
