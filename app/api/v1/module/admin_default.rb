@@ -49,14 +49,10 @@ module DataRetriever
           put "(:class_called)/(:id)" do
             class_called = params[:class_called].singularize.camelize.constantize
             class_sym = params[:class_called].singularize.to_sym
-            begin
-              error!("params empty", 400) if params[class_sym].nil?
-              object_updated = class_called.find(params[:id])
-            rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
-            end
+            error!("params empty", 400) if params[class_sym].nil?
+            object_updated = class_called.find(params[:id])
             if object_updated.update_attributes(params[class_sym].to_hash)
-              present object_updated, with: HdrAccount::Entity, type: :full
+              present object_updated, with: class_called::Entity, type: :full
             else
               error!(object_updated.errors.to_hash, 409)
             end

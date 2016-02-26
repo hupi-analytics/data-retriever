@@ -53,12 +53,8 @@ module DataRetriever
             requires :id, type: String
           end
           put "hdr_account/(:id)" do
-            begin
-              error!("params empty", 400) if params[class_sym].nil?
-              hdr_account = HdrAccount.find(params[:id])
-            rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
-            end
+            error!("params empty", 400) if params[:hdr_account].nil?
+            hdr_account = HdrAccount.find(params[:id])
             if hdr_account.update_attributes(params[:hdr_account].to_hash)
               present hdr_account, with: HdrAccount::Entity, type: :full
             else
