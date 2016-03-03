@@ -416,35 +416,6 @@ since MongoDB only provide api to query their database, we use a JSON query that
     }
     ```
 
-#### Timeseries
-  + <u>render type:</u> timeseries
-  + <u>required field in query result:</u> datestamp (yyyyMMdd), value
-  + <u>input:</u>
-
-    ```json
-    [
-      { "value": 10, "datestamp": 20141001 },
-      { "value": 9, "datestamp": 20141002 },
-      { "value": 6, "datestamp": 20141003 },
-      { "value": 8, "datestamp": 20141004 },
-      { "value": 7, "datestamp": 20141005 }
-    ]
-    ```
-  + <u>output:</u>
-
-    ```json
-    {
-      "series": [
-        [1412121600000, 10],
-        [1412208000000, 9],
-        [1412294400000, 6],
-        [1412380800000, 8],
-        [1412467200000, 7],
-        [1449619200000, 7]
-      ]
-    }
-    ```
-
 #### Boxplot
   + <u>render type:</u> boxplot
   + <u>required field in query result:</u> category, serie, min, first_quartil, median, third_quartil, max

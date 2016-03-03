@@ -11,7 +11,7 @@ class HdrEndpoint < ActiveRecord::Base
 
   accepts_nested_attributes_for :hdr_query_objects, allow_destroy: true
 
-  before_validation :set_method_name_to_account
+  before_validation :set_module_name_to_account
 
   def render_types
     hdr_query_objects.inject([]) do |memo, qo|
@@ -19,7 +19,7 @@ class HdrEndpoint < ActiveRecord::Base
     end.uniq
   end
 
-  def set_method_name_to_account
+  def set_module_name_to_account
     if hdr_account
       self.module_name = hdr_account.name
     end

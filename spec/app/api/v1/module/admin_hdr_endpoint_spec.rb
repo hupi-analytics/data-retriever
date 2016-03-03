@@ -153,6 +153,16 @@ describe DataRetriever::API do
           ]
         }
       end
+      let(:update_hdr_query_object_attributes) do
+        {
+          :hdr_query_objects_attributes => [
+            {
+              id: hdr_endpoint_test.hdr_query_objects.first.id,
+              name: "updated_name"
+            }
+          ]
+        }
+      end
 
       it "update endpoint" do
         put url, hdr_endpoint: update_hdr_endpoint, token: account.access_token
@@ -163,13 +173,14 @@ describe DataRetriever::API do
       end
 
       it "update query object name" do
-        put url, hdr_endpoint: update_hdr_endpoint, token: account.access_token
+        put url, hdr_endpoint: update_hdr_query_object_attributes, token: account.access_token
         expect(response.status).to eq(200)
         query_resp = {}
+
         JSON.parse(response.body)["hdr_query_objects"].each do |q|
           query_resp = q if q["id"] == hdr_endpoint_test.hdr_query_objects.first.id
         end
-        expect(query_resp["name"]).to eq(update_hdr_endpoint[:hdr_query_objects_attributes].first[:name])
+        expect(query_resp["name"]).to eq(update_hdr_query_object_attributes[:hdr_query_objects_attributes].first[:name])
       end
     end
   end

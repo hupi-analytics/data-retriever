@@ -6,7 +6,8 @@ module DataRetriever
       mount DataRetriever::V1::Admin::Index
       mount DataRetriever::V1::Admin::Default
       mount DataRetriever::V1::Estimate
-      mount DataRetriever::V1::ApiEndpoint
+      mount DataRetriever::V1::ApiEndpointUrl
+      mount DataRetriever::V1::ApiEndpointId
     end
   end
 end

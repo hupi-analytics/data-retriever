@@ -8,103 +8,42 @@ module DataRetriever
           authenticate!
         end
 
+        params do
+          requires :class_called, type: String, values: %w(hdr_endpoint hdr_endpoints
+                                                           hdr_export_type hdr_export_types
+                                                           hdr_query_engine hdr_query_engines
+                                                           hdr_query_object hdr_query_objects
+                                                           hdr_filters hdr_filter)
+        end
         namespace "admin" do
-          # index hdr_endpoints
+          # index
           params do
             optional :filters, types: [String, Hash]
             optional :order, types: [String, Hash]
           end
-          get "hdr_endpoints" do
+          get "(:class_called)" do
+            class_called = params[:class_called].singularize.camelize.constantize
             filters = convert_params(params[:filters])
             order = convert_params(params[:order])
 
             begin
               results = if @current_account.superadmin?
-                HdrEndpoint.where(filters).order(order)
-              else
-                HdrEndpoint.where(hdr_account_id: [nil, current_account.id]).where(filters).order(order)
-              end
-              present results, with: HdrEndpoint::Entity, type: :preview
-            rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
-            end
-          end
-
-          # index hdr_query_engines
-          params do
-            optional :filters, types: [String, Hash]
-            optional :order, types: [String, Hash]
-          end
-          get "hdr_query_engines" do
-            filters = convert_params(params[:filters])
-            order = convert_params(params[:order])
-
-            begin
-              results = if @current_account.superadmin?
-                HdrQueryEngine.where(filters).order(order)
-              else
-                HdrQueryEngine.where(hdr_account_id: [nil, current_account.id]).where(filters).order(order)
-              end
-              present results, with: HdrQueryEngine::Entity, type: :preview
-            rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
-            end
-          end
-
-          # index hdr_query_objects
-          params do
-            optional :filters, types: [String, Hash]
-            optional :order, types: [String, Hash]
-          end
-          get "hdr_query_objects" do
-            filters = convert_params(params[:filters])
-            order = convert_params(params[:order])
-
-            begin
-              results = if @current_account.superadmin?
-                HdrQueryObject.where(filters).order(order)
-              else
-                HdrQueryObject.includes(:hdr_endpoint).where(hdr_endpoints: { hdr_account_id: [nil, current_account.id] }).where(filters).order(order)
-              end
-              present results, with: HdrQueryObject::Entity, type: :preview
-            rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
-            end
-          end
-
-          # index hdr_filters
-          params do
-            optional :filters, types: [String, Hash]
-            optional :order, types: [String, Hash]
-          end
-          get "hdr_filters" do
-            filters = convert_params(params[:filters])
-            order = convert_params(params[:order])
-
-            begin
-              results = if @current_account.superadmin?
-                HdrFilter.where(filters).order(order)
-              else
-                HdrFilter.includes(:hdr_query_object, :hdr_endpoint).where(hdr_endpoints: { hdr_account_id: [nil, current_account.id] })
-              end
-              present results, with: HdrFilter::Entity, type: :preview
-            rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
-            end
-          end
-
-          # index hdr_export_type
-          params do
-            optional :filters, types: [String, Hash]
-            optional :order, types: [String, Hash]
-          end
-          get "hdr_export_types" do
-            filters = convert_params(params[:filters])
-            order = convert_params(params[:order])
-
-            begin
-              results = HdrExportType.where(filters).order(order)
-              present results, with: HdrExportType::Entity, type: :preview
+                          class_called
+                        else
+                          case class_called.to_s
+                          when "HdrEndpoint"
+                            HdrEndpoint.where(hdr_account_id: [nil, current_account.id])
+                          when "HdrQueryEngine"
+                            HdrQueryEngine.where(hdr_account_id: [nil, current_account.id])
+                          when "HdrQueryObject"
+                            HdrQueryObject.includes(:hdr_endpoint).where(hdr_endpoints: { hdr_account_id: [nil, current_account.id] })
+                          when "HdrFilter"
+                            HdrFilter.includes(:hdr_query_object, :hdr_endpoint).where(hdr_endpoints: { hdr_account_id: [nil, current_account.id] })
+                          when "HdrExportType"
+                            HdrExportType.where(filters).order(order)
+                          end
+                        end
+              present results.where(filters).order(order), with: class_called::Entity, type: :preview
             rescue ActiveRecord::StatementInvalid => e
               error!("#{e}", 400)
             end

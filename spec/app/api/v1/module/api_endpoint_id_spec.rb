@@ -6,11 +6,11 @@ describe DataRetriever::API do
   end
 
   let!(:account) { FactoryGirl.create(:hdr_account, :superadmin) }
-  let!(:endpoint_test) { FactoryGirl.create(:hdr_endpoint, hdr_account: account) }
+  let!(:private_endpoint) { FactoryGirl.create(:hdr_endpoint, hdr_account: account) }
   let(:client) { "hdr_test" }
 
   describe "POST test" do
-    let(:url) { "private/#{endpoint_test.module_name}/#{endpoint_test.method_name}" }
+    let(:url) { "hdr_endpoint/#{private_endpoint.id}/data" }
 
     it_behaves_like "error in client parameters"
 
@@ -30,12 +30,12 @@ describe DataRetriever::API do
       end
     end
 
-    context "when wrong routes" do
-      let(:url) { "private/wrong/route" }
+    context "when invalid endpoint id" do
+      let(:url) { "hdr_endpoint/0/data" }
       it "return an error" do
         post url, client: client, render_type: "not_a_chart", token: account.access_token
         expect(response.status).to eq(404)
-        expect_json(error: regex("url not found: #{url}"))
+        expect_json(error: regex("Couldn't find HdrEndpoint with"))
       end
     end
 
@@ -63,6 +63,7 @@ describe DataRetriever::API do
       context "valid account" do
         it "returns 'csv json' format" do
           post url, client: client, render_type: "csv", token: account.access_token
+          expect(response.status).to eq(201)
           expect_json(res)
         end
       end
@@ -71,6 +72,7 @@ describe DataRetriever::API do
         let!(:superadmin_account) { FactoryGirl.create(:hdr_account, :superadmin) }
         it "returns 'csv json' format" do
           post url, client: client, render_type: "csv", token: superadmin_account.access_token
+          expect(response.status).to eq(201)
           expect_json(res)
         end
       end
