@@ -18,8 +18,7 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                              .find_by("hdr_endpoints.hdr_account_id is not null
-                                        AND hdr_endpoints.id = ?
+                              .find_by("hdr_endpoints.id = ?
                                         AND ? = ANY (hdr_export_types.render_types)", params[:id], params[:render_type])
 
         # if we have found the query we execute it with the linked query_engine
