@@ -42,7 +42,12 @@ class MongodbQueryEngine < DefaultQueryEngine
       pattern_string = ""
       if filters[pattern] && !filters[pattern].empty?
         filters[pattern].each do |f|
-          val = f[:value_type].downcase == "string" ? "\"#{f[:value]}\"" : f[:value]
+          val = case f[:value_type].downcase
+            when "string"
+              "\"#{f[:value]}\""
+            else
+              f[:value]
+            end
           if f[:operator] == "$eq"
             pattern_filter << "{ \"#{f[:field]}\": #{val} }"
           else
