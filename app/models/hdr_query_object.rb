@@ -34,7 +34,7 @@ class HdrQueryObject < ActiveRecord::Base
       end
       tmp[:field] = f.field
       tmp[:value_type] = f.value_type
-      pattern_filter[f.pattern] << tmp if tmp[:value] && !tmp[:value].empty?
+      pattern_filter[f.pattern] << tmp if tmp[:value] && !tmp[:value].blank?
     end
     pattern_filter
   end
