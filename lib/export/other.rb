@@ -33,6 +33,13 @@ module Export
     end
   end
 
+  def self.cursor(cursor, opts = {})
+    val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
+    cursor.map do |row|
+      row = row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
+    end
+  end
+
   def self.json_value(cursor, opts = {})
     val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
     cursor.reduce({}) do |hash, row|

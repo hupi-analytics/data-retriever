@@ -126,6 +126,42 @@ describe Export do
     end
   end
 
+  describe "when cursor and format" do
+    let(:cursor) do
+      [
+        { "category" => "cat1", "serie" => "ser1", "value" => 10 },
+        { "category" => "cat1", "serie" => "ser2", "value" => 9 },
+        { "category" => "cat1", "serie" => "ser3", "value" => 6, "datestamp" => 2014_10_03 },
+        { "category" => "cat2", "serie" => "ser1", "value" => 8, "datestamp" => 2014_10_04 },
+        { "category" => "cat2", "serie" => "ser2", "value" => 7, "datestamp" => 2014_10_05 }
+      ]
+    end
+    let(:cursor_res) do
+      [
+        { "category" => "cat1", "serie" => "ser1", "value" => 10 },
+        { "category" => "cat1", "serie" => "ser2", "value" => 9 },
+        { "category" => "cat1", "serie" => "ser3", "value" => 6, "datestamp" => "2014-10-03" },
+        { "category" => "cat2", "serie" => "ser1", "value" => 8, "datestamp" => "2014-10-04" },
+        { "category" => "cat2", "serie" => "ser2", "value" => 7, "datestamp" => "2014-10-05" }
+      ]
+    end
+    let(:opts) do
+      {
+        "header" => "datestamp value category",
+        "format" => "{
+          \"datestamp\": [
+            { \"action\": \"to_string\" },
+            { \"action\": \"date_string_format\", \"params\": { \"input_format\": \"%Y%m%d\", \"output_format\": \"%Y-%m-%d\" } }
+          ]
+        }"
+      }
+    end
+
+    it "returns cursor format" do
+      expect(Export.cursor(cursor, opts)).to eq(cursor_res)
+    end
+  end
+
   describe "when multiple csv" do
     let(:cursor) do
       [
