@@ -138,11 +138,11 @@ describe Export do
     end
     let(:cursor_res) do
       [
-        { "category" => "cat1", "serie" => "ser1", "value" => 10 },
-        { "category" => "cat1", "serie" => "ser2", "value" => 9 },
-        { "category" => "cat1", "serie" => "ser3", "value" => 6, "datestamp" => "2014-10-03" },
-        { "category" => "cat2", "serie" => "ser1", "value" => 8, "datestamp" => "2014-10-04" },
-        { "category" => "cat2", "serie" => "ser2", "value" => 7, "datestamp" => "2014-10-05" }
+        { "category" => "cat1", "value" => 10 },
+        { "category" => "cat1", "value" => 9 },
+        { "category" => "cat1", "value" => 6, "datestamp" => "2014-10-03" },
+        { "category" => "cat2", "value" => 8, "datestamp" => "2014-10-04" },
+        { "category" => "cat2", "value" => 7, "datestamp" => "2014-10-05" }
       ]
     end
     let(:opts) do

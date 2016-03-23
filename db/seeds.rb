@@ -16,6 +16,7 @@ HdrExportType.find_or_create_by(name: "multiple_csv")
 HdrExportType.find_or_create_by(name: "serie_value")
 HdrExportType.find_or_create_by(name: "value")
 HdrExportType.find_or_create_by(name: "cursor")
+HdrExportType.find_or_create_by(name: "bubble")
 
 et = HdrExportType.find_by(name: "category_serie_value")
 et.update(render_types:  %w(column_stacked_normal column_stacked_percent basic_line basic_area stacked_area stacked_area_percent multiple_column windrose spiderweb))
