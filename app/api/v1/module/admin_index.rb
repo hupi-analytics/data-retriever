@@ -40,7 +40,7 @@ module DataRetriever
                           when "HdrFilter"
                             HdrFilter.includes(:hdr_query_object, :hdr_endpoint).where(hdr_endpoints: { hdr_account_id: [nil, current_account.id] })
                           when "HdrExportType"
-                            HdrExportType.where(filters).order(order)
+                            HdrExportType
                           end
                         end
               present results.where(filters).order(order), with: class_called::Entity, type: :preview

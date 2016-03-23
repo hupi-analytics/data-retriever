@@ -16,6 +16,11 @@ class ImpalaQueryEngine < SQLQueryEngine
   end
 
   def close
-    @connexion.close
+    begin
+      @connexion.close
+    rescue IOError => e
+      Airbrake.notify(e, parameters: { info: "Impala not closed properly" })
+      DataRetriever::API.logger.error "Impala not closed properly"
+    end
   end
 end
