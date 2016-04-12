@@ -23,7 +23,7 @@ module DataRetriever
     else
       Logger::UNKNOWN
     end
-    use GrapeLogging::Middleware::RequestLogger, { logger: logger }
+    use GrapeLogging::Middleware::RequestLogger, { logger: logger, include: [ GrapeLogging::Loggers::ClientEnv.new ] }
 
     helpers do
       def logger

@@ -18,7 +18,7 @@ gem "mongo"
 gem "elasticsearch"
 gem "rake"
 gem "airbrake"
-gem "grape_logging"
+gem "grape_logging", github: "scauglog/grape_logging"
 
 group :development do
   gem "rubocop"
