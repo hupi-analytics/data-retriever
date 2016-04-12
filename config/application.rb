@@ -1,6 +1,5 @@
 # -*- encoding : utf-8 -*-
 require "grape-entity"
-require "grape_logging"
 
 $LOAD_PATH.unshift(Grape::ROOT)
 $LOAD_PATH.unshift(File.join(Grape::ROOT,'lib'))

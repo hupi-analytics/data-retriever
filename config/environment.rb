@@ -10,6 +10,7 @@ module DataRetriever
   require "initializer/settings"
   require "initializer/errbit"
   require "initializer/database"
+  require "initializer/logger"
   require "environments/#{ENV['RACK_ENV']}"
   require "application"
 end
