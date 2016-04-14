@@ -19,7 +19,7 @@ gem "elasticsearch"
 gem "rake"
 gem "airbrake"
 gem "grape_logging", github: "scauglog/grape_logging"
-gem "logstash-logger"
+gem "logstash-logger", github: "scauglog/logstash-logger"
 gem "poseidon"
 
 group :development do
