@@ -8,7 +8,8 @@ logger_outputs << { type: :file, path: log_path, sync: true, formatter: :json_li
 if %w(development test).include?(ENV["RACK_ENV"])
   logger_outputs << { type: :stdout, formatter: :json_lines }
 else
-  logger_outputs << { type: :kafka, hosts: Settings.log.kafka_hosts, path: "log_data-retriever", producer: "data-retriever-logger", formatter: :json_lines }
+  #logger_outputs << { type: :kafka, hosts: Settings.log.kafka_hosts, path: "log_data-retriever", producer: "data-retriever-logger", formatter: :json_lines }
+  logger_outputs << { type: :udp, host: "hupi.node1.pro.hupi.loc", port: 5228, formatter: :json_lines }
 end
 
 LogStashLogger.configure do |config|

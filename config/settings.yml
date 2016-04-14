@@ -8,13 +8,14 @@ defaults: &defaults
   log:
     level: "info"
     log_path: "/logs/hupi/data-retriever"
-    kafka_hosts: ["hupi.node1.pro.hupi.loc:9092"]
+    kafka_hosts: ["hupi.kafka.pro.hupi.loc:9092"]
 
 development:
   <<: *defaults
   log:
     level: "debug"
     log_path:  <%= File.join(Grape::ROOT, "log") %>
+    kafka_hosts: ["localhost:9092"]
   estimate:
     path: <%= File.join(Grape::ROOT, "public") %>
 
