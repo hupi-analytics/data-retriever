@@ -18,7 +18,7 @@ gem "mongo"
 gem "elasticsearch"
 gem "rake"
 gem "airbrake"
-gem "grape_logging", github: "scauglog/grape_logging"
+gem "grape_logging", github: "aserafin/grape_logging"
 gem "logstash-logger", github: "scauglog/logstash-logger"
 gem "poseidon"
 

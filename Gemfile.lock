@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/scauglog/grape_logging.git
-  revision: d883bb92637c97c0ee07b11dcb8785358e751436
+  remote: git://github.com/aserafin/grape_logging.git
+  revision: 14f16c21c0dedeef7ff09a627a079de59e46ba4b
   specs:
     grape_logging (1.2.1)
       grape
