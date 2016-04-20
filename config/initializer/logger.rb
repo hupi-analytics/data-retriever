@@ -15,7 +15,7 @@ end
 LogStashLogger.configure do |config|
   config.customize_event do |event|
     event["environment"] = ENV["RACK_ENV"]
-    event["type"] = "data-retriever"
+    event["api_name"] = "data-retriever"
   end
 end
 
