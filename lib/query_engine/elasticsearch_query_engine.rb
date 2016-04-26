@@ -64,7 +64,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
 
   def parse_search_result(result)
     if result.fetch("hits", {}).fetch("total", 0) > 0
-      result["hits"]["hits"].map { |row| row["_source"].merge("id" => row["_id"]) }
+      result["hits"]["hits"].map { |row| row.fetch("_source", {}).merge("id" => row["_id"]) }
     else
       []
     end
