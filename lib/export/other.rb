@@ -7,7 +7,7 @@ module Export
       row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
       group_by = row.delete(row.first.first)
       hash[:rows][group_by] ||= []
-      row.keys.each { |h|  hash[:header] << h unless hash[:header].include?(h) } unless opts["header"]
+      row.keys.each { |h| hash[:header] << h unless hash[:header].include?(h) } unless opts["header"]
       hash[:rows][group_by] << hash[:header].each_with_object([]) { |key, r| r << row[key] }
     end
   end
@@ -30,6 +30,14 @@ module Export
       row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
       row.keys.each { |h|  hash[:header] << h unless hash[:header].include?(h) } unless opts["header"]
       hash[:rows] << hash[:header].each_with_object([]) { |key, r| r << row[key] }
+    end
+  end
+
+  def self.cursor(cursor, opts = {})
+    val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
+    cursor.map do |row|
+      row.select! { |k| opts["header"].include?(k) } if opts["header"]
+      row = row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
     end
   end
 

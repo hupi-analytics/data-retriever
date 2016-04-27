@@ -284,6 +284,114 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 
+### ElasticSearch Query
+write a regular ElasticSearch POST query. See [ElasticSearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) for available operator.
+the result returned are the one in `hits` key.
+```json
+{
+  "index": "index_name",
+  "body": {
+    "query" : {
+      your_query
+    }
+  }
+}
+```
+
+#### Filter
+* `#_sub_[something_else]_#`: join operator filters with `,` and replace `#_value_#` in the operator by the value provided
+```json
+{
+  "index": "index_name",
+  "body": {
+    "query" : {
+      "bool": {
+        "should": [
+          #_sub_f1_#
+        ]
+      }
+    }
+  }
+}
+```
+
+* `#_sub_and_[something_else]_#`: join operator filters with `,` and replace `#_value_#` in the operator by the value provided. Add `,` at the and of filter
+```json
+{
+  "index": "index_name",
+  "body": {
+    "query" : {
+      "bool": {
+        "should": [
+          #_sub_and_f1_#
+        ]
+      }
+    }
+  }
+}
+```
+
+##### example
+HdrFilter:
+```json
+{
+  "pattern": "sub_f1",
+  "value_type": "string",
+  "field": "my_field",
+  "default_operator": "{\"match\":{\"my_field\":{\"query\":#_value_#,\"boost\":1}}}",
+  "name": "my_filter"
+}
+```
+```json
+{
+  "pattern": "sub_f1",
+  "value_type": "string",
+  "field": "my_field2",
+  "default_operator": "{\"match\":{\"my_field2\":{\"query\":#_value_#,\"boost\":1}}}",
+  "name": "my_filter2"
+}
+```
+
+Filter:
+```json
+{
+  "my_filter": "my_value",
+  "my_filter2": "my_value2"
+}
+```
+
+Query:
+```json
+{
+  "index": "index_name",
+  "body": {
+    "query" : {
+      "bool": {
+        "should": [
+          #_sub_f1_#
+        ]
+      }
+    }
+  }
+}
+```
+
+Query Generated:
+```json
+{
+  "index": "index_name",
+  "body": {
+    "query" : {
+      "bool": {
+        "should": [
+          {"match":{"my_field":{"query":"my_value","boost":1}}},
+          {"match":{"my_field2":{"query":"my_value2","boost":1}}}
+        ]
+      }
+    }
+  }
+}
+```
 ## Render type
 #### Category Serie Value
   + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, stacked_area_percent, multiple_column, windrose, spiderweb, column_stacked
@@ -533,6 +641,44 @@ since MongoDB only provide api to query their database, we use a JSON query that
     }
     ```
 
+#### Bubble
+  + <u>render type:</u> scatter
+  + <u>required field in query result:</u> serie, x ,y
+  + <u>input:</u>
+
+    ```json
+    [
+      { "serie": "ser1", "x": 1, "y": 1, "z": 1, "name": "n1" },
+      { "serie": "ser1", "x": 1, "y": 2, "z": 9, "name": "n2" },
+      { "serie": "ser2", "x": 1, "y": 3, "z": 6, "name": "n3" },
+      { "serie": "ser2", "x": 2, "y": 1, "z": 8, "name": "n4" },
+      { "serie": "ser1", "x": 2, "y": 2, "z": 7, "name": "n5" }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    {
+      "series": [
+        {
+          "name": "ser1",
+          "data": [
+            { "x": 1, "y": 1, "z": 1, "name": "n1" },
+            { "x": 1, "y": 2, "z": 9, "name": "n2" },
+            { "x": 2, "y": 2, "z": 7, "name": "n5" }
+          ]
+        },
+        {
+          "name": "ser2",
+          "data": [
+            { "x": 1, "y": 3, "z": 6, "name": "n3" },
+            { "x": 2, "y": 1, "z": 8, "name": "n4" }
+          ]
+        }
+      ]
+    }
+    ```
+
 #### Leaflet
   + <u>render type:</u> leaflet
   + <u>required field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties"
@@ -625,6 +771,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
 #### JSON Value
   + <u>render type:</u> treemap2, treemap3, json_value
   + <u>required field in query result:</u> none
+  + <u>description:</u> indent according to the order of the key
   + <u>input:</u>
 
     ```json
@@ -657,6 +804,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
 #### JSON Array
   + <u>render type:</u> json_array
   + <u>required field in query result:</u> none
+  + <u>description:</u> indent according to the order of the key
   + <u>input:</u>
 
     ```json
@@ -689,18 +837,50 @@ since MongoDB only provide api to query their database, we use a JSON query that
 #### Value
   + <u>render type:</u> value
   + <u>required field in query result:</u> none
+  + <u>description:</u> return the last value of the last key
   + <u>input:</u>
 
     ```json
     [
-      { "my_value": 14 },
-      { "my_value": 42 }
+      { "my_field": 14 },
+      { "my_field": 42 }
     ]
     ```
   + <u>output:</u>
 
     ```json
     { "value": 42 }
+    ```
+
+#### Cursor
+  + <u>render type:</u> cursor
+  + <u>required field in query result:</u> none
+  + <u>description:</u> send result of the query without modification
+  + <u>input:</u>
+
+    ```json
+    [
+      { "field1": "cat1", "field2": "ser1", "field3": "s",  "field4": 10 },
+      { "field1": "cat1", "field2": "ser1", "field3": "s",  "field4": 4  },
+      { "field1": "cat1", "field2": "ser2", "field3": "s",  "field4": 9  },
+      { "field1": "cat1", "field2": "ser3", "field3": "s",  "field4": 6  },
+      { "field1": "cat2", "field2": "ser1", "field3": "s",  "field4": 8  },
+      { "field1": "cat2", "field2": "ser2", "field3": "s1", "field4": 7  },
+      { "field1": "cat2", "field2": "ser2", "field3": "s2", "field4": 5  }
+    ]
+    ```
+  + <u>output:</u>
+
+    ```json
+    [
+      { "field1": "cat1", "field2": "ser1", "field3": "s",  "field4": 10 },
+      { "field1": "cat1", "field2": "ser1", "field3": "s",  "field4": 4  },
+      { "field1": "cat1", "field2": "ser2", "field3": "s",  "field4": 9  },
+      { "field1": "cat1", "field2": "ser3", "field3": "s",  "field4": 6  },
+      { "field1": "cat2", "field2": "ser1", "field3": "s",  "field4": 8  },
+      { "field1": "cat2", "field2": "ser2", "field3": "s1", "field4": 7  },
+      { "field1": "cat2", "field2": "ser2", "field3": "s2", "field4": 5  }
+    ]
     ```
 
 # Development

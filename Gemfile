@@ -2,7 +2,7 @@ source "https://rubygems.org"
 ruby "2.2.1"
 
 gem "json", "~> 1.8.0"
-gem "grape", "~> 0.14.0"
+gem "grape"
 gem "grape-entity"
 gem "grape-swagger"
 
@@ -18,7 +18,9 @@ gem "mongo"
 gem "elasticsearch"
 gem "rake"
 gem "airbrake"
-gem "grape_logging"
+gem "grape_logging", github: "aserafin/grape_logging"
+gem "logstash-logger", github: "scauglog/logstash-logger"
+gem "poseidon"
 
 group :development do
   gem "rubocop"
@@ -31,4 +33,5 @@ group :test do
   gem "simplecov", require: false, github: "scauglog/simplecov"
   gem "airborne"
   gem "factory_girl"
+  gem "ci_reporter_rspec"
 end

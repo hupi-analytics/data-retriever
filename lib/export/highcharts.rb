@@ -144,6 +144,21 @@ module Export
     end
   end
 
+  def self.bubble(cursor, opts = {})
+    val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
+
+    tmp = cursor.each_with_object({}) do |row, hash|
+      row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
+
+      hash[row["serie"]] ||= []
+      hash[row.delete("serie")] << row if %w(x y serie).all? { |k| row.key? k }
+    end
+
+    tmp.keys.each_with_object(series: []) do |sn, res|
+      res[:series] << { name: sn || "none", data: tmp[sn] }
+    end
+  end
+
   def self.fixed_placement_column(cursor, opts = {})
     val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
 

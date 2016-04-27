@@ -31,7 +31,7 @@ module DataRetriever
           query_params = params[:query_params] || {}
           export_type = HdrExportType.find_by("? = ANY (render_types)", params[:render_type])
           query_decorated = query_engine.decorate(query.query, query_filter, query_params)
-          logger.debug("QUERY | #{query.hdr_query_engine.engine} | #{query.hdr_query_engine.name} | #{query_decorated}")
+          logger.debug(type: "QUERY DEBUG", hqe_engine: query.hdr_query_engine.engine, hqe_name: query.hdr_query_engine.name, query: query_decorated)
           begin
             cursor = query_engine.execute(query_decorated)
           rescue IOError, Mysql2::Error
@@ -50,7 +50,7 @@ module DataRetriever
           elsif endpoint.nil?
             error!("url not found: private/#{params[:module_name]}/#{params[:method_name]}", 404)
           else
-            logger.error("ENDPOINT | #{endpoint.inspect}")
+            logger.error(type: "ENDPOINT ERROR", endpoint: endpoint.inspect)
             error!("error unknown", 400)
           end
         end
@@ -79,7 +79,7 @@ module DataRetriever
           query_params = params[:query_params] || {}
           export_type = HdrExportType.find_by("? = ANY (render_types)", params[:render_type])
           query_decorated = query_engine.decorate(query.query, query_filter, query_params)
-          logger.debug("QUERY | #{query.hdr_query_engine.engine} | #{query.hdr_query_engine.name} | #{query_decorated}")
+          logger.debug(type: "QUERY DEBUG", hqe_engine: query.hdr_query_engine.engine, hqe_name: query.hdr_query_engine.name, query: query_decorated)
           begin
             cursor = query_engine.execute(query_decorated)
           rescue IOError, Mysql2::Error
@@ -98,7 +98,7 @@ module DataRetriever
           elsif endpoint.nil?
             error!("url not found: public/#{params[:module_name]}/#{params[:method_name]}", 404)
           else
-            logger.error("ENDPOINT | #{endpoint.inspect}")
+            logger.error(type: "ENDPOINT ERROR", endpoint: endpoint.inspect)
             error!("error unknown", 400)
           end
         end

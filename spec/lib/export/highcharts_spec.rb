@@ -182,7 +182,7 @@ describe Export do
     end
   end
 
-  describe "when to_scatter" do
+  describe "when scatter" do
     let(:cursor) do
       [
         { "serie" => "ser1", "x" => 1, "y" => 1, "value" => 1 },
@@ -203,6 +203,43 @@ describe Export do
 
     it "return scatter format" do
       expect(Export.scatter(cursor)).to eq(scatter)
+    end
+  end
+
+  describe "when bubble" do
+    let(:cursor) do
+      [
+        { "serie" => "ser1", "x" => 1, "y" => 1, "z" => 1, "name" => "n1" },
+        { "serie" => "ser1", "x" => 1, "y" => 2, "z" => 9, "name" => "n2" },
+        { "serie" => "ser2", "x" => 1, "y" => 3, "z" => 6, "name" => "n3" },
+        { "serie" => "ser2", "x" => 2, "y" => 1, "z" => 8, "name" => "n4" },
+        { "serie" => "ser1", "x" => 2, "y" => 2, "z" => 7, "name" => "n5" }
+      ]
+    end
+    let(:bubble) do
+      {
+        series: [
+          {
+            name: "ser1",
+            data: [
+              { "x" => 1, "y" => 1, "z" => 1, "name" => "n1" },
+              { "x" => 1, "y" => 2, "z" => 9, "name" => "n2" },
+              { "x" => 2, "y" => 2, "z" => 7, "name" => "n5" }
+            ]
+          },
+          {
+            name: "ser2",
+            data: [
+              { "x" => 1, "y" => 3, "z" => 6, "name" => "n3" },
+              { "x" => 2, "y" => 1, "z" => 8, "name" => "n4" }
+            ]
+          }
+        ]
+      }
+    end
+
+    it "return scatter format" do
+      expect(Export.bubble(cursor)).to eq(bubble)
     end
   end
 

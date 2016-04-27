@@ -3,28 +3,32 @@ defaults: &defaults
     api_key: <%= ENV['HDR_ERRBIT_KEY'] %>
     host: <%= ENV['HDR_ERRBIT_HOST'] %>
     port: <%= ENV['HDR_ERRBIT_PORT'] %>
+  estimate:
+    path: "/repos/data-retriever/"
   log:
     level: "info"
-  estimate:
-    path: <%= File.join(Grape::ROOT, "public") %>
+    log_path: "/logs/hupi/data-retriever"
+    kafka_hosts: ["hupi.kafka.pro.hupi.loc:9092"]
 
 development:
   <<: *defaults
   log:
     level: "debug"
+    log_path:  <%= File.join(Grape::ROOT, "log") %>
+    kafka_hosts: ["localhost:9092"]
+  estimate:
+    path: <%= File.join(Grape::ROOT, "public") %>
 
 test:
   <<: *defaults
   log:
     level: "warn"
+    log_path:  <%= File.join(Grape::ROOT, "log") %>
+  estimate:
+    path: <%= File.join(Grape::ROOT, "public") %>
 
 production: &production
   <<: *defaults
-  estimate:
-    path: "/repos/data-retriever/"
-
 
 staging:
   <<: *production
-  estimate:
-    path: "/repos/data-retriever/"
