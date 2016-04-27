@@ -33,4 +33,5 @@ group :test do
   gem "simplecov", require: false, github: "scauglog/simplecov"
   gem "airborne"
   gem "factory_girl"
+  gem "ci_reporter_rspec"
 end

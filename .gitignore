@@ -27,3 +27,6 @@
 ## Environment normalisation:
 /.bundle
 /vendor/bundle
+
+#test report
+/spec/reports/**

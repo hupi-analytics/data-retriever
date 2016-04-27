@@ -57,6 +57,11 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     bson (3.2.1)
     builder (3.2.2)
+    ci_reporter (2.0.0)
+      builder (>= 2.1.2)
+    ci_reporter_rspec (1.0.0)
+      ci_reporter (~> 2.0)
+      rspec (>= 2.14, < 4)
     coderay (1.1.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -194,6 +199,7 @@ DEPENDENCIES
   activerecord
   airborne
   airbrake
+  ci_reporter_rspec
   elasticsearch
   factory_girl
   grape
