@@ -6,7 +6,7 @@ class MongodbQueryEngine < DefaultQueryEngine
     @connexion = Mongo::Client.new(@settings[:hosts], @settings)
   end
 
-  def execute(query)
+  def execute(query, _)
     result = @connexion.use(@database)[query["collection"]]
     query["query"].each do |operation|
       result = case operation["operator"]
@@ -19,6 +19,10 @@ class MongodbQueryEngine < DefaultQueryEngine
       end
     end
     result
+  end
+
+  def explain(query, info)
+    execute(query, info).explain()
   end
 
   def close

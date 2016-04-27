@@ -7,7 +7,7 @@ class CsvQueryEngine < DefaultQueryEngine
   def close;  end
 
   # should return an enumerator
-  def execute(query)
+  def execute(query, _)
     col_sep = case query["col_sep"]
     when "tab"
       "\t"

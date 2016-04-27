@@ -8,7 +8,7 @@ class MysqlQueryEngine < SQLQueryEngine
     @connexion.select_db(@database)
   end
 
-  def execute(query)
+  def execute(query, _)
     cursor = @connexion.query(query)
   end
 

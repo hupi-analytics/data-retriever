@@ -8,6 +8,7 @@ module DataRetriever
     logger LOGGER
     use GrapeLogging::Middleware::RequestLogger, logger: logger, include: [GrapeLogging::Loggers::ClientEnv.new]
 
+    helpers ApiEndpoint
     helpers do
       def logger
         DataRetriever::API.logger

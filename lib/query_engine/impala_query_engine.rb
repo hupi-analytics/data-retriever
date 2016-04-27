@@ -7,7 +7,7 @@ class ImpalaQueryEngine < SQLQueryEngine
     @connexion.execute("use #{@database}")
   end
 
-  def execute(query)
+  def execute(query, _)
     cursor = []
     @connexion.execute(query).each do |row|
       cursor << row.inject({}) { |memo, (k,v)| memo[k.to_s] = v; memo }

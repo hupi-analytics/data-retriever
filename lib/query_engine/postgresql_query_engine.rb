@@ -7,7 +7,7 @@ class PostgresqlQueryEngine < SQLQueryEngine
     @connexion.type_map_for_results = PG::BasicTypeMapForResults.new @connexion
   end
 
-  def execute(query)
+  def execute(query, _)
     @connexion.exec(query)
   end
 

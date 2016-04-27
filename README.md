@@ -1,19 +1,52 @@
 # hupi data retriever #
 
-## Usage
+- [Usage](#Usage)
+  - [Header Params](#Header Params)
+  - [Endpoints](#Endpoints)
+    * [Admin](#Admin)
+  - [Query](#Query)
+    * [mysql](#SQL Query)
+    * [postgresql](#SQL Query)
+    * [impala](SQL Query)
+    * [mongodb](MongoDB Query)
+    * [elasticsearch](#ElasticSearch Query)
+    * [openscoring](#Openscoring)
+  - [Render type](#Render type)
+    * [category serie value](#Category Serie Value)
+    * [fixed placement column](#Fixed Placement Column)
+    * [serie value](#Serie Value)
+    * [column stacked grouped](#Column Stacked Grouped)
+    * [boxplot](#Boxplot)
+    * [small heatmap](#Small Heatmap)
+    * [large heatmap](#Large Heatmap)
+    * [scatter](#Scatter)
+    * [bubble](#Bubble)
+    * [leaflet](#Leflet)
+    * [CSV](#CSV)
+    * [multiple CSV](#Multiple CSV)
+    * [JSON value](#JSON Value)
+    * [JSON array](#JSON Array)
+    * [value](#Value)
+    * [cursor](#Cursor)
+- [Development](#Development)
+- [Contributing](#Contributing)
+- [License](#License)
+
+## Usage ##
 this project use swagger Documentation
 go to : [http://petstore.swagger.io/](http://petstore.swagger.io/)
 
 paste : `http://api.dataretriever.hupi.io/swagger_doc`
 
-### Header Params
+### Header Params ###
 * Content-Type: "application/json"
 * Accept-Version: "v1"
 * X-API-Token: "your_token"
 
-### Endpoints
+### Endpoints ###
+only hdr_endpoint with `api` fields to true are accessible with a non superadmin account.
 
-#### POST `http://api.dataretriever.hupi.io/private/(:module_name)/(:method_name)`
+#### POST `http://api.dataretriever.hupi.io/private/(:module_name)/(:method_name)` ####
 * <u>module_name:</u> (String)
 * <u>method_name:</u> (String)
 * <u>body:</u>
@@ -25,11 +58,15 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
     "filters": {
       filter_name1: { "operator": operator, "value": value},
       filter_name2: value
+    },
+    "query_params": {
+      "something": 42
     }
   }
   ```
   * <u>client:</u> (String) client name
   * <u>render_type:</u> (String) depends of the configuration of the hdr_endpoint
+  * <u>query_params:</u> (JSON)
   * <u>filters:</u> (JSON) two acceptable way
 
     ```json
@@ -43,7 +80,42 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
     }
     ```
 
-#### POST `http://api.dataretriever.hupi.io/estimate/(:subject)`
+#### POST `http://api.dataretriever.hupi.io/private/(:module_name)/(:method_name)/(:query_object_name)` ####
+* <u>module_name:</u> (String)
+* <u>method_name:</u> (String)
+* <u>query_object_name:</u> (String)
+* <u>body:</u>
+
+  ```json
+  {
+    "client": client_name,
+    "render_type": render_type,
+    "filters": {
+      filter_name1: { "operator": operator, "value": value},
+      filter_name2: value
+    },
+    "query_params": {
+      "something": 42
+    }
+  }
+  ```
+  * <u>client:</u> (String) client name
+  * <u>render_type:</u> (String) depends of the configuration of the hdr_endpoint
+  * <u>query_params:</u> (JSON)
+  * <u>filters:</u> (JSON) two acceptable way
+
+    ```json
+    {
+      "filter_name": {
+        "operator": "<",
+        "value": "42"
+      },
+      "filter_name": "42"
+      }
+    }
+    ```
+
+#### POST `http://api.dataretriever.hupi.io/estimate/(:subject)` ####
 * <u>subject:</u> (String)
 * <u>body: </u>
 
@@ -56,11 +128,11 @@ paste : `http://api.dataretriever.hupi.io/swagger_doc`
   * <u>client:</u> (String)
   * <u>(subject):</u> (JSON)
 
-#### GET `http://api.dataretriever.hupi.io/render_types/(:module_name)/(:method_name)`
+#### GET `http://api.dataretriever.hupi.io/render_types/(:module_name)/(:method_name)` ####
 * <u>module_name:</u> (String)
 * <u>method_name:</u> (String)
 
-#### Admin
+#### Admin ####
 admin endpoints follows REST convention.
 * index: GET `http://api.dataretriever.hupi.io/admin/(:model_name)s`
 * create: POST `http://api.dataretriever.hupi.io/admin/(:model_name)`
@@ -69,42 +141,50 @@ admin endpoints follows REST convention.
 * delete: DELETE `http://api.dataretriever.hupi.io/admin/(:model)/(:id)`
 
 ```
-+---------------------+ (1,n)  (1,0) +----------------+
-|     hdr_account     |<-------------|hdr_query_engine|
-+---------------------+              +----------------+
-|*id(uuid)            |              |*id(Int)        |
-|*name(String)        |              |*name(String)   |
-|*access_token(String)|              |*desc(String)   |
-|*role(String)        |              |*engine(String) |
-+---------------------+              |*settings(JSON) |
-          ^                          +----------------+
-          |(1,n)                             ^
-          |                                  |(1,n)
-          |                                  |
-          |                                  |
-          |(1,0)                             |(1,1)
-          |                                  |
-+---------+----------+ (1,n)   (1,1) +-------+--------+ (1,n)   (1,n) +--------------------+
-|    hdr_endpoint    |-------------->|hdr_query_object|-------------->|   hdr_export_type  |
-+--------------------+               +----------------+               +--------------------+
-|*module_name(String)|               |*name(String)   |               |*name(String)       |
-|*method_name(String)|               |*desc(String)   |               |*desc(String)       |
-+--------------------+               |*query(JSON)    |               |*render_types(Array)|
-                                     +-------+--------+               +--------------------+
-                                             |
-                                             |(1,n)
-                                             |
-                                             |
-                                             |(1,1)
-                                             V
-                                +-------------------------+
-                                |      hdr_filters        |
-                                +-------------------------+
-                                |*pattern(String)         |
-                                |*value_type(String)      |
-                                |*field (String)          |
-                                |*default_operator(String)|
-                                +-------------------------+
++---------------------+ (1,n)  (1,0)  +---------------------+
+|     hdr_account     |<--------------|  hdr_query_engine   |
++---------------------+               +---------------------+
+|*id(uuid)            |               |*id(Int)             |
+|*name(String)        |               |*name(String)        |
+|*access_token(String)|               |*desc(String)        |
+|*role(String)        |               |*engine(String)      |
+|*created_at(DateTime)|               |*settings(JSON)      |
+|*updated_at(DateTime)|               |*created_at(DateTime)|
++---------------------+               |*updated_at(DateTime)|
+          ^                           +---------------------+
+          |(1,n)                                 ^
+          |                                      |(1,n)
+          |                                      |
+          |                                      |
+          |(1,0)                                 |(1,1)
+          |                                      |
++---------+-----------+ (1,n)   (1,1) +----------+----------+ (1,n)   (1,n) +---------------------+
+|    hdr_endpoint     |-------------->|   hdr_query_object  |-------------->|   hdr_export_type   |
++---------------------+               +---------------------+               +---------------------+
+|*id(Int)             |               |*id(Int)             |               |*id(Int)             |
+|*module_name(String) |               |*name(String)        |               |*name(String)        |
+|*method_name(String) |               |*desc(String)        |               |*desc(String)        |
+|*api(Boolean)        |               |*query(String)       |               |*render_types(Array) |
+|*created_at(DateTime)|               |*created_at(DateTime)|               |*created_at(DateTime)|
+|*updated_at(DateTime)|               |*updated_at(DateTime)|               |*updated_at(DateTime)|
++---------------------+               +----------+----------+               +---------------------+
+                                                 |
+                                                 |(1,n)
+                                                 |
+                                                 |
+                                                 |(1,1)
+                                                 V
+                                    +-------------------------+
+                                    |      hdr_filters        |
+                                    +-------------------------+
+                                    |*id(Int)                 |
+                                    |*pattern(String)         |
+                                    |*value_type(String)      |
+                                    |*field (String)          |
+                                    |*default_operator(String)|
+                                    |*created_at(DateTime)    |
+                                    |*updated_at(DateTime)    |
+                                    +-------------------------+
 
 
 ```
@@ -121,7 +201,6 @@ you can create or update hdr_endpoint with nested attributes using the [rails wa
         "query": "my query",
         "hdr_filters_attributes": {
           "1449582746742": {
-            "id": "42",
             "pattern": "my_pattern",
             "value_type": "my_type",
             "field": "my_field",
@@ -141,18 +220,26 @@ you can create or update hdr_endpoint with nested attributes using the [rails wa
   }
 }
 ```
-## Query
+## Query ##
 
 in order to have a result formated for Highchart, query should rename field according to the desired render_type. Below we list the different renaming convention and the associated render type.
 
 If you want to better understand what each field does take a look in `lib/export/` and `spec/lib/export`
 
-#### Add filter
+#### Add filter ####
 To add filter in your query simply insert a pattern `#_your_pattern_#` at the desired place in the query, and add the corresponding hdr_filter. the pattern will be replaced by the filter given when you call the hdr_endpoint or if there is no filter given it will be replaced by an empty string.
 
-### SQL Query
+#### Available Query engine ####
+- [mysql](#SQL Query)
+- [postgresql](#SQL Query)
+- [impala](SQL Query)
+- [mongodb](MongoDB Query)
+- [elasticsearch](#ElasticSearch Query)
+- [openscoring](#Openscoring)
+
+### SQL Query ###
 write a valid sql query, you can use every function that your query_engine recognize.
-#### Filter Pattern
+#### Filter Pattern ####
 filter recognize specific pattern:
 * `#_and_[something_else]_#`: Add `AND` at the beginning and `AND` between each filter that match the pattern
   ```
@@ -165,7 +252,7 @@ filter recognize specific pattern:
   select fruit as category, color as serie, quantity as value from fruit_table #_where_f1_#
   ```
 
-### MongoDB Query
+### MongoDB Query ###
 since MongoDB only provide api to query their database, we use a JSON query that we match with their api.
 ```json
 {
@@ -174,7 +261,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
 }
 ```
 
-#### operator
+#### operator ####
 
 * aggregate: `db.my_colleciton.aggregate(mongo_aggregate_query, mongo_options)`
 
@@ -205,7 +292,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 
-#### Filter Pattern
+#### Filter Pattern ####
 * `#_match_[something_else]_#`: add a match `{ $match: { $and: [ filters_here ] } },`, join filters with `,`
 
   ```json
@@ -284,9 +371,9 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 
-### ElasticSearch Query
+### ElasticSearch Query ###
 write a regular ElasticSearch POST query. See [ElasticSearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) for available operator.
-the result returned are the one in `hits` key.
+the result returned are the one in `[hits][_source]` key.
 ```json
 {
   "index": "index_name",
@@ -298,7 +385,7 @@ the result returned are the one in `hits` key.
 }
 ```
 
-#### Filter
+#### Filter ####
 * `#_sub_[something_else]_#`: join operator filters with `,` and replace `#_value_#` in the operator by the value provided
 ```json
 {
@@ -324,6 +411,7 @@ the result returned are the one in `hits` key.
       "bool": {
         "should": [
           #_sub_and_f1_#
+          {"match":{"my_field":{"query":"my_value"}}}
         ]
       }
     }
@@ -331,7 +419,7 @@ the result returned are the one in `hits` key.
 }
 ```
 
-##### example
+##### example #####
 HdrFilter:
 ```json
 {
@@ -392,8 +480,31 @@ Query Generated:
   }
 }
 ```
-## Render type
-#### Category Serie Value
+
+### Openscoring ###
+Place your PMML file in the query field. HdrFilter doesn't apply for this query engine. To make prediction, you should provide your features as JSON in the `query_params` key.
+
+## Render type ##
+all render type output are JSON. All output presented below are in the `data` key of the response body. When there is an error, the response body contain an `error` key that contain an explanation of the error and the response code is not 201.
+
+* [category serie value](#Category Serie Value)
+* [fixed placement column](#Fixed Placement Column)
+* [serie value](#Serie Value)
+* [column stacked grouped](#Column Stacked Grouped)
+* [boxplot](#Boxplot)
+* [small heatmap](#Small Heatmap)
+* [large heatmap](#Large Heatmap)
+* [scatter](#Scatter)
+* [bubble](#Bubble)
+* [leaflet](#Leflet)
+* [CSV](#CSV)
+* [multiple CSV](#Multiple CSV)
+* [JSON value](#JSON Value)
+* [JSON array](#JSON Array)
+* [value](#Value)
+* [cursor](#Cursor)
+
+#### Category Serie Value ####
   + <u>render type:</u> category_serie_value, column_stacked_normal, column_stacked_percent, basic_line, basic_area, stacked_area, stacked_area_percent, multiple_column, windrose, spiderweb, column_stacked
   + <u>required field in query result:</u> category, serie, value
   + <u>input:</u>
@@ -420,7 +531,7 @@ Query Generated:
     }
     ```
 
-#### Fixed Placement Column
+#### Fixed Placement Column ####
   + <u>render type:</u> fixed_placement_column
   + <u>required field in query result:</u> category, serie, value
   + <u>input:</u>
@@ -452,7 +563,7 @@ Query Generated:
     }
     ```
 
-#### Serie Value
+#### Serie Value ####
   + <u>render type:</u> serie_value, pie_chart, half_donuts, funnel, column
   + <u>required field in query result:</u> serie, value
   + <u>input:</u>
@@ -480,7 +591,7 @@ Query Generated:
     }
       ```
 
-#### Column Stacked Grouped
+#### Column Stacked Grouped ####
   + <u>render type:</u> column_stacked_grouped
   + <u>required field in query result:</u> category, serie, value, stack
   + <u>input:</u>
@@ -524,7 +635,7 @@ Query Generated:
     }
     ```
 
-#### Boxplot
+#### Boxplot ####
   + <u>render type:</u> boxplot
   + <u>required field in query result:</u> category, serie, min, first_quartil, median, third_quartil, max
   + <u>input:</u>
@@ -561,7 +672,7 @@ Query Generated:
     }
     ```
 
-#### Small Heatmap
+#### Small Heatmap ####
   + <u>render type:</u> small_heatmap
   + <u>required field in query result:</u> x_category, y_category, value
   + <u>input:</u>
@@ -592,7 +703,7 @@ Query Generated:
     }
     ```
 
-#### Large Heatmap
+#### Large Heatmap ####
   + <u>render type:</u> large_heatmap
   + <u>required field in query result:</u> x_category, y_category, value
   + <u>input:</u>
@@ -616,7 +727,7 @@ Query Generated:
     }
     ```
 
-#### Scatter
+#### Scatter ####
   + <u>render type:</u> scatter
   + <u>required field in query result:</u> serie, x ,y
   + <u>input:</u>
@@ -641,7 +752,7 @@ Query Generated:
     }
     ```
 
-#### Bubble
+#### Bubble ####
   + <u>render type:</u> scatter
   + <u>required field in query result:</u> serie, x ,y
   + <u>input:</u>
@@ -679,7 +790,7 @@ Query Generated:
     }
     ```
 
-#### Leaflet
+#### Leaflet ####
   + <u>render type:</u> leaflet
   + <u>required field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties"
   + <u>input:</u>
@@ -706,7 +817,7 @@ Query Generated:
     }
     ```
 
-#### CSV
+#### CSV ####
   + <u>render type:</u> csv
   + <u>required field in query result:</u> none
   + <u>input:</u>
@@ -735,7 +846,7 @@ Query Generated:
     }
     ```
 
-#### Multiple CSV
+#### Multiple CSV ####
   + <u>render type:</u> multiple_csv
   + <u>required field in query result:</u> none
   + <u>input:</u>
@@ -768,7 +879,7 @@ Query Generated:
     }
     ```
 
-#### JSON Value
+#### JSON Value ####
   + <u>render type:</u> treemap2, treemap3, json_value
   + <u>required field in query result:</u> none
   + <u>description:</u> indent according to the order of the key
@@ -801,7 +912,7 @@ Query Generated:
     }
     ```
 
-#### JSON Array
+#### JSON Array ####
   + <u>render type:</u> json_array
   + <u>required field in query result:</u> none
   + <u>description:</u> indent according to the order of the key
@@ -834,7 +945,7 @@ Query Generated:
     }
     ```
 
-#### Value
+#### Value ####
   + <u>render type:</u> value
   + <u>required field in query result:</u> none
   + <u>description:</u> return the last value of the last key
@@ -852,7 +963,7 @@ Query Generated:
     { "value": 42 }
     ```
 
-#### Cursor
+#### Cursor ####
   + <u>render type:</u> cursor
   + <u>required field in query result:</u> none
   + <u>description:</u> send result of the query without modification
@@ -883,15 +994,15 @@ Query Generated:
     ]
     ```
 
-# Development
+# Development #
 
 After checking out the repo, run `bundle install` to install dependencies. Then, run `rake db:reset` to create table and populate the database.
 Then, run `bundle exec rspec spec` to run the tests. You can also run `rake console` for an interactive prompt that will allow you to experiment.
 
-# Contributing
+# Contributing #
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/hupi-analytics/data-retriever. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
-# License
+# License #
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

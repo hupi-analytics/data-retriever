@@ -259,7 +259,6 @@ describe MongodbQueryEngine do
             ]
           }
         end
-
         it { expect(qe.decorate(find_query, filter_array)).to eq(find_query_res) }
       end
 

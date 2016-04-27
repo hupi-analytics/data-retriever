@@ -8,6 +8,7 @@ class HdrQueryObject < ActiveRecord::Base
   has_many :hdr_export_types, through: :hdr_query_objects_export_types
   has_many :hdr_filters, dependent: :destroy
 
+  validates_format_of :name, with: /\A[\w-]+\Z/
   validates :query, presence: true
   validates :hdr_query_engine, presence: true
 
@@ -42,6 +43,7 @@ class HdrQueryObject < ActiveRecord::Base
   class Entity < Grape::Entity
     expose :id, :query
     expose :name, safe: true
+    expose :desc, safe: true
     expose :hdr_query_engine, using: HdrQueryEngine::Entity, unless: { type: :preview }
     expose :hdr_export_types, using: HdrExportType::Entity, unless: { type: :preview }
     expose :hdr_filters, using: HdrFilter::Entity, unless: { type: :preview }
