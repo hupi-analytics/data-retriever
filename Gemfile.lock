@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/aserafin/grape_logging.git
-  revision: 14f16c21c0dedeef7ff09a627a079de59e46ba4b
+  remote: git://github.com/scauglog/grape_logging.git
+  revision: d8b474ee1837e92b2d93c049258bef58b4878c61
   specs:
     grape_logging (1.2.1)
       grape
@@ -120,7 +120,7 @@ GEM
     minitest (5.8.4)
     mongo (2.1.1)
       bson (~> 3.0)
-    multi_json (1.11.2)
+    multi_json (1.11.3)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     mustermann19 (0.4.3)

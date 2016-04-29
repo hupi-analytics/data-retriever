@@ -6,7 +6,7 @@ module DataRetriever
     version 'v1', :using => :accept_version_header
 
     logger LOGGER
-    use GrapeLogging::Middleware::RequestLogger, logger: logger, include: [GrapeLogging::Loggers::ClientEnv.new]
+    use GrapeLogging::Middleware::RequestLogger, logger: logger, include: [GrapeLogging::Loggers::ClientEnv.new, GrapeLogging::Loggers::UrlParams.new]
 
     helpers do
       def logger
@@ -34,14 +34,14 @@ module DataRetriever
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
-      Airbrake.notify(e, parameters: env['api.endpoint'].params)
-      DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params
+      Airbrake.notify(e, parameters: env['api.endpoint'].params.to_h)
+      DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params.to_h
       error!({ error: e.message }, 404)
     end
 
     rescue_from :all do |e|
-      Airbrake.notify(e, parameters: env['api.endpoint'].params)
-      DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params
+      Airbrake.notify(e, parameters: env['api.endpoint'].params.to_h)
+      DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params.to_h
       error!({ error: e.message }, 500)
     end
 
