@@ -18,38 +18,24 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                              .find_by("hdr_endpoints.id = ?
-                                        AND ? = ANY (hdr_export_types.render_types)", params[:id], params[:render_type])
+                .where("hdr_endpoints.id = ?
+                        AND ? = ANY (hdr_export_types.render_types)", params[:id], params[:render_type]).order(:updated_at).first
+        action_on_query("execute", query, "id", id: params[:id])
+      end
 
-        # if we have found the query we execute it with the linked query_engine
-        # else we try to guess wich parameters are wrong
-        if query && (current_account.superadmin? || current_account == query.hdr_endpoint.hdr_account || query.hdr_endpoint.hdr_account.nil?)
-          query_engine = DataRetriever::QueryEngines.get(query.hdr_query_engine, params[:client])
-          query_filter = query.get_filters(params[:filters])
-          query_params = params[:query_params] || {}
-          export_type = HdrExportType.find_by("? = ANY (render_types)", params[:render_type])
-          query_decorated = query_engine.decorate(query.query, query_filter, query_params)
-          logger.debug(type: "QUERY DEBUG", hqe_engine: query.hdr_query_engine.engine, hqe_name: query.hdr_query_engine.name, query: query_decorated)
-          begin
-            cursor = query_engine.execute(query_decorated)
-          rescue IOError, Mysql2::Error
-            query_engine.reload
-            cursor = query_engine.execute(query_decorated)
-          end
-          { data: Export.send(params[:render_type], cursor, query_params) }
-        elsif query && !(current_account.superadmin? || current_account == query.hdr_endpoint.hdr_account || query.hdr_endpoint.hdr_account.nil?)
-          error!("Unauthorized", 401)
-        else
-          endpoint = HdrEndpoint.find(params[:id])
-          if endpoint && !endpoint.render_types.include?(params[:render_type])
-            error!("render_type should be one of: #{endpoint.render_types}", 400)
-          elsif endpoint.nil?
-            error!("url not found: hdr_endpoint/#{params[:id]}/data", 404)
-          else
-            logger.error(type: "ENDPOINT ERROR", endpoint: endpoint.inspect)
-            error!("error unknown", 400)
-          end
-        end
+      params do
+        requires :client, type: String, desc: "client name"
+        requires :id, type: Integer
+        requires :render_type, type: String
+        optional :filters, type: Hash
+      end
+      post "hdr_query_object/(:id)/explain" do
+        return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
+
+        query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
+                .where("hdr_query_objects.id = ?
+                        AND ? = ANY (hdr_export_types.render_types)", params[:id], params[:render_type]).order(:updated_at).first
+        action_on_query("explain", query, "hqo_id", id: params[:id])
       end
 
       params do

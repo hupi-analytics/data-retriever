@@ -25,8 +25,10 @@ require "pry"
 require "factory_girl"
 require File.expand_path("../../config/environment", __FILE__)
 require "shoulda/matchers"
-
+require "webmock/rspec"
 Dir["./spec/support/**/*.rb"].each { |f| require f }
+
+WebMock.disable_net_connect!(allow_localhost: false)
 
 RSpec.configure do |config|
   # Make Rack::Test available to all spec contexts

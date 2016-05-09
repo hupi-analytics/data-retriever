@@ -8,6 +8,10 @@ class SQLQueryEngine < DefaultQueryEngine
     query
   end
 
+  def explain(query, info)
+    { plan: execute(query.prepend("EXPLAIN "), info) }
+  end
+
   private
 
   def apply_filters(query, filters = {})

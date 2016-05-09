@@ -9,6 +9,7 @@ describe DataRetriever::API do
   let(:client) { "hdr_test" }
   let!(:public_endpoint) { FactoryGirl.create(:hdr_endpoint) }
   let!(:private_endpoint) { FactoryGirl.create(:hdr_endpoint, hdr_account: account) }
+  let!(:private_endpoint) { FactoryGirl.create(:hdr_endpoint, hdr_account: account) }
 
   describe "POST private endpoint" do
     let(:url) { "private/#{private_endpoint.module_name}/#{private_endpoint.method_name}" }
@@ -36,7 +37,7 @@ describe DataRetriever::API do
       it "return an error" do
         post url, client: client, render_type: "not_a_chart", token: account.access_token
         expect(response.status).to eq(404)
-        expect_json(error: regex("url not found: #{url}"))
+        expect_json(error: regex("not found with:"))
       end
     end
 
@@ -69,8 +70,26 @@ describe DataRetriever::API do
         end
       end
 
+      context "valid account api disable" do
+        let!(:private_endpoint) { FactoryGirl.create(:hdr_endpoint, :api_disable, hdr_account: account) }
+        it "returns 404 not found" do
+          post url, client: client, render_type: "csv", token: account.access_token
+          expect(response.status).to eq(404)
+        end
+      end
+
       context "superadmin account" do
         let!(:superadmin_account) { FactoryGirl.create(:hdr_account, :superadmin) }
+        it "returns 'csv json' format" do
+          post url, client: client, render_type: "csv", token: superadmin_account.access_token
+          expect(response.status).to eq(201)
+          expect_json(res)
+        end
+      end
+
+      context "superadmin account api disable" do
+        let!(:superadmin_account) { FactoryGirl.create(:hdr_account, :superadmin) }
+        let!(:private_endpoint) { FactoryGirl.create(:hdr_endpoint, :api_disable, hdr_account: account) }
         it "returns 'csv json' format" do
           post url, client: client, render_type: "csv", token: superadmin_account.access_token
           expect(response.status).to eq(201)
@@ -115,7 +134,7 @@ describe DataRetriever::API do
       it "return an error" do
         post url, client: client, render_type: "not_a_chart", token: account.access_token
         expect(response.status).to eq(404)
-        expect_json(error: regex("url not found: #{url}"))
+        expect_json(error: regex("not found with:"))
       end
     end
 

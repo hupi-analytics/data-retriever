@@ -6,7 +6,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
     @connexion = Elasticsearch::Client.new @settings
   end
 
-  def execute(query)
+  def execute(query, _)
     result = @connexion.search query
     return parse_search_result(result)
   end
@@ -19,6 +19,10 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
     apply_params(query, query_params)
     apply_filters(query, filters)
     JSON.parse(query, symbolize_names: true)
+  end
+
+  def explain(query, _)
+    @connexion.explain query
   end
 
   private

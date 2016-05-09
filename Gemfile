@@ -34,4 +34,5 @@ group :test do
   gem "airborne"
   gem "factory_girl"
   gem "ci_reporter_rspec"
+  gem "webmock"
 end

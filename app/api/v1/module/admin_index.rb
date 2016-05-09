@@ -28,11 +28,16 @@ module DataRetriever
 
             begin
               results = if @current_account.superadmin?
-                          class_called
+                          case class_called.to_s
+                          when "HdrEndpoint"
+                            HdrEndpoint.eager_load(hdr_query_objects: :hdr_query_engine)
+                          else
+                            class_called
+                          end
                         else
                           case class_called.to_s
                           when "HdrEndpoint"
-                            HdrEndpoint.where(hdr_account_id: [nil, current_account.id])
+                            HdrEndpoint.eager_load(hdr_query_objects: :hdr_query_engine).where(hdr_account_id: [nil, current_account.id])
                           when "HdrQueryEngine"
                             HdrQueryEngine.where(hdr_account_id: [nil, current_account.id])
                           when "HdrQueryObject"
