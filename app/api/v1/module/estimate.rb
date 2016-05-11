@@ -21,7 +21,7 @@ module DataRetriever
       params do
         requires :client, type: String, desc: "client name"
       end
-      post "estimate/(:subject)" do
+      post "estimate/:subject" do
         subject_name = params[:subject].to_sym
         unless params[subject_name].is_a?(Hash)
           logger.error(desc: "ESTIMATE ERROR", message: "params subject is empty")

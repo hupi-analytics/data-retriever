@@ -28,7 +28,7 @@ module DataRetriever
             optional :filters, types: [String, Hash]
             optional :order, types: [String, Hash]
           end
-          get "(:class_called)" do
+          get ":class_called" do
             class_called = params[:class_called].singularize.camelize.constantize
             filters = convert_params(params[:filters])
             order = convert_params(params[:order])

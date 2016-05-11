@@ -24,7 +24,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "private/(:module_name)/(:method_name)/explain" do
+      post "private/:module_name/:method_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -53,7 +53,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "public/(:module_name)/(:method_name)/explain" do
+      post "public/:module_name/:method_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -83,7 +83,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "private/(:module_name)/(:method_name)/(:query_object_name)/explain" do
+      post "private/:module_name/:method_name/:query_object_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -114,7 +114,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "public/(:module_name)/(:method_name)/(:query_object_name)/explain" do
+      post "public/:module_name/:method_name/:query_object_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -144,7 +144,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "private/(:module_name)/(:method_name)" do
+      post "private/:module_name/:method_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -173,7 +173,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "public/(:module_name)/(:method_name)" do
+      post "public/:module_name/:method_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -203,7 +203,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "private/(:module_name)/(:method_name)/(:query_object_name)" do
+      post "private/:module_name/:method_name/:query_object_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -234,7 +234,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "public/(:module_name)/(:method_name)/(:query_object_name)" do
+      post "public/:module_name/:method_name/:query_object_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -260,7 +260,7 @@ module DataRetriever
         requires :module_name, type: String
         requires :method_name, type: String
       end
-      get "render_types/(:module_name)/(:method_name)" do
+      get "render_types/:module_name/:method_name" do
         endpoint = HdrEndpoint.find_by(module_name: params[:module_name], method_name: params[:method_name])
         if endpoint && (current_account.superadmin? || current_account == query.endpoint.hdr_account || query.endpoint.hdr_account.nil?)
           endpoint.render_types

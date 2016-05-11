@@ -28,7 +28,7 @@ module DataRetriever
           params do
             requires :id, type: Integer
           end
-          get "(:class_called)/(:id)" do
+          get ":class_called/:id" do
             class_called = params[:class_called].singularize.camelize.constantize
             begin
               present class_called.find(params[:id]), with: class_called::Entity, type: :full
@@ -45,7 +45,7 @@ module DataRetriever
               }
             }
           }
-          post "(:class_called)" do
+          post ":class_called" do
             class_called = params[:class_called].singularize.camelize.constantize
             class_sym = params[:class_called].singularize.to_sym
             begin
@@ -67,7 +67,7 @@ module DataRetriever
           params do
             requires :id, type: Integer
           end
-          put "(:class_called)/(:id)" do
+          put ":class_called/:id" do
             class_called = params[:class_called].singularize.camelize.constantize
             class_sym = params[:class_called].singularize.to_sym
             error!("params empty", 400) if params[class_sym].nil?
@@ -90,7 +90,7 @@ module DataRetriever
           params do
             requires :id, type: Integer
           end
-          delete "(:class_called)/(:id)" do
+          delete ":class_called/:id" do
             class_called = params[:class_called].singularize.camelize.constantize
             begin
               class_called.destroy(params[:id])

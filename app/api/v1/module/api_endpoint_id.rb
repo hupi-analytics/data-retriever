@@ -23,7 +23,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "hdr_endpoint/(:id)/data" do
+      post "hdr_endpoint/:id/data" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -47,7 +47,7 @@ module DataRetriever
         optional :filters
         optional :query_params
       end
-      post "hdr_query_object/(:id)/explain" do
+      post "hdr_query_object/:id/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
@@ -67,7 +67,7 @@ module DataRetriever
       params do
         requires :id, type: Integer
       end
-      get "hdr_endpoint/(:id)/render_types" do
+      get "hdr_endpoint/:id/render_types" do
         endpoint = HdrEndpoint.find(params[:id])
         if endpoint && (current_account.superadmin? || current_account == query.endpoint.hdr_account || query.endpoint.hdr_account.nil?)
           endpoint.render_types
