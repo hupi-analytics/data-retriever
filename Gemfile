@@ -21,6 +21,7 @@ gem "airbrake"
 gem "grape_logging", github: "scauglog/grape_logging"
 gem "logstash-logger", github: "scauglog/logstash-logger"
 gem "poseidon"
+gem "rack-cors"
 
 group :development do
   gem "rubocop"

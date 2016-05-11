@@ -4,6 +4,7 @@ require 'grape-swagger'
 module DataRetriever
   class API < Grape::API
     version 'v1', :using => :accept_version_header
+    content_type :json, 'application/json'
 
     logger LOGGER
     use GrapeLogging::Middleware::RequestLogger, logger: logger, include: [GrapeLogging::Loggers::ClientEnv.new, GrapeLogging::Loggers::UrlParams.new]
@@ -34,10 +35,6 @@ module DataRetriever
       end
     end
 
-    before do
-      header["Access-Control-Allow-Origin"] = "*"
-      header["Access-Control-Request-Method"] = "*"
-    end
     rescue_from ActiveRecord::RecordNotFound do |e|
       Airbrake.notify(e, parameters: env["api.endpoint"].params.to_h)
       DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params.to_h
