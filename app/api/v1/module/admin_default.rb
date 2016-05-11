@@ -17,7 +17,14 @@ module DataRetriever
                                                            hdr_filters hdr_filter)
         end
         namespace "admin" do
-          # read
+          desc "read", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: Integer
           end
@@ -30,7 +37,14 @@ module DataRetriever
             end
           end
 
-          # create
+          desc "create", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           post "(:class_called)" do
             class_called = params[:class_called].singularize.camelize.constantize
             class_sym = params[:class_called].singularize.to_sym
@@ -42,7 +56,14 @@ module DataRetriever
             end
           end
 
-          # update
+          desc "update", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: Integer
           end
@@ -58,7 +79,14 @@ module DataRetriever
             end
           end
 
-          # delete
+          desc "delete", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: Integer
           end

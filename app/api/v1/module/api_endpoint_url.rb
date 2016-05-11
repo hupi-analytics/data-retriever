@@ -8,12 +8,21 @@ module DataRetriever
         authenticate!
       end
 
+      desc "explain query that match the render type", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "private/(:module_name)/(:method_name)/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -28,12 +37,21 @@ module DataRetriever
         action_on_query("explain", query, params[:endpoint_type], module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "explain query that match the render type", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "public/(:module_name)/(:method_name)/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -48,13 +66,22 @@ module DataRetriever
         action_on_query("explain", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "explain query of the hdr_query_object specified", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "private/(:module_name)/(:method_name)/(:query_object_name)/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -70,13 +97,22 @@ module DataRetriever
         action_on_query("explain", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "explain query of the hdr_query_object specified", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "public/(:module_name)/(:method_name)/(:query_object_name)/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -92,12 +128,21 @@ module DataRetriever
         action_on_query("explain", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "execute query that match the render_type", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "private/(:module_name)/(:method_name)" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -112,12 +157,21 @@ module DataRetriever
         action_on_query("execute", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "execute query that match the render_type", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "public/(:module_name)/(:method_name)" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -132,13 +186,22 @@ module DataRetriever
         action_on_query("execute", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "execute query that match the render type and hdr_query_object name", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "private/(:module_name)/(:method_name)/(:query_object_name)" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -154,13 +217,22 @@ module DataRetriever
         action_on_query("execute", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "execute query that match the render type and hdr_query_object name", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :module_name, type: String
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "public/(:module_name)/(:method_name)/(:query_object_name)" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -176,6 +248,14 @@ module DataRetriever
         action_on_query("execute", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
+      desc "return available render_types for the endpoint specified", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :module_name, type: String
         requires :method_name, type: String

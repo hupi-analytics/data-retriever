@@ -34,14 +34,18 @@ module DataRetriever
       end
     end
 
+    before do
+      header["Access-Control-Allow-Origin"] = "*"
+      header["Access-Control-Request-Method"] = "*"
+    end
     rescue_from ActiveRecord::RecordNotFound do |e|
-      Airbrake.notify(e, parameters: env['api.endpoint'].params.to_h)
+      Airbrake.notify(e, parameters: env["api.endpoint"].params.to_h)
       DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params.to_h
       error!({ error: e.message }, 404)
     end
 
     rescue_from :all do |e|
-      Airbrake.notify(e, parameters: env['api.endpoint'].params.to_h)
+      Airbrake.notify(e, parameters: env["api.endpoint"].params.to_h)
       DataRetriever::API.logger.error message: e.message, backtrace: e.backtrace.join("\n"), params: env["api.endpoint"].params.to_h
       error!({ error: e.message }, 500)
     end

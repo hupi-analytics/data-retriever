@@ -16,7 +16,14 @@ module DataRetriever
                                                            hdr_filters hdr_filter)
         end
         namespace "admin" do
-          # index
+          desc "index", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             optional :filters, types: [String, Hash]
             optional :order, types: [String, Hash]

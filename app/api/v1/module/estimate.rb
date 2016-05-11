@@ -10,6 +10,14 @@ module DataRetriever
         authenticate!
       end
 
+      desc "", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
       end

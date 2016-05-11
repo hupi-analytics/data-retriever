@@ -8,11 +8,20 @@ module DataRetriever
         authenticate!
       end
 
+      desc "execute query that match the render_type", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :id, type: Integer
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "hdr_endpoint/(:id)/data" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -23,11 +32,20 @@ module DataRetriever
         action_on_query("execute", query, "id", id: params[:id])
       end
 
+      desc "explain query", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :client, type: String, desc: "client name"
         requires :id, type: Integer
         requires :render_type, type: String
-        optional :filters, type: Hash
+        optional :filters
+        optional :query_params
       end
       post "hdr_query_object/(:id)/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -38,6 +56,14 @@ module DataRetriever
         action_on_query("explain", query, "hqo_id", id: params[:id])
       end
 
+      desc "return accepted render_types for the hdr_endpoint", {
+        headers: {
+          "X-Api-Token" => {
+            description: "Validates your identity",
+            required: true
+          }
+        }
+      }
       params do
         requires :id, type: Integer
       end
