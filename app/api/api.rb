@@ -1,10 +1,10 @@
 # -*- encoding : utf-8 -*-
-require 'grape-swagger'
+require "grape-swagger"
 
 module DataRetriever
   class API < Grape::API
-    version 'v1', :using => :accept_version_header
-    content_type :json, 'application/json'
+    version "v1", using: :accept_version_header
+    content_type :json, "application/json"
 
     logger LOGGER
     use GrapeLogging::Middleware::RequestLogger, logger: logger, include: [GrapeLogging::Loggers::ClientEnv.new, GrapeLogging::Loggers::UrlParams.new]
