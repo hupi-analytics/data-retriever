@@ -38,4 +38,15 @@ namespace :db do
     Rake::Task["db:rename_area_stacked"].execute
     Rake::Task["db:remove_timeseries"].execute
   end
+
+  task set_blank_hqo_name_to_nil: :load_grape do
+    HdrQueryObject.where(name: "").each do |hqo|
+      hqo.name = nil
+      hqo.save
+    end
+  end
+
+  task migrate_to_v0_6: :load_grape do
+    Rake::Task["db:set_blank_hqo_name_to_nil"].execute
+  end
 end
