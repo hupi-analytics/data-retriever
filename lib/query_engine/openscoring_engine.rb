@@ -32,7 +32,7 @@ class OpenscoringQueryEngine < DefaultQueryEngine
     uri = URI("http://#{@host}:#{@port}/openscoring/model/#{model_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Get.new uri
-    req.content_type = 'application/json'
+    req.content_type = "application/json"
     res = https.request(req)
     JSON.parse(res.body)
   end
@@ -62,7 +62,7 @@ class OpenscoringQueryEngine < DefaultQueryEngine
     uri = URI("http://#{@host}:#{@port}/openscoring/model/#{model_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new uri
-    req.content_type = 'application/json'
+    req.content_type = "application/json"
     req.body = body
     https.request(req)
   end
@@ -72,7 +72,7 @@ class OpenscoringQueryEngine < DefaultQueryEngine
     https = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Put.new uri
     req.body = pmml
-    req.content_type = 'text/xml'
+    req.content_type = "text/xml"
     res = https.request(req)
     res.value
     true
@@ -82,7 +82,7 @@ class OpenscoringQueryEngine < DefaultQueryEngine
     uri = URI("http://#{@host}:#{@port}/openscoring/model/#{model_name}")
     https = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Get.new uri
-    req.content_type = 'application/json'
+    req.content_type = "application/json"
     res = https.request(req)
     return upsert_model(pmml, model_name) if res.code == "404"
     res.value

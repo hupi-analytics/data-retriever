@@ -3,7 +3,7 @@ module ApiEndpoint
 
   def action_on_query(action, query, type, obj_params)
     if query
-      error!("Not Found", 404) unless query.hdr_endpoint.api || current_account.superadmin?
+      error!("Endpoint Disable for API request", 404) unless query.hdr_endpoint.api || current_account.superadmin?
       error!("Unauthorized", 401) unless query_authorized?(type, current_account, query, params[:client])
 
       query_engine = DataRetriever::QueryEngines.get(query.hdr_query_engine, params[:client])

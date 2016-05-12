@@ -20,8 +20,8 @@ module DataRetriever
         requires :client, type: String, desc: "client name"
         requires :id, type: Integer
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "hdr_endpoint/:id/data" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -44,8 +44,8 @@ module DataRetriever
         requires :client, type: String, desc: "client name"
         requires :id, type: Integer
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "hdr_query_object/:id/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/

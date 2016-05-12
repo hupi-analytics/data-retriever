@@ -21,8 +21,8 @@ module DataRetriever
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "private/:module_name/:method_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -50,8 +50,8 @@ module DataRetriever
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "public/:module_name/:method_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -80,8 +80,8 @@ module DataRetriever
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "private/:module_name/:method_name/:query_object_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -111,8 +111,8 @@ module DataRetriever
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "public/:module_name/:method_name/:query_object_name/explain" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -141,8 +141,8 @@ module DataRetriever
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "private/:module_name/:method_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -170,8 +170,8 @@ module DataRetriever
         requires :module_name, type: String
         requires :method_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "public/:module_name/:method_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -200,8 +200,8 @@ module DataRetriever
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "private/:module_name/:method_name/:query_object_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
@@ -231,8 +231,8 @@ module DataRetriever
         requires :method_name, type: String
         requires :query_object_name, type: String
         requires :render_type, type: String
-        optional :filters
-        optional :query_params
+        optional :filters, type: JSON, desc: "json format"
+        optional :query_params, type: JSON, desc: "json format"
       end
       post "public/:module_name/:method_name/:query_object_name" do
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
