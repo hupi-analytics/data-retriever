@@ -10,10 +10,23 @@ module DataRetriever
         end
 
         namespace "admin" do
-          # index
+          desc "index", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                type: "String",
+                required: true
+              },
+              "Accept-Version" => {
+                description: "use api version",
+                required: true,
+                type: "String"
+              }
+            }
+          }
           params do
-            optional :filters, type: Hash
-            optional :order, type: Hash
+            optional :filters, types: [String, Hash]
+            optional :order, types: [String, Hash]
           end
           get "hdr_accounts" do
             filters = convert_params(params[:filters])
@@ -27,11 +40,18 @@ module DataRetriever
             end
           end
 
-          # read
+          desc "read", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: String
           end
-          get "hdr_account/(:id)" do
+          get "hdr_account/:id" do
             begin
               present HdrAccount.find(params[:id]), with: HdrAccount::Entity, type: :full
             rescue ActiveRecord::RecordNotFound => e
@@ -39,7 +59,14 @@ module DataRetriever
             end
           end
 
-          # create
+          desc "create", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           post "hdr_account" do
             begin
               present HdrAccount.create!(params[:hdr_account].to_hash), with: HdrAccount::Entity, type: :full
@@ -48,11 +75,18 @@ module DataRetriever
             end
           end
 
-          # update
+          desc "update", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: String
           end
-          put "hdr_account/(:id)" do
+          put "hdr_account/:id" do
             error!("params empty", 400) if params[:hdr_account].nil?
             hdr_account = HdrAccount.find(params[:id])
             if hdr_account.update_attributes(params[:hdr_account].to_hash)
@@ -62,11 +96,18 @@ module DataRetriever
             end
           end
 
-          # delete
+          desc "delete", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: String
           end
-          delete "hdr_account/(:id)" do
+          delete "hdr_account/:id" do
             begin
               HdrAccount.destroy(params[:id])
             rescue ActiveRecord::RecordNotFound => e
@@ -74,11 +115,18 @@ module DataRetriever
             end
           end
 
-          # refresh token
+          desc "refresh account token", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             requires :id, type: String
           end
-          get "hdr_account/(:id)/refresh_token" do
+          get "hdr_account/:id/refresh_token" do
             begin
               account = HdrAccount.find(params[:id])
               access_token = account.generate_access_token

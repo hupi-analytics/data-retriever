@@ -17,6 +17,11 @@ Dir[File.expand_path("app/models/*.rb", Grape::ROOT)].each do |model|
   require model
 end
 
+#require helpers
+Dir[File.expand_path("app/helpers/*.rb", Grape::ROOT)].each do |helper|
+  require helper
+end
+
 #require all module
 Dir[File.expand_path("app/api/*/*/*.rb", Grape::ROOT)].each do |modul|
   require modul

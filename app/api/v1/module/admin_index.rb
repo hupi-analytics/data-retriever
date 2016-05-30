@@ -16,23 +16,35 @@ module DataRetriever
                                                            hdr_filters hdr_filter)
         end
         namespace "admin" do
-          # index
+          desc "index", {
+            headers: {
+              "X-Api-Token" => {
+                description: "Validates your identity",
+                required: true
+              }
+            }
+          }
           params do
             optional :filters, types: [String, Hash]
             optional :order, types: [String, Hash]
           end
-          get "(:class_called)" do
+          get ":class_called" do
             class_called = params[:class_called].singularize.camelize.constantize
             filters = convert_params(params[:filters])
             order = convert_params(params[:order])
 
             begin
               results = if @current_account.superadmin?
-                          class_called
+                          case class_called.to_s
+                          when "HdrEndpoint"
+                            HdrEndpoint.eager_load(hdr_query_objects: :hdr_query_engine)
+                          else
+                            class_called
+                          end
                         else
                           case class_called.to_s
                           when "HdrEndpoint"
-                            HdrEndpoint.where(hdr_account_id: [nil, current_account.id])
+                            HdrEndpoint.eager_load(hdr_query_objects: :hdr_query_engine).where(hdr_account_id: [nil, current_account.id])
                           when "HdrQueryEngine"
                             HdrQueryEngine.where(hdr_account_id: [nil, current_account.id])
                           when "HdrQueryObject"
