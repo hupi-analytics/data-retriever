@@ -12,7 +12,7 @@ class HdrQueryEngine < ActiveRecord::Base
   end
 
   class Entity < Grape::Entity
-    expose :id, :name
-    expose :engine, :desc, :settings, :hdr_account_id, if: { type: :full }
+    expose :id, :name, :hdr_account_id
+    expose :engine, :desc, :settings, if: { type: :full }
   end
 end

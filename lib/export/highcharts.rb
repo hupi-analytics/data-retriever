@@ -21,18 +21,6 @@ module Export
       end
     end
   end
-  class << self
-    alias_method :column_stacked_normal, :category_serie_value
-    alias_method :column_stacked_percent, :category_serie_value
-    alias_method :windrose, :category_serie_value
-    alias_method :basic_area, :category_serie_value
-    alias_method :stacked_area, :category_serie_value
-    alias_method :stacked_area_percent, :category_serie_value
-    alias_method :basic_line, :category_serie_value
-    alias_method :multiple_column, :category_serie_value
-    alias_method :spiderweb, :category_serie_value
-    alias_method :column_stacked, :category_serie_value
-  end
 
   def self.serie_value(cursor, opts = {})
     val_format = !opts["format"].nil? && !opts["format"].empty? ? JSON.parse(opts["format"]) : {}
@@ -40,12 +28,6 @@ module Export
       row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
       hash[:series] << [row["serie"], row["value"]]
     end
-  end
-  class << self
-    alias_method :pie_chart, :serie_value
-    alias_method :half_donuts, :serie_value
-    alias_method :funnel, :serie_value
-    alias_method :column, :serie_value
   end
 
   def self.column_stacked_grouped(cursor, opts = {})
@@ -69,11 +51,6 @@ module Export
         end
       end
     end
-  end
-
-  class << self
-    alias_method :treemap2, :json_value
-    alias_method :treemap3, :json_value
   end
 
   def self.boxplot(cursor, opts = {})
@@ -181,24 +158,24 @@ module Export
         end
 
         case cpt
-          when 0
-            serie[:color] = "rgba(165,170,217,1)"
-            serie[:pointPlacement] = -0.2
-            serie[:pointPadding] = 0.3
-          when 1
-            serie[:color] = "rgba(248,161,63,1)"
-            serie[:pointPlacement] = 0.2
-            serie[:pointPadding] = 0.3
-          when 2
-            serie[:color] = "rgba(126,86,134,.9)"
-            serie[:pointPlacement] = -0.2
-            serie[:pointPadding] = 0.4
-            serie[:yAxis] = 1
-          when 3
-            serie[:color] = "rgba(186,60,61,.9)"
-            serie[:pointPlacement] = 0.2
-            serie[:pointPadding] = 0.4
-            serie[:yAxis] = 1
+        when 0
+          serie[:color] = "rgba(165,170,217,1)"
+          serie[:pointPlacement] = -0.2
+          serie[:pointPadding] = 0.3
+        when 1
+          serie[:color] = "rgba(248,161,63,1)"
+          serie[:pointPlacement] = 0.2
+          serie[:pointPadding] = 0.3
+        when 2
+          serie[:color] = "rgba(126,86,134,.9)"
+          serie[:pointPlacement] = -0.2
+          serie[:pointPadding] = 0.4
+          serie[:yAxis] = 1
+        when 3
+          serie[:color] = "rgba(186,60,61,.9)"
+          serie[:pointPlacement] = 0.2
+          serie[:pointPadding] = 0.4
+          serie[:yAxis] = 1
         end
 
         cpt += 1

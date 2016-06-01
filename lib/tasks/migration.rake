@@ -49,4 +49,15 @@ namespace :db do
   task migrate_to_v0_6: :load_grape do
     Rake::Task["db:set_blank_hqo_name_to_nil"].execute
   end
+
+  task add_render_type_infobox: :load_grape do
+    het = HdrExportType.find_by(name: "value")
+    het.update(render_types: het.render_types << "infobox") unless het.render_types.include?("infobox")
+    het = HdrExportType.find_by(name: "serie_value")
+    het.update(render_types: het.render_types << "multiple_infobox") unless het.render_types.include?("multiple_infobox")
+  end
+
+  task migrate_to_v0_7: :load_grape do
+    Rake::Task["db:add_render_type_infobox"].execute
+  end
 end

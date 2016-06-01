@@ -24,7 +24,8 @@ module ApiEndpoint
         cursor = query_engine.send(action, query_decorated, info)
       end
       if action == "execute"
-        { data: Export.send(params[:render_type], cursor, query_params) }
+        het = HdrExportType.find_by("? = ANY(hdr_export_types.render_types)", params[:render_type])
+        { data: Export.send(het.name, cursor, query_params) }
       else
         { data: cursor }
       end

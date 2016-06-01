@@ -1,36 +1,36 @@
 # hupi data retriever #
 
-- [Usage](#Usage)
-  - [Header Params](#Header Params)
-  - [Endpoints](#Endpoints)
-    * [Admin](#Admin)
-  - [Query](#Query)
-    * [mysql](#SQL Query)
-    * [postgresql](#SQL Query)
-    * [impala](SQL Query)
-    * [mongodb](MongoDB Query)
-    * [elasticsearch](#ElasticSearch Query)
-    * [openscoring](#Openscoring)
-  - [Render type](#Render type)
-    * [category serie value](#Category Serie Value)
-    * [fixed placement column](#Fixed Placement Column)
-    * [serie value](#Serie Value)
-    * [column stacked grouped](#Column Stacked Grouped)
-    * [boxplot](#Boxplot)
-    * [small heatmap](#Small Heatmap)
-    * [large heatmap](#Large Heatmap)
-    * [scatter](#Scatter)
-    * [bubble](#Bubble)
-    * [leaflet](#Leflet)
-    * [CSV](#CSV)
-    * [multiple CSV](#Multiple CSV)
-    * [JSON value](#JSON Value)
-    * [JSON array](#JSON Array)
-    * [value](#Value)
-    * [cursor](#Cursor)
-- [Development](#Development)
-- [Contributing](#Contributing)
-- [License](#License)
+- [Usage](#usage)
+  - [Header Params](#header-params)
+  - [Endpoints](#endpoints)
+    * [Admin](#admin)
+  - [Query](#query)
+    * [mysql](#sql-query)
+    * [postgresql](#sql-query)
+    * [impala](#sql-query)
+    * [mongodb](#mongodb-query)
+    * [elasticsearch](#elasticSearch-query)
+    * [openscoring](#openscoring)
+  - [Render type](#render-type)
+    * [category serie value](#category-serie-value)
+    * [fixed placement column](#fixed-placement-column)
+    * [serie value](#serie-value)
+    * [column stacked grouped](#column-stacked-grouped)
+    * [boxplot](#boxplot)
+    * [small heatmap](#small-heatmap)
+    * [large heatmap](#large-heatmap)
+    * [scatter](#scatter)
+    * [bubble](#bubble)
+    * [leaflet](#leflet)
+    * [CSV](#csv)
+    * [multiple CSV](#multiple-csv)
+    * [JSON value](#json-value)
+    * [JSON array](#json-array)
+    * [value](#value)
+    * [cursor](#cursor)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Usage ##
 this project use swagger Documentation
@@ -564,7 +564,7 @@ all render type output are JSON. All output presented below are in the `data` ke
     ```
 
 #### Serie Value ####
-  + <u>render type:</u> serie_value, pie_chart, half_donuts, funnel, column
+  + <u>render type:</u> serie_value, pie_chart, half_donuts, funnel, column, mult_iple_infobox
   + <u>required field in query result:</u> serie, value
   + <u>input:</u>
 
@@ -946,15 +946,15 @@ all render type output are JSON. All output presented below are in the `data` ke
     ```
 
 #### Value ####
-  + <u>render type:</u> value
+  + <u>render type:</u> value, infobox
   + <u>required field in query result:</u> none
   + <u>description:</u> return the last value of the last key
   + <u>input:</u>
 
     ```json
     [
-      { "my_field": 14 },
-      { "my_field": 42 }
+      { "my_field1": 14, "my_field2": 15 },
+      { "my_field1": 41, "my_field2": 42 }
     ]
     ```
   + <u>output:</u>

@@ -67,11 +67,7 @@ module Export
         hashout[hashin[v]] << hashin[keys.shift]
       end
     else
-      if hashout[hashin[v]].nil?
-        hashout[hashin[v]] = indent(keys, hashin, {}, value)
-      else
-        hashout[hashin[v]] = indent(keys, hashin, hashout[hashin[v]], value)
-      end
+      hashout[hashin[v]] = indent(keys, hashin, hashout.fetch(hashin[v], {}), value)
     end
     hashout
   end
@@ -87,25 +83,23 @@ module Export
   def self.action(value, action, params)
     case action
     when "to_int"
-      value = value.to_i
+      value.to_i
     when "to_float"
-      value = value.to_f
+      value.to_f
     when "to_string"
-      value = value.to_s
+      value.to_s
     when "date_string_to_timestamp"
-      value = DateTime.strptime(value, params["input_format"]).to_time.to_i unless value.blank?
+      DateTime.strptime(value, params["input_format"]).to_time.to_i unless value.blank?
     when "date_string_format"
-      value = DateTime.strptime(value, params["input_format"]).strftime(params["output_format"]) unless value.blank?
+      DateTime.strptime(value, params["input_format"]).strftime(params["output_format"]) unless value.blank?
     when "timestamp_format"
-      value = Time.at(value).strftime(params["output_format"]) unless value.blank?
+      Time.at(value).strftime(params["output_format"]) unless value.blank?
     when "round"
-      value = value.round(params) unless value.blank?
+      value.round(params) unless value.blank?
     when "multiply"
-      value *= params["by"]  unless value.blank?
+      value * params["by"]  unless value.blank?
     when "divide"
-      value /= params["by"]  unless value.blank?
+      value / params["by"]  unless value.blank?
     end
-
-    value
   end
 end
