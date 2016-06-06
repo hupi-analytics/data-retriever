@@ -36,7 +36,7 @@ module DataRetriever
               results = HdrAccount.where(filters).order(order)
               present results, with: HdrAccount::Entity, type: :preview
             rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
+              error!(e.to_s, 400)
             end
           end
 
@@ -55,7 +55,7 @@ module DataRetriever
             begin
               present HdrAccount.find(params[:id]), with: HdrAccount::Entity, type: :full
             rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
+              error!(e.to_s, 404)
             end
           end
 
@@ -71,7 +71,7 @@ module DataRetriever
             begin
               present HdrAccount.create!(params[:hdr_account].to_hash), with: HdrAccount::Entity, type: :full
             rescue ActiveRecord::RecordInvalid => e
-              error!("#{e}", 409)
+              error!(e.to_s, 409)
             end
           end
 
@@ -111,7 +111,7 @@ module DataRetriever
             begin
               HdrAccount.destroy(params[:id])
             rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
+              error!(e.to_s, 404)
             end
           end
 
@@ -133,7 +133,7 @@ module DataRetriever
               account.save
               { access_token: access_token }
             rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
+              error!(e.to_s, 404)
             end
           end
         end

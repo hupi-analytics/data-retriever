@@ -33,7 +33,7 @@ module DataRetriever
             begin
               present class_called.find(params[:id]), with: class_called::Entity, type: :full
             rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
+              error!(e.to_s, 404)
             end
           end
 
@@ -52,7 +52,7 @@ module DataRetriever
               error!("params empty", 400) if params[class_sym].nil?
               present class_called.create!(params[class_sym].to_hash), with: class_called::Entity, type: :full
             rescue ActiveRecord::RecordInvalid => e
-              error!("#{e}", 409)
+              error!(e.to_s, 409)
             end
           end
 
@@ -95,7 +95,7 @@ module DataRetriever
             begin
               class_called.destroy(params[:id])
             rescue ActiveRecord::RecordNotFound => e
-              error!("#{e}", 404)
+              error!(e.to_s, 404)
             end
           end
         end

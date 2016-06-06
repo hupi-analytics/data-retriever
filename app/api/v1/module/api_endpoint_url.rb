@@ -28,12 +28,17 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is not null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)", params[:module_name], params[:method_name], params[:render_type])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is not null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("explain", query, params[:endpoint_type], module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -57,12 +62,17 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)", params[:module_name], params[:method_name], params[:render_type])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("explain", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -87,13 +97,19 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is not null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)
-                        AND hdr_query_objects.name = ?", params[:module_name], params[:method_name], params[:render_type], params[:query_object_name])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is not null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)
+                                AND hdr_query_objects.name = ?",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type],
+                                params[:query_object_name]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("explain", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -118,13 +134,19 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)
-                        AND hdr_query_objects.name = ?", params[:module_name], params[:method_name], params[:render_type], params[:query_object_name])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)
+                                AND hdr_query_objects.name = ?",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type],
+                                params[:query_object_name]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("explain", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -148,12 +170,17 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is not null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)", params[:module_name], params[:method_name], params[:render_type])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is not null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("execute", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -177,12 +204,17 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)", params[:module_name], params[:method_name], params[:render_type])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("execute", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -207,13 +239,19 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is not null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)
-                        AND hdr_query_objects.name = ?", params[:module_name], params[:method_name], params[:render_type], params[:query_object_name])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is not null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)
+                                AND hdr_query_objects.name = ?",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type],
+                                params[:query_object_name]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("execute", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
 
@@ -238,13 +276,19 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                .where("hdr_endpoints.hdr_account_id is null
-                        AND hdr_endpoints.module_name = ?
-                        AND hdr_endpoints.method_name = ?
-                        AND ? = ANY (hdr_export_types.render_types)
-                        AND hdr_query_objects.name = ?", params[:module_name], params[:method_name], params[:render_type], params[:query_object_name])
-                .order("hdr_query_objects.updated_at")
-                .first
+                              .where(
+                                "hdr_endpoints.hdr_account_id is null
+                                AND hdr_endpoints.module_name = ?
+                                AND hdr_endpoints.method_name = ?
+                                AND ? = ANY (hdr_export_types.render_types)
+                                AND hdr_query_objects.name = ?",
+                                params[:module_name],
+                                params[:method_name],
+                                params[:render_type],
+                                params[:query_object_name]
+                              )
+                              .order("hdr_query_objects.updated_at")
+                              .first
         action_on_query("execute", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
 
