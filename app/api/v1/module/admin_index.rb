@@ -57,7 +57,7 @@ module DataRetriever
                         end
               present results.where(filters).order(order), with: class_called::Entity, type: :preview
             rescue ActiveRecord::StatementInvalid => e
-              error!("#{e}", 400)
+              error!(e.to_s, 400)
             end
           end
         end

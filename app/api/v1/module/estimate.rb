@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'yaml'
+require "yaml"
 module DataRetriever
   module V1
     class Estimate < Grape::API
@@ -33,12 +33,16 @@ module DataRetriever
         params[subject_name].each do |k, v|
           begin
             total += regression_parameters[k] * v.to_i
-          rescue Exception => NoMethodError
+          rescue NoMethodError
             invalid << k
           end
         end
         if invalid.empty?
-          { estimate: total.round(2), lower_bound: (total - regression_parameters['stdev']).round(2), upper_bound: (total + regression_parameters['stdev']).round(2) }
+          {
+            estimate: total.round(2),
+            lower_bound: (total - regression_parameters["stdev"]).round(2),
+            upper_bound: (total + regression_parameters["stdev"]).round(2)
+          }
         else
           logger.error(desc: "ESTIMATE ERROR", message: "invalid keys: #{invalid}")
           error!("#{params[:subject]} settings not found: #{invalid}, try one of: #{regression_parameters.keys}", 400)
