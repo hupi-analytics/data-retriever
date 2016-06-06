@@ -13,6 +13,7 @@ class HdrEndpoint < ActiveRecord::Base
 
   before_validation :set_module_name_to_account
 
+  default_scope { order(created_at: :desc) }
   def render_types
     hdr_query_objects.inject([]) do |memo, qo|
       memo + qo.render_types
@@ -27,8 +28,7 @@ class HdrEndpoint < ActiveRecord::Base
   end
 
   class Entity < Grape::Entity
-    expose :id, :module_name, :method_name, :api
-    expose :hdr_account_id, unless: { type: :preview }
+    expose :id, :module_name, :method_name, :api, :hdr_account_id
     expose :hdr_query_objects, using: HdrQueryObject::Entity, unless: { type: :preview }
   end
 end

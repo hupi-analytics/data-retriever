@@ -43,7 +43,12 @@ FactoryGirl.define do
       QUERY
 
       after(:create) do |query|
-        query.hdr_export_types << create(:hdr_export_type, :csv)
+        het = HdrExportType.find_by(name: "csv")
+        if het
+          query.hdr_export_types << het
+        else
+          query.hdr_export_types << create(:hdr_export_type, :csv)
+        end
       end
     end
 
@@ -74,7 +79,12 @@ FactoryGirl.define do
       QUERY
 
       after(:create) do |query|
-        query.hdr_export_types << create(:hdr_export_type, :category_serie_value)
+        het = HdrExportType.find_by(name: "category_serie_value")
+        if het
+          query.hdr_export_types << het
+        else
+          query.hdr_export_types << create(:hdr_export_type, :category_serie_value)
+        end
       end
     end
 
@@ -105,8 +115,18 @@ FactoryGirl.define do
       QUERY
 
       after(:create) do |query|
-        query.hdr_export_types << create(:hdr_export_type, :category_serie_value)
-        query.hdr_export_types << create(:hdr_export_type, :csv)
+        het = HdrExportType.find_by(name: "csv")
+        if het
+          query.hdr_export_types << het
+        else
+          query.hdr_export_types << create(:hdr_export_type, :csv)
+        end
+        het = HdrExportType.find_by(name: "category_serie_value")
+        if het
+          query.hdr_export_types << het
+        else
+          query.hdr_export_types << create(:hdr_export_type, :category_serie_value)
+        end
       end
     end
 

@@ -5,13 +5,15 @@ describe DataRetriever::API do
     DataRetriever::API
   end
 
-  let!(:hdr_export_type_test) { FactoryGirl.create(:hdr_export_type, :csv) }
+  let!(:hdr_export_type_test) do
+    HdrExportType.find_by(name: "csv") || FactoryGirl.create(:hdr_export_type, :csv)
+  end
   let!(:account) { FactoryGirl.create(:hdr_account, :superadmin) }
   describe "GET hdr_export_types" do
     let(:url) { "admin/hdr_export_types?token=#{account.access_token}" }
 
     before(:all) do
-      4.times { FactoryGirl.create(:hdr_export_type, :csv) }
+      4.times { FactoryGirl.create(:hdr_export_type) }
     end
 
     context "when read all hdr_export_type" do
@@ -76,7 +78,7 @@ describe DataRetriever::API do
       it "return object" do
         post url, hdr_export_type: new_hdr_export_type, token: account.access_token
         expect(response.status).to eq(201)
-        expect_json(new_hdr_export_type)
+        expect_json(new_hdr_export_type.merge(render_types: new_hdr_export_type[:render_types] << new_hdr_export_type[:name]))
       end
 
       describe "hdr_export_type create" do
@@ -105,7 +107,7 @@ describe DataRetriever::API do
       it "return object" do
         put url, hdr_export_type: update_hdr_export_type, token: account.access_token
         expect(response.status).to eq(200)
-        expect_json(update_hdr_export_type)
+        expect_json(update_hdr_export_type.merge(render_types: update_hdr_export_type[:render_types] << update_hdr_export_type[:name]))
       end
     end
 
