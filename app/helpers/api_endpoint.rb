@@ -19,7 +19,7 @@ module ApiEndpoint
       }
       begin
         cursor = query_engine.send(action, query_decorated, info)
-      rescue IOError, Mysql2::Error
+      rescue IOError, Mysql2::Error, PG::UnableToSend
         query_engine.reload
         cursor = query_engine.send(action, query_decorated, info)
       end
