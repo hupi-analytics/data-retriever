@@ -33,4 +33,5 @@ et = HdrExportType.find_by(name: "json_value")
 et.update(render_types: %w(treemap2 treemap3))
 
 admin = HdrAccount.find_or_create_by(name: "admin", role: "superadmin")
-puts admin.access_token
+admin.access_token = "50f882cb674f77ad2755dadfea5b5346"
+admin.save
