@@ -50,11 +50,8 @@ class OpenscoringQueryEngine < DefaultQueryEngine
   def parse_result(result, prediction_id)
     result.value
     res = JSON.parse(result.body)
-    if res.fetch("id") == prediction_id
-      [res.fetch("result", {})]
-    else
-      raise "prediction id mismatch"
-    end
+    raise "prediction id mismatch" if res.fetch("id") != prediction_id
+    [res.fetch("result", {})]
   end
 
   def predict(query, model_name)

@@ -23,7 +23,7 @@ class SQLQueryEngine < DefaultQueryEngine
 
       if filters[pattern] && !filters[pattern].empty?
         filters[pattern].each do |f|
-          val = f[:value_type].downcase == "string" ? "'#{f[:value]}'" : f[:value]
+          val = f[:value_type].casecmp("string").zero? ? "'#{f[:value]}'" : f[:value]
           pattern_filter << "(#{f[:field]} #{f[:operator]} #{val})" if f[:value]
         end
         pattern_string += pattern =~ /where/ ? "WHERE " : "AND "

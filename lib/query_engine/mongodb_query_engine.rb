@@ -10,19 +10,19 @@ class MongodbQueryEngine < DefaultQueryEngine
     result = @connexion.use(@database)[query["collection"]]
     query["query"].each do |operation|
       result = case operation["operator"]
-      when "aggregate"
-        result.send(:aggregate, operation["pipeline"], operation["opts"] || {})
-      when "find"
-        result.send(:find, operation["filter"], operation["opts"] || {})
-      when "map_reduce"
-        result.send(:map_reduce, operation["map"], operation["reduce"], operation["opts"] || {})
-      end
+               when "aggregate"
+                 result.send(:aggregate, operation["pipeline"], operation["opts"] || {})
+               when "find"
+                 result.send(:find, operation["filter"], operation["opts"] || {})
+               when "map_reduce"
+                 result.send(:map_reduce, operation["map"], operation["reduce"], operation["opts"] || {})
+               end
     end
     result
   end
 
   def explain(query, info)
-    execute(query, info).explain()
+    execute(query, info).explain
   end
 
   def close
@@ -47,16 +47,16 @@ class MongodbQueryEngine < DefaultQueryEngine
       if filters[pattern] && !filters[pattern].empty?
         filters[pattern].each do |f|
           val = case f[:value_type].downcase
-            when "string"
-              "\"#{f[:value]}\""
-            else
-              f[:value]
-            end
-          if f[:operator] == "$eq"
-            pattern_filter << "{ \"#{f[:field]}\": #{val} }"
-          else
-            pattern_filter << "{ \"#{f[:field]}\": { \"#{f[:operator]}\": #{val} } }"
-          end
+                when "string"
+                  "\"#{f[:value]}\""
+                else
+                  f[:value]
+                end
+          pattern_filter << if f[:operator] == "$eq"
+                              "{ \"#{f[:field]}\": #{val} }"
+                            else
+                              "{ \"#{f[:field]}\": { \"#{f[:operator]}\": #{val} } }"
+                            end
         end
 
         case pattern
