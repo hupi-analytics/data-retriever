@@ -30,3 +30,8 @@
 
 #test report
 /spec/reports/**
+
+# Vim tmp/swap files
+*~
+*.swp
+*.swo
