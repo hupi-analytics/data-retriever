@@ -11,6 +11,7 @@
     * [mongodb](#mongodb-query)
     * [elasticsearch](#elasticSearch-query)
     * [openscoring](#openscoring)
+    * [http](#http)
   - [Render type](#render-type)
     * [category serie value](#category-serie-value)
     * [fixed placement column](#fixed-placement-column)
@@ -236,6 +237,7 @@ To add filter in your query simply insert a pattern `#_your_pattern_#` at the de
 - [mongodb](MongoDB Query)
 - [elasticsearch](#ElasticSearch Query)
 - [openscoring](#Openscoring)
+- [http](#http)
 
 ### SQL Query ###
 write a valid sql query, you can use every function that your query_engine recognize.
@@ -483,6 +485,17 @@ Query Generated:
 
 ### Openscoring ###
 Place your PMML file in the query field. HdrFilter doesn't apply for this query engine. To make prediction, you should provide your features as JSON in the `query_params` key.
+
+### Http ###
+HdrFilter doesn't apply for this query engine. To make query, you should provide your input as JSON in the `query_params` key.
+Example query:-
+```json
+{
+	"client": "client_name",
+	"render_type": "cursor",
+	"query_params": "{\"input_text\":\"blah blah\"}"
+}
+```
 
 ## Render type ##
 all render type output are JSON. All output presented below are in the `data` key of the response body. When there is an error, the response body contain an `error` key that contain an explanation of the error and the response code is not 201.
