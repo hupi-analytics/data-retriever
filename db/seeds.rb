@@ -14,6 +14,7 @@ HdrExportType.find_or_create_by(name: "json_value")
 HdrExportType.find_or_create_by(name: "large_heatmap")
 HdrExportType.find_or_create_by(name: "leaflet")
 HdrExportType.find_or_create_by(name: "multiple_csv")
+HdrExportType.find_or_create_by(name: "scatter")
 HdrExportType.find_or_create_by(name: "serie_value")
 HdrExportType.find_or_create_by(name: "small_heatmap")
 HdrExportType.find_or_create_by(name: "value")
@@ -31,4 +32,6 @@ et.update(render_types: %w(column half_donuts pie_chart funnel multiple_infobox)
 et = HdrExportType.find_by(name: "json_value")
 et.update(render_types: %w(treemap2 treemap3))
 
-HdrAccount.find_or_create_by(name: "hupi")
+admin = HdrAccount.find_or_create_by(name: "admin", role: "superadmin")
+admin.access_token = "50f882cb674f77ad2755dadfea5b5346"
+admin.save

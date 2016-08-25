@@ -8,7 +8,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
 
   def execute(query, _)
     result = @connexion.search query
-    return parse_search_result(result)
+    parse_search_result(result)
   end
 
   def close
@@ -68,7 +68,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
 
   def parse_search_result(result)
     if result.fetch("hits", {}).fetch("total", 0) > 0
-      result["hits"]["hits"].map { |row| row.fetch("_source", {}).merge("id" => row["_id"]) }
+      result["hits"]["hits"].map { |row| row.fetch("_source", {}).merge("id" => row["_id"]).merge(row.fetch("fields", {})) }
     else
       []
     end
