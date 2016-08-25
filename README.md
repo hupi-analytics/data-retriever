@@ -487,7 +487,7 @@ Query Generated:
 Place your PMML file in the query field. HdrFilter doesn't apply for this query engine. To make prediction, you should provide your features as JSON in the `query_params` key.
 
 ### Http ###
-HdrFilter doesn't apply for this query engine. To make query, you should provide your input as JSON in the `query_params` key.
+HdrFilter doesn't apply for this query engine. To make query, you should provide your input as JSON in the `query_params` key. Basically this is used to predict results and query params is mandatory.
 Example query:-
 ```json
 {
