@@ -133,6 +133,7 @@ only hdr_endpoint with `api` fields to true are accessible with a non superadmin
 * <u>module_name:</u> (String)
 * <u>method_name:</u> (String)
 
+
 #### Admin ####
 admin endpoints follows REST convention.
 * index: GET `http://api.dataretriever.hupi.io/admin/(:model_name)s`
@@ -229,6 +230,13 @@ If you want to better understand what each field does take a look in `lib/export
 
 #### Add filter ####
 To add filter in your query simply insert a pattern `#_your_pattern_#` at the desired place in the query, and add the corresponding hdr_filter. the pattern will be replaced by the filter given when you call the hdr_endpoint or if there is no filter given it will be replaced by an empty string.
+
+#### Filter field types
+
+* Filter types supported are int, string and array.
+* Comparison operators can be used int type filters.
+* To compare dates, set the type as 'string' and compare. Date as an explicit
+type is not supported
 
 #### Available Query engine ####
 - [mysql](#SQL Query)

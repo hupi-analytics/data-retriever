@@ -9,7 +9,6 @@ class MysqlQueryEngine < SQLQueryEngine
   end
 
   def execute(query, _)
-    DataRetriever::API.logger.error query.inspect
     cursor = @connexion.query(query)
   end
 
