@@ -15,7 +15,7 @@ class HdrQueryEngine < ActiveRecord::Base
   end
 
   def check_for_endpoints
-    raise ActiveRecord::ActiveRecordError.new("Query Engine has endpoints linked to it")  if self.hdr_query_objects.count > 0
+    raise ActiveRecord::ActiveRecordError.new("Can't delete Query Engine, it has endpoints linked to it")  if self.hdr_query_objects.count > 0
   end
 
   class Entity < Grape::Entity
