@@ -96,6 +96,8 @@ module DataRetriever
               class_called.destroy(params[:id])
             rescue ActiveRecord::RecordNotFound => e
               error!(e.to_s, 404)
+            rescue ActiveRecord::ActiveRecordError => e
+              error!(e.message, 403)
             end
           end
         end
