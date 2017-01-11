@@ -7,11 +7,18 @@ class HdrQueryEngine < ActiveRecord::Base
   validates :engine, presence: true
   default_scope { order("name") }
   has_many :hdr_query_objects, dependent: :destroy
+  after_update :reload_query_engine_connection
 
   def init(client)
     qe = Object.const_get("#{self.engine.capitalize}QueryEngine").new(client, self.settings)
     qe.connect()
     qe
+  end
+
+  def reload_query_engine_connection
+    # Using try for client name, because some query engines are not linked to
+    # any account, that is a special case
+    DataRetriever::QueryEngines.reload_query_engine(self, self.hdr_account.try(:name))
   end
 
   def check_for_endpoints
