@@ -495,13 +495,36 @@ Query Generated:
 Place your PMML file in the query field. HdrFilter doesn't apply for this query engine. To make prediction, you should provide your features as JSON in the `query_params` key.
 
 ### Http ###
-HdrFilter doesn't apply for this query engine. To make query, you should provide your input as JSON in the `query_params` key. Basically this is used to predict results and query params is mandatory.
+To make query, you should provide your input as JSON in the `query_params` key. Basically this is used to predict results and query params is mandatory.
 Example query:-
 ```json
 {
 	"client": "client_name",
 	"render_type": "cursor",
 	"query_params": "{\"input_text\":\"blah blah\"}"
+}
+```
+
+And to use filters, filters replace the value you dynamically want to send. So filters won't have a field name
+But you can give a dummy field name, likewise to default operator as well. field_name and default_operator
+doesn't apply for http query engine filters. Hence replace with them some value
+Example query_object filter:-
+```json
+{
+	"input":{"visitor_id": "#_replace_f1_#"}
+}
+```
+And filter will be with these values 
+```json
+{pattern: 'replace_f1', field_type: 'String', field: 'Anyfieldname', defaultOperator: 'doesnot apply', filter_name: 'vid'}
+```
+
+To make a query to this endpoint with the query_object and filter values, your query body should be like this
+```json
+{
+	"client":"hupi",
+	"render_type":"cursor",
+	"filters":"{\"vid\":\"45edcb88030b8da9\"}"
 }
 ```
 
