@@ -68,7 +68,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
 
   def parse_search_result(result)
     if result["aggregations"]
-      result["aggregations"].to_a
+      [result["aggregations"]]
     elsif result.fetch("hits", {}).fetch("total", 0) > 0
       result["hits"]["hits"].map { |row| row.fetch("_source", {}).merge("id" => row["_id"]).merge(row.fetch("fields", {})) }
     else
