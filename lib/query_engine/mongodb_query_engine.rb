@@ -39,7 +39,7 @@ class MongodbQueryEngine < DefaultQueryEngine
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(match|find|and)_\w+)_#/i).flatten.uniq
+    patterns = query.scan(/#_(?<pat>(match|find|and|replace)_\w+)_#/i).flatten.uniq
 
     patterns.each do |pattern|
       pattern_filter = []
