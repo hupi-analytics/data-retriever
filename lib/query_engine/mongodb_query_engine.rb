@@ -71,6 +71,8 @@ class MongodbQueryEngine < DefaultQueryEngine
         when /and/
           pattern_string << ","
           pattern_string << pattern_filter.join(", ")
+        when /replace/
+          pattern_string << pattern_filter.join(", ")
         end
       end
       query.gsub!("#_#{pattern}_#", pattern_string)
