@@ -39,7 +39,7 @@ class MongodbQueryEngine < DefaultQueryEngine
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(match|find|and|replace)_\w+)_#/i).flatten.uniq
+    patterns = query.scan(/#_(?<pat>(match|find|and|replace|replace_field)_\w+)_#/i).flatten.uniq
 
     patterns.each do |pattern|
       pattern_filter = []
@@ -54,6 +54,8 @@ class MongodbQueryEngine < DefaultQueryEngine
                 end
           pattern_filter << if f[:operator] == "$eq"
                               "{ \"#{f[:field]}\": #{val} }"
+                            elsif f[:operator] == "$replace"
+                              "#{val}"
                             else
                               "{ \"#{f[:field]}\": { \"#{f[:operator]}\": #{val} } }"
                             end
@@ -71,9 +73,12 @@ class MongodbQueryEngine < DefaultQueryEngine
         when /and/
           pattern_string << ","
           pattern_string << pattern_filter.join(", ")
+        when /replace_field/
+          pattern_string << pattern_filter.join(", ")
         when /replace/
           pattern_string << pattern_filter.join(", ")
         end
+
       end
       query.gsub!("#_#{pattern}_#", pattern_string)
     end
