@@ -57,6 +57,19 @@ describe MongodbQueryEngine do
     }
     REQ
   end
+  let(:replace_field_query) do
+    <<-REQ.gsub(/^ {4}/, "")
+    {
+      "collection": "metrics",
+      "query": [
+        {
+          "operator": "find",
+          "filter": {"nice": #_replace_field_f1_#}
+        }
+      ]
+    }
+    REQ
+  end
   let(:and_query) do
     <<-REQ.gsub(/^ {4}/, "")
     {
@@ -111,6 +124,9 @@ describe MongodbQueryEngine do
       "and_f1" => [
         { operator: "$gte", value: "20130101", field: "datestamp", value_type: "int" },
         { operator: "$lte", value: "20151231", field: "datestamp", value_type: "int" }
+      ],
+      "replace_field_f1" => [
+        { operator: "$eq", value: "100", field: "total", value_type: "int" }
       ]
     }
   end
@@ -332,6 +348,21 @@ describe MongodbQueryEngine do
         end
 
         it { expect(qe.decorate(and_query, filter_array)).to eq(and_query_res) }
+      end
+      context "with replace filters" do
+        let(:replace_field_res) do
+          {
+            "collection" => "metrics",
+            "query" => [
+              {
+                "operator" => "find",
+                "filter" => {"nice"=>{"total"=>100}}
+              }
+            ]
+          }
+        end
+
+        it { expect(qe.decorate(replace_field_query, filter_array)).to eq(replace_field_res) }
       end
 
       context "without filters" do
