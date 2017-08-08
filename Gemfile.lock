@@ -1,27 +1,3 @@
-GIT
-  remote: git://github.com/scauglog/grape_logging.git
-  revision: d8b474ee1837e92b2d93c049258bef58b4878c61
-  specs:
-    grape_logging (1.2.1)
-      grape
-
-GIT
-  remote: git://github.com/scauglog/logstash-logger.git
-  revision: 8cfbc461502674faff68dd0b8ec876184ef87c7f
-  specs:
-    logstash-logger (0.15.2)
-      logstash-event (~> 1.2)
-      stud
-
-GIT
-  remote: git://github.com/scauglog/simplecov.git
-  revision: 3c375607dff661433ede5c11a66163e39ac8eeca
-  specs:
-    simplecov (0.10.0)
-      docile (~> 1.1.0)
-      json (~> 1.8)
-      simplecov-html (~> 0.10.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -104,6 +80,8 @@ GEM
       multi_json (>= 1.3.2)
     grape-swagger (0.21.0)
       grape (>= 0.12.0)
+    grape_logging (1.3.0)
+      grape
     hashie (3.4.4)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -115,6 +93,9 @@ GEM
       thrift (~> 0.9.1)
     json (1.8.3)
     logstash-event (1.2.02)
+    logstash-logger (0.15.2)
+      logstash-event (~> 1.2)
+      stud
     method_source (0.8.2)
     mime-types (2.4.3)
     minitest (5.9.0)
@@ -174,9 +155,13 @@ GEM
     settingslogic (2.0.9)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    simplecov-html (0.10.0)
+    simplecov (0.14.1)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.1)
     slop (3.6.0)
-    stud (0.0.22)
+    stud (0.0.23)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -210,10 +195,10 @@ DEPENDENCIES
   grape
   grape-entity
   grape-swagger
-  grape_logging!
+  grape_logging (= 1.3.0)
   impala (~> 0.4.3)
   json (~> 1.8.0)
-  logstash-logger!
+  logstash-logger (= 0.15.2)
   mongo
   mysql2
   pg
@@ -227,9 +212,12 @@ DEPENDENCIES
   rubocop
   settingslogic
   shoulda-matchers
-  simplecov!
+  simplecov
   virtus
   webmock
 
+RUBY VERSION
+   ruby 2.2.4p230
+
 BUNDLED WITH
-   1.10.3
+   1.12.5
