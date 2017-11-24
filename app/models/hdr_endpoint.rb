@@ -28,7 +28,7 @@ class HdrEndpoint < ActiveRecord::Base
   end
 
   class Entity < Grape::Entity
-    expose :id, :module_name, :method_name, :api, :hdr_account_id
+    expose :id, :module_name, :method_name, :api, :hdr_account_id, :description
     expose :hdr_query_objects, using: HdrQueryObject::Entity, unless: { type: :preview }
   end
 end
