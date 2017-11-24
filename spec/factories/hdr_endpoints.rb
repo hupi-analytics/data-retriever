@@ -3,7 +3,7 @@ FactoryGirl.define do
     sequence(:module_name) { |n| "module_#{n}" }
     sequence(:method_name) { |n| "method_#{n}" }
     api true
-
+    description "hi"
     trait :api_disable do
       api false
     end
