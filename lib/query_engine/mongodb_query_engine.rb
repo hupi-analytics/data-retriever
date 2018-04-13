@@ -1,5 +1,7 @@
 require "mongo"
 require "query_engine/default_query_engine"
+require "lib/core_extensions/json/decode" # For json parsing
+
 
 class MongodbQueryEngine < DefaultQueryEngine
   def connect
@@ -32,7 +34,7 @@ class MongodbQueryEngine < DefaultQueryEngine
   def decorate(query, filters = {}, query_params = {})
     apply_params(query, query_params)
     apply_filters(query, filters)
-    JSON.parse(query)
+    JSON.decode(query)
   end
 
   private
@@ -50,7 +52,7 @@ class MongodbQueryEngine < DefaultQueryEngine
                 when "string"
                   "\"#{f[:value]}\""
                 when "date"
-                  "DateTime.parse(#{f[:value]})"
+                  "\"#{f[:value]}\""
                 when "array"
                   f[:value]
                 else
