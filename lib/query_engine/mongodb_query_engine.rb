@@ -39,7 +39,7 @@ class MongodbQueryEngine < DefaultQueryEngine
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(match|find|and|replace|replace_field)_\w+)_#/i).flatten.uniq
+    patterns = query.scan(/#_(?<pat>(match|find|and|replace|limit|replace_field)_\w+)_#/i).flatten.uniq
 
     patterns.each do |pattern|
       pattern_filter = []
@@ -49,13 +49,17 @@ class MongodbQueryEngine < DefaultQueryEngine
           val = case f[:value_type].downcase
                 when "string"
                   "\"#{f[:value]}\""
+                when "date"
+                  "DateTime.parse(#{f[:value]})"
+                when "array"
+                  f[:value]
                 else
                   f[:value]
                 end
           pattern_filter << if f[:operator] == "$eq"
                               "{ \"#{f[:field]}\": #{val} }"
-                            elsif f[:operator] == "$replace"
-                              "#{val}"
+                            elsif f[:operator] == "$replace" || f[:operator] == "$limit"
+                              val
                             else
                               "{ \"#{f[:field]}\": { \"#{f[:operator]}\": #{val} } }"
                             end
@@ -73,6 +77,10 @@ class MongodbQueryEngine < DefaultQueryEngine
         when /and/
           pattern_string << ","
           pattern_string << pattern_filter.join(", ")
+        when /limit/
+          pattern_string << "{ \"$limit\": "
+          pattern_string << pattern_filter.join(", ")
+          pattern_string << " }"
         when /replace_field/
           pattern_string << pattern_filter.join(", ")
         when /replace/

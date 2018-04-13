@@ -37,6 +37,46 @@ describe MongodbQueryEngine do
     }
     REQ
   end
+  let(:limit_query) do
+    <<-REQ.gsub(/^ {4}/, "")
+    {
+      "collection": "metrics",
+      "query": [
+        {
+          "operator": "aggregate",
+          "pipeline":[
+            {
+              "$sort": {
+                "category": 1,
+                "serie": 1
+              }
+            }, #_limit_f1_#
+          ]
+        }
+      ]
+    }
+    REQ
+  end
+  let(:array_in_query) do
+    <<-REQ.gsub(/^ {4}/, "")
+    {
+      "collection": "metrics",
+      "query": [
+        {
+          "operator": "aggregate",
+          "pipeline":[ #_match_f2_#
+            {
+              "$sort": {
+                "category": 1,
+                "serie": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+    REQ
+  end
   let(:find_query) do
     <<-REQ.gsub(/^ {4}/, "")
     {
@@ -117,6 +157,9 @@ describe MongodbQueryEngine do
         { operator: "$lte", value: "20151231", field: "datestamp", value_type: "int" },
         { operator: "$eq", value: "2014", field: "year", value_type: "string" }
       ],
+      "match_f2" => [
+        { operator: "$in", value: "[\"abc\", \"def\", \"ghi\"]", field: "names", value_type: "array" }
+      ],
       "find_f1" => [
         { operator: "$gte", value: "20130101", field: "datestamp", value_type: "int" },
         { operator: "$lte", value: "20151231", field: "datestamp", value_type: "int" }
@@ -127,6 +170,9 @@ describe MongodbQueryEngine do
       ],
       "replace_field_f1" => [
         { operator: "$eq", value: "100", field: "total", value_type: "int" }
+      ],
+      "limit_f1" => [
+        { operator: "$limit", value: "100", field: "total", value_type: "int" }
       ]
     }
   end
@@ -363,6 +409,53 @@ describe MongodbQueryEngine do
         end
 
         it { expect(qe.decorate(replace_field_query, filter_array)).to eq(replace_field_res) }
+      end
+
+      context "with limit filters" do
+        let(:limit_query_res) do
+          {
+            "collection" => "metrics",
+            "query" => [
+              {
+                "operator"=> "aggregate",
+                "pipeline"=>[
+                  {
+                    "$sort" => {
+                      "category"=> 1,
+                      "serie"=> 1
+                    }
+                  }, {"$limit"=> 100}
+                ]
+              }
+            ]
+          }
+        end
+
+        it { expect(qe.decorate(limit_query, filter_array)).to eq(limit_query_res) }
+      end
+
+      context "with array filters" do
+        let(:array_in_query_res) do
+          {
+            "collection" => "metrics",
+            "query" => [
+              {
+                "operator"=> "aggregate",
+                "pipeline"=>[
+                  { "$match" => { "$and" => [{ "names" => { "$in" => ["abc", "def", "ghi"] } }] } },
+                      {
+                        "$sort" => {
+                          "category"=> 1,
+                          "serie"=> 1
+                        }
+                  }
+                ]
+              }
+            ]
+          }
+        end
+
+        it { expect(qe.decorate(array_in_query, filter_array)).to eq(array_in_query_res) }
       end
 
       context "without filters" do

@@ -304,6 +304,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
 
 #### Filter Pattern ####
 * `#_match_[something_else]_#`: add a match `{ $match: { $and: [ filters_here ] } },`, join filters with `,`
+`#_limit_[something_else]_#`: Limit number of results. Limit filter values example: - `{ operator: "$limit", value: "100", field: "total", value_type: "int" }`
 
   ```json
   {
@@ -332,7 +333,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
               "category": 1,
               "serie": 1
             }
-          }
+          },
+          #_limit_f1_#
         ]
       }
     ]
