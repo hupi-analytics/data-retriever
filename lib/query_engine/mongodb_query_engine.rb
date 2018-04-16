@@ -32,16 +32,17 @@ class MongodbQueryEngine < DefaultQueryEngine
   end
 
   def decorate(query, filters = {}, query_params = {})
+    @apply_date_filters = false
     apply_params(query, query_params)
     apply_filters(query, filters)
-    JSON.decode(query)
+    JSON.decode(query, @apply_date_filters)
   end
 
   private
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(match|find|and|replace|limit|replace_field)_\w+)_#/i).flatten.uniq
+    patterns = query.scan(/#_(?<pat>(match|find|and|replace|limit|offset|replace_field)_\w+)_#/i).flatten.uniq
 
     patterns.each do |pattern|
       pattern_filter = []
@@ -52,6 +53,7 @@ class MongodbQueryEngine < DefaultQueryEngine
                 when "string"
                   "\"#{f[:value]}\""
                 when "date"
+                  @apply_date_filters = true
                   "\"#{f[:value]}\""
                 when "array"
                   f[:value]
@@ -60,7 +62,7 @@ class MongodbQueryEngine < DefaultQueryEngine
                 end
           pattern_filter << if f[:operator] == "$eq"
                               "{ \"#{f[:field]}\": #{val} }"
-                            elsif f[:operator] == "$replace" || f[:operator] == "$limit"
+                            elsif f[:operator] == "$replace" || f[:operator] == "$limit" || f[:operator] == "$offset"
                               val
                             else
                               "{ \"#{f[:field]}\": { \"#{f[:operator]}\": #{val} } }"
@@ -80,7 +82,11 @@ class MongodbQueryEngine < DefaultQueryEngine
           pattern_string << ","
           pattern_string << pattern_filter.join(", ")
         when /limit/
-          pattern_string << "{ \"$limit\": "
+          pattern_string << ",{ \"$limit\": "
+          pattern_string << pattern_filter.join(", ")
+          pattern_string << " }"
+        when /offset/
+          pattern_string << ",{ \"$skip\": "
           pattern_string << pattern_filter.join(", ")
           pattern_string << " }"
         when /replace_field/

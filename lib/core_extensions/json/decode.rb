@@ -18,9 +18,13 @@ module JSON
     #
     #   ActiveSupport::JSON.decode("{\"team\":\"rails\",\"players\":\"36\"}")
     #   => {"team" => "rails", "players" => "36"}
-    def decode(json)
+    def decode(json, parse_json_times)
       data = ::JSON.parse(json, quirks_mode: true)
-      convert_dates_from(data)
+      if parse_json_times
+        convert_dates_from(data)
+      else
+        data
+      end
     end
 
     # Returns the class of the error that will be raised when there is an

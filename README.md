@@ -383,6 +383,27 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 
+* `#_limit_[something_else]_#` and `#_offset_[something_else]_#`: start with `,` and join filters with `,` To limit number of documents use limit filter and operator as $limit. And for offset, where we skip a specified number of documents, pass operator as $offset
+
+  ```json
+  {
+    "collection": "metrics",
+    "query": [
+      {
+        "operator": "find",
+        "filter": {"$and": [{ "year": 2014 }]},
+        "opts": {
+          "$sort": {
+            "year": 1,
+            "month": 1,
+            "day": 1
+          }
+        } #_limit_f1_# #_offset_f1_#
+      }
+    ]
+  }
+  ```
+
 ### ElasticSearch Query ###
 write a regular ElasticSearch POST query. See [ElasticSearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) for available operator.
 the result returned are the one in `[hits][_source]` key.

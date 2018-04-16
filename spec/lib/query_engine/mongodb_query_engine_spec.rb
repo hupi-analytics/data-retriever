@@ -37,7 +37,7 @@ describe MongodbQueryEngine do
     }
     REQ
   end
-  let(:limit_query) do
+  let(:limit_and_offset_query) do
     <<-REQ.gsub(/^ {4}/, "")
     {
       "collection": "metrics",
@@ -50,7 +50,7 @@ describe MongodbQueryEngine do
                 "category": 1,
                 "serie": 1
               }
-            }, #_limit_f1_#
+            } #_limit_f1_# #_offset_f1_#
           ]
         }
       ]
@@ -65,6 +65,26 @@ describe MongodbQueryEngine do
         {
           "operator": "aggregate",
           "pipeline":[ #_match_f2_#
+            {
+              "$sort": {
+                "category": 1,
+                "serie": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+    REQ
+  end
+  let(:date_type_query) do
+    <<-REQ.gsub(/^ {4}/, "")
+    {
+      "collection": "metrics",
+      "query": [
+        {
+          "operator": "aggregate",
+          "pipeline":[ #_match_f3_#
             {
               "$sort": {
                 "category": 1,
@@ -160,6 +180,9 @@ describe MongodbQueryEngine do
       "match_f2" => [
         { operator: "$in", value: "[\"abc\", \"def\", \"ghi\"]", field: "names", value_type: "array" }
       ],
+      "match_f3" => [
+        { operator: "$gte", value: "2018-04-16 09:00:00", field: "start_time", value_type: "date" }
+      ],
       "find_f1" => [
         { operator: "$gte", value: "20130101", field: "datestamp", value_type: "int" },
         { operator: "$lte", value: "20151231", field: "datestamp", value_type: "int" }
@@ -173,6 +196,9 @@ describe MongodbQueryEngine do
       ],
       "limit_f1" => [
         { operator: "$limit", value: "100", field: "total", value_type: "int" }
+      ],
+      "offset_f1" => [
+        { operator: "$offset", value: "100", field: "total", value_type: "int" }
       ]
     }
   end
@@ -411,8 +437,8 @@ describe MongodbQueryEngine do
         it { expect(qe.decorate(replace_field_query, filter_array)).to eq(replace_field_res) }
       end
 
-      context "with limit filters" do
-        let(:limit_query_res) do
+      context "with limit and offset filters" do
+        let(:limit_and_offset_query_res) do
           {
             "collection" => "metrics",
             "query" => [
@@ -424,14 +450,38 @@ describe MongodbQueryEngine do
                       "category"=> 1,
                       "serie"=> 1
                     }
-                  }, {"$limit"=> 100}
+                  }, {"$limit"=> 100}, {"$skip"=>100}
                 ]
               }
             ]
           }
         end
 
-        it { expect(qe.decorate(limit_query, filter_array)).to eq(limit_query_res) }
+        it { expect(qe.decorate(limit_and_offset_query, filter_array)).to eq(limit_and_offset_query_res) }
+      end
+
+      context "with date filters" do
+        let(:date_query_res) do
+          {
+            "collection" => "metrics",
+            "query" => [
+              {
+                "operator"=> "aggregate",
+                "pipeline"=>[
+                  { "$match" => { "$and" => [{ "start_time" => {"$gte"=>"2018-04-16T09:00:00.000+00:00"} }] } },
+                  {
+                    "$sort" => {
+                      "category"=> 1,
+                      "serie"=> 1
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        end
+
+        it { expect(qe.decorate(date_type_query, filter_array)).to eq(date_query_res) }
       end
 
       context "with array filters" do
