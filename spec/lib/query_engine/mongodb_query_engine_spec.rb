@@ -468,7 +468,7 @@ describe MongodbQueryEngine do
               {
                 "operator"=> "aggregate",
                 "pipeline"=>[
-                  { "$match" => { "$and" => [{ "start_time" => {"$gte"=>"2018-04-16T09:00:00.000+00:00"} }] } },
+                  { "$match" => { "$and" => [{ "start_time" => {"$gte"=>"2018-04-16T09:00:00.000+02:00"} }] } },
                   {
                     "$sort" => {
                       "category"=> 1,
