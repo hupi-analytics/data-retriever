@@ -4,6 +4,8 @@ describe SQLQueryEngine do
   let(:qe){ SQLQueryEngine.new("hdr_test", {}) }
   let(:where_query) { "select * from #_client_#.entitystatstable #_where_f1_#" }
   let(:and_query) { "select * from #_client_#.entitystatstable WHERE entity_type='customer' #_and_f1_#" }
+  let(:limit_query) { "select * from #_client_#.entitystatstable #_where_f1_# #_limit_f1_#" }
+  let(:offset_query) { "select * from #_client_#.entitystatstable #_where_f1_# #_offset_f1_#" }
   let(:and_query_with_params) { "select * from #_client_#.entitystatstable WHERE entity_type='#_value_#' #_and_f1_#" }
   let(:filter_array) do
     {
@@ -15,6 +17,12 @@ describe SQLQueryEngine do
       "and_f1" => [
         { operator: ">", value: "20150101", field: "entity_createat_int", value_type: "int" },
         { operator: "<=", value: "20151231", field: "entity_createat_int", value_type: "int" }
+      ],
+      "limit_f1" => [
+        { operator: "=", value: "10", field: "limit", value_type: "int" }
+      ],
+      "offset_f1" => [
+        { operator: "=", value: "10", field: "offset", value_type: "int" }
       ]
     }
   end
@@ -22,13 +30,21 @@ describe SQLQueryEngine do
   let(:empty_filter_array) do
     {
       "where_f1" => [],
-      "and_f1" => []
+      "and_f1" => [],
+      "limit_f1" => [],
+      "offset_f1" => [],
     }
   end
 
   describe "decorate query" do
     let(:where_query_res) do
       "select * from hdr_test.entitystatstable WHERE (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231) AND (entity_name = 'paul')"
+    end
+    let(:limit_query_res) do
+      "select * from hdr_test.entitystatstable WHERE (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231) AND (entity_name = 'paul') limit 10"
+    end
+    let(:offset_query_res) do
+      "select * from hdr_test.entitystatstable WHERE (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231) AND (entity_name = 'paul') offset 10"
     end
     let(:and_query_res) do
       "select * from hdr_test.entitystatstable WHERE entity_type='customer' AND (entity_createat_int > 20150101) AND (entity_createat_int <= 20151231)"
@@ -44,7 +60,9 @@ describe SQLQueryEngine do
     end
 
     it { expect(qe.decorate(where_query, filter_array)).to eq(where_query_res) }
+    it { expect(qe.decorate(limit_query, filter_array)).to eq(limit_query_res) }
     it { expect(qe.decorate(and_query, filter_array)).to eq(and_query_res) }
+    it { expect(qe.decorate(offset_query, filter_array)).to eq(offset_query_res) }
     it { expect(qe.decorate(where_query, {})).to eq(where_query_res1) }
     it { expect(qe.decorate(and_query, {})).to eq(and_query_res1) }
     it { expect(qe.decorate(and_query_with_params, filter_array, value: "customer")).to eq(and_query_with_params) }

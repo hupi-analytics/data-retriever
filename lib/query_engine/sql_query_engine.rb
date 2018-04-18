@@ -16,7 +16,7 @@ class SQLQueryEngine < DefaultQueryEngine
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(where|and)_\w+)_#/i).flatten.uniq
+    patterns = query.scan(/#_(?<pat>(where|and|limit|offset)_\w+)_#/i).flatten.uniq
     patterns.each do |pattern|
       pattern_filter = []
       pattern_string = ""
@@ -24,10 +24,21 @@ class SQLQueryEngine < DefaultQueryEngine
       if filters[pattern] && !filters[pattern].empty?
         filters[pattern].each do |f|
           val = f[:value_type].casecmp("string").zero? ? "'#{f[:value]}'" : f[:value]
-          pattern_filter << "(#{f[:field]} #{f[:operator]} #{val})" if f[:value]
+          case pattern
+          when /limit/
+            pattern_filter << "limit #{val}" if f[:value]
+          when /offset/
+            pattern_filter << "offset #{val}" if f[:value]
+          else
+            pattern_filter << "(#{f[:field]} #{f[:operator]} #{val})" if f[:value]
+          end
         end
-        pattern_string += pattern =~ /where/ ? "WHERE " : "AND "
-        pattern_string += pattern_filter.join(" AND ")
+        if (pattern =~ /where/) || (pattern =~ /and/)
+          pattern_string += pattern =~ /where/ ? "WHERE " : "AND "
+          pattern_string += pattern_filter.join(" AND ")
+        else
+          pattern_string += pattern_filter.join(" ")
+        end
       end
       query.gsub!("#_#{pattern}_#", pattern_string)
     end
