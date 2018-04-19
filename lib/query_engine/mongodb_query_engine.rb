@@ -62,7 +62,7 @@ class MongodbQueryEngine < DefaultQueryEngine
                 end
           pattern_filter << if f[:operator] == "$eq"
                               "{ \"#{f[:field]}\": #{val} }"
-                            elsif f[:operator] == "$replace" || f[:operator] == "$limit" || f[:operator] == "$offset"
+                            elsif f[:operator] == "$replace"
                               val
                             else
                               "{ \"#{f[:field]}\": { \"#{f[:operator]}\": #{val} } }"
@@ -81,14 +81,6 @@ class MongodbQueryEngine < DefaultQueryEngine
         when /and/
           pattern_string << ","
           pattern_string << pattern_filter.join(", ")
-        when /limit/
-          pattern_string << ",{ \"$limit\": "
-          pattern_string << pattern_filter.join(", ")
-          pattern_string << " }"
-        when /offset/
-          pattern_string << ",{ \"$skip\": "
-          pattern_string << pattern_filter.join(", ")
-          pattern_string << " }"
         when /replace_field/
           pattern_string << pattern_filter.join(", ")
         when /replace/

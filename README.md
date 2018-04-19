@@ -261,6 +261,14 @@ filter recognize specific pattern:
   ```
   select fruit as category, color as serie, quantity as value from fruit_table #_where_f1_#
   ```
+* `#_limit_[something_else]_#` and `#_offset_[something_else]_#`: Add `limit` filter and `offset` filter.
+
+  Example filter value is:-
+  { operator: "=", value: "10", field: "limit", value_type: "int" }
+  It will replace it by
+  ```
+  select fruit as category, color as serie, quantity as value from fruit_table limit 10;
+  ```
 
 ### MongoDB Query ###
 since MongoDB only provide api to query their database, we use a JSON query that we match with their api.
@@ -383,7 +391,8 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 
-* `#_limit_[something_else]_#` and `#_offset_[something_else]_#`: start with `,` and join filters with `,` To limit number of documents use limit filter and operator as $limit. And for offset, where we skip a specified number of documents, pass operator as $offset
+* `#_replace_field_[something_else]_#`: start with `,` and join filters with `,` To limit number of documents use replace_field filter and field as $limit. And for offset, use also replace_field filter where we skip a specified number of documents, pass field as $skip. And operator should always be $eq for replace field.
+Note:- Manually append ',' before replace_field pattern if necassary it doesn't automatically insert comma.
 
   ```json
   {
@@ -398,11 +407,19 @@ since MongoDB only provide api to query their database, we use a JSON query that
             "month": 1,
             "day": 1
           }
-        } #_limit_f1_# #_offset_f1_#
+        },  #_replace_field_f3_# , #_replace_field_f2_#
       }
     ]
   }
   ```
+
+replace_field example values:-
+```json
+  { operator: "$eq", value: "100", field: "$skip", value_type: "int" },
+  { operator: "$eq", value: "100", field: "$limit", value_type: "int" }
+```
+
+With the following values of filters, `replace_field_f3` will be replaced by {"$limit": 100} and {"$skip": 100}
 
 ### ElasticSearch Query ###
 write a regular ElasticSearch POST query. See [ElasticSearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) for available operator.
