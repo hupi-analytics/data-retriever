@@ -50,7 +50,7 @@ describe MongodbQueryEngine do
                 "category": 1,
                 "serie": 1
               }
-            }, #_replace_field_f3_# , #_replace_field_f2_#
+            } #_replace_field_filter_f3_#  #_replace_field_filter_f2_#
           ]
         }
       ]
@@ -194,10 +194,10 @@ describe MongodbQueryEngine do
       "replace_field_f1" => [
         { operator: "$eq", value: "100", field: "total", value_type: "int" }
       ],
-      "replace_field_f3" => [
+      "replace_field_filter_f3" => [
         { operator: "$eq", value: "100", field: "$limit", value_type: "int" }
       ],
-      "replace_field_f2" => [
+      "replace_field_filter_f2" => [
         { operator: "$eq", value: "100", field: "$skip", value_type: "int" }
       ]
     }

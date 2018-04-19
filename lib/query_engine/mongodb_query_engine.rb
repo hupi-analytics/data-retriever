@@ -42,7 +42,7 @@ class MongodbQueryEngine < DefaultQueryEngine
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(match|find|and|replace|replace_field)_\w+)_#/i).flatten.uniq
+    patterns = query.scan(/#_(?<pat>(match|find|and|replace|replace\_field|replace\_field\_filter)_\w+)_#/i).flatten.uniq
 
     patterns.each do |pattern|
       pattern_filter = []
@@ -79,6 +79,9 @@ class MongodbQueryEngine < DefaultQueryEngine
           pattern_string << pattern_filter.join(", ")
           pattern_string << "]"
         when /and/
+          pattern_string << ","
+          pattern_string << pattern_filter.join(", ")
+        when /replace_field_filter/
           pattern_string << ","
           pattern_string << pattern_filter.join(", ")
         when /replace_field/

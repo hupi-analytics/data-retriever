@@ -391,8 +391,7 @@ since MongoDB only provide api to query their database, we use a JSON query that
   }
   ```
 
-* `#_replace_field_[something_else]_#`: start with `,` and join filters with `,` To limit number of documents use replace_field filter and field as $limit. And for offset, use also replace_field filter where we skip a specified number of documents, pass field as $skip. And operator should always be $eq for replace field.
-Note:- Manually append ',' before replace_field pattern if necassary it doesn't automatically insert comma.
+* `#_replace_field_filter_[something_else]_#`: start with `,` and join filters with `,` To limit number of documents use replace_field filter and field as $limit. And for offset, use also replace_field filter where we skip a specified number of documents, pass field as $skip. And operator should always be $eq for replace field.
 
   ```json
   {
@@ -407,7 +406,7 @@ Note:- Manually append ',' before replace_field pattern if necassary it doesn't 
             "month": 1,
             "day": 1
           }
-        },  #_replace_field_f3_# , #_replace_field_f2_#
+        }  #_replace_field_filter_f3_#  #_replace_field_filter_f2_#
       }
     ]
   }
@@ -419,7 +418,7 @@ replace_field example values:-
   { operator: "$eq", value: "100", field: "$limit", value_type: "int" }
 ```
 
-With the following values of filters, `replace_field_f3` will be replaced by {"$limit": 100} and {"$skip": 100}
+With the following values of filters, `replace_field_filter_f3` will be replaced by {"$limit": 100} and `replace_field_filter_f3` by {"$skip": 100}
 
 ### ElasticSearch Query ###
 write a regular ElasticSearch POST query. See [ElasticSearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) for available operator.
