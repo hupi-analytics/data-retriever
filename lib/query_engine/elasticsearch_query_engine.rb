@@ -12,7 +12,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
   end
 
   def close
-    @connexion.close
+    # @connexion.close
   end
 
   def decorate(query, filters = {}, query_params = {})
