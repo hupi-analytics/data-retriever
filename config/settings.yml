@@ -8,6 +8,7 @@ defaults: &defaults
   log:
     level: "info"
     log_path: "/logs/hupi/data-retriever"
+    log_filename: <%= ENV['HOSTNAME']+"-"+ENV['RACK_ENV']%>.log
     kafka_hosts: ["hupi.kafka.pro.hupi.loc:9092"]
 
 development:
@@ -15,6 +16,7 @@ development:
   log:
     level: "debug"
     log_path:  <%= File.join(Grape::ROOT, "log") %>
+    log_filename: <%= ENV['RACK_ENV']%>.log
     kafka_hosts: ["localhost:9092"]
   estimate:
     path: <%= File.join(Grape::ROOT, "public") %>
@@ -24,6 +26,7 @@ test:
   log:
     level: "warn"
     log_path:  <%= File.join(Grape::ROOT, "log") %>
+    log_filename: <%= ENV['RACK_ENV']%>.log
   estimate:
     path: <%= File.join(Grape::ROOT, "public") %>
 

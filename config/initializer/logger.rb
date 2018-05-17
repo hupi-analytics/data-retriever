@@ -1,7 +1,7 @@
 require "grape_logging"
 require "logstash-logger"
 
-log_path = File.join(Settings.log.log_path, "#{ENV['RACK_ENV']}.log")
+log_path = File.join(Settings.log.log_path, Settings.log.log_filename)
 # Custom code to include Url params which is needed by log_monitoring to include topic and client from
 # Url params, so made the change to include UlrParams in api.rb file as well.
 module GrapeLogging
