@@ -8,7 +8,7 @@ defaults: &defaults
   log:
     level: "info"
     log_path: "/logs/hupi/data-retriever"
-    log_filename: <%= ENV['HOSTNAME']+"-"+ENV['RACK_ENV']%>.log
+    log_filename: <%= ENV['HOSTNAME'].to_s+"-"+ENV['RACK_ENV'].to_s%>.log
     kafka_hosts: ["hupi.kafka.pro.hupi.loc:9092"]
 
 development:
