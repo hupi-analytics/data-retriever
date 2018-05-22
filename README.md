@@ -529,7 +529,11 @@ Query Generated:
   }
 }
 ```
-
+##### timeout #####
+To have request timeout limit, use this option in the query engine.
+```json
+transport_options: {request: {timeout: 1}}
+```
 ### Openscoring ###
 Place your PMML file in the query field. HdrFilter doesn't apply for this query engine. To make prediction, you should provide your features as JSON in the `query_params` key.
 

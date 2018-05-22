@@ -1,7 +1,8 @@
 class DefaultQueryEngine
   def initialize(client, settings)
-    settings.keys.each { |key| settings[key.to_sym] = settings.delete(key) }
-    @settings = settings
+    # settings.keys.each { |key| settings[key.to_sym] = settings.delete(key) }
+    # Using inbuilt deep symbolize method instead of manually converting keys to symbols, as the manual method doesn't convert nested keys to symbols
+    @settings = settings.deep_symbolize_keys
     @client = client
     @database = settings.delete(:database) || client
     @logger = logger
