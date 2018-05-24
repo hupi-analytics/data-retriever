@@ -31,7 +31,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bson (3.2.1)
+    bson (4.3.0)
     builder (3.2.2)
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
@@ -99,8 +99,8 @@ GEM
     method_source (0.8.2)
     mime-types (2.4.3)
     minitest (5.9.0)
-    mongo (2.1.1)
-      bson (~> 3.0)
+    mongo (2.5.3)
+      bson (>= 4.3.0, < 5.0.0)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -199,7 +199,7 @@ DEPENDENCIES
   impala (~> 0.4.3)
   json (~> 1.8.0)
   logstash-logger (= 0.15.2)
-  mongo
+  mongo (~> 2.5)
   mysql2
   pg
   poseidon
