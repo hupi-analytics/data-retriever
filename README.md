@@ -1083,7 +1083,7 @@ all render type output are JSON. All output presented below are in the `data` ke
 
 # Development #
 
-After checking out the repo, run `bundle install` to install dependencies. Then, run `rake db:reset` to create table and populate the database.
+After checking out the repo, run `bundle install` to install dependencies. Then, run `rake db:reset` to create table and populate the database. (install before on PG : CREATE EXTENSION "uuid-ossp")
 Then, run `bundle exec rspec spec` to run the tests. You can also run `rake console` for an interactive prompt that will allow you to experiment.
 
 # Contributing #
