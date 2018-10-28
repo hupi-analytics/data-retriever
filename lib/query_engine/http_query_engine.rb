@@ -8,6 +8,7 @@ class HttpQueryEngine < DefaultQueryEngine
     @host = @settings.fetch(:http_host)
     @port = @settings.fetch(:http_port)
     @query_string = @settings.fetch(:http_query_string)
+    @http_call = @settings.fetch(:http_call, "Post") 
   end
 
   def execute(query, info)
@@ -73,15 +74,43 @@ class HttpQueryEngine < DefaultQueryEngine
     [JSON.parse(result.body),{}]
   end
 
-  def predict(query, model_name)
+  def predict(query, model_name) 
     query = JSON.parse(query)
     body = (query[:predict] || query).to_json
     uri = URI("http://#{@host}:#{@port}/#{@query_string}")
-    https = Net::HTTP.new(uri.host, uri.port)
-    req = Net::HTTP::Post.new uri
-    req.content_type = "application/json"
-    req.body = body
-    https.request(req)
+    
+    case @http_call
+      when "Post" then 
+          https = Net::HTTP.new(uri.host, uri.port)
+          req = Net::HTTP::Post.new uri
+          req.content_type = "application/json"
+          req.body = body
+          https.request(req)
+      when "Get" then
+          fetch(uri).response
+    end
   end
+
+  def fetch(uri_str, limit = 10)
+  # You should choose a better exception.
+  raise ArgumentError, 'too many HTTP redirects' if limit == 0
+
+  response = Net::HTTP.get_response(URI(uri_str))
+
+  case response
+    when Net::HTTPSuccess then
+      response
+    when Net::HTTPRedirection then
+      location = response['location']
+      warn "redirected to #{location}"
+      fetch(location, limit - 1)
+      
+    else
+      response.value
+    end
+  end
+
+
+
 
 end
