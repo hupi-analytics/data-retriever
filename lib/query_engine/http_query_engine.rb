@@ -13,6 +13,7 @@ class HttpQueryEngine < DefaultQueryEngine
 
   def execute(query, info)
     model_name = "#{info.fetch(:module_name)}_#{info.fetch(:method_name)}_#{info.fetch(:query_object_name)}"
+    
     res = predict(query, model_name)
     parse_result(res)
   end
@@ -75,18 +76,21 @@ class HttpQueryEngine < DefaultQueryEngine
   end
 
   def predict(query, model_name) 
-    query = JSON.parse(query)
-    body = (query[:predict] || query).to_json
-    uri = URI("http://#{@host}:#{@port}/#{@query_string}")
+    puts "PREDICT #{query.inspect}"
+    
     
     case @http_call
       when "Post" then 
+          query = JSON.parse(query)
+          body = (query[:predict] || query).to_json
+          uri = URI("http://#{@host}:#{@port}/#{@query_string}")
           https = Net::HTTP.new(uri.host, uri.port)
           req = Net::HTTP::Post.new uri
           req.content_type = "application/json"
           req.body = body
           https.request(req)
       when "Get" then
+          uri = URI("http://#{@host}:#{@port}/#{@query_string}#{query}")
           fetch(uri).response
     end
   end
