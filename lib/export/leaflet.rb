@@ -7,7 +7,7 @@ module Export
       row.each { |k, v| row[k] = Export.format_value(v, val_format[k]) }
       tmp[row["layer_name"]] ||= { type: "FeatureCollection", features: [] }
       # Define properties
-      ppt = row.keys - %w(collection type geometry_type lat lng layer_name)
+      ppt = row.keys - %w(collection type geometry_type lat lng layer_name coordinates)
       tmp2 = {}
       ppt.each do |k|
         tmp2[k] = row[k]
