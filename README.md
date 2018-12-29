@@ -879,7 +879,7 @@ all render type output are JSON. All output presented below are in the `data` ke
 
 #### Leaflet ####
   + <u>render type:</u> leaflet
-  + <u>required field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties"
+  + <u>required field in query result:</u> layer_name, collection, type, geometry_type, lat, lng, any additional field would be included in the "properties". For Polygon type, the field coordinates is needed do not use lat,lng
   + <u>input:</u>
 
     ```json
