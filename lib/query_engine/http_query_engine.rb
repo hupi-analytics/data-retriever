@@ -9,6 +9,7 @@ class HttpQueryEngine < DefaultQueryEngine
     @port = @settings.fetch(:http_port)
     @query_string = @settings.fetch(:http_query_string)
     @http_call = @settings.fetch(:http_call, "Post") 
+    @http_header = @settings.fetch(:http_header) if @settings.has_key?(:http_header)
   end
 
   def execute(query, info)
@@ -76,9 +77,6 @@ class HttpQueryEngine < DefaultQueryEngine
   end
 
   def predict(query, model_name) 
-    puts "PREDICT #{query.inspect}"
-    
-    
     case @http_call
       when "Post" then 
           query = JSON.parse(query)
@@ -90,31 +88,35 @@ class HttpQueryEngine < DefaultQueryEngine
           req.body = body
           https.request(req)
       when "Get" then
-          uri = URI("http://#{@host}:#{@port}/#{@query_string}#{query}")
+          puts "HELLLLLLLL : #{@http_header}"
+          uri = URI("https://#{@host}:#{@port}/#{@query_string}#{query}")
           fetch(uri).response
     end
   end
 
   def fetch(uri_str, limit = 10)
-  # You should choose a better exception.
-  raise ArgumentError, 'too many HTTP redirects' if limit == 0
-
-  response = Net::HTTP.get_response(URI(uri_str))
-
-  case response
-    when Net::HTTPSuccess then
-      response
-    when Net::HTTPRedirection then
-      location = response['location']
-      warn "redirected to #{location}"
-      fetch(location, limit - 1)
-      
-    else
+    # You should choose a better exception.
+    raise ArgumentError, 'too many HTTP redirects' if limit == 0
+    url = URI(uri_str)
+    req = Net::HTTP::Get.new(url)
+    req["Grpc-Metadata-Authorization"] = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JhLWFwcC1zZXJ2ZXIiLCJhdWQiOiJsb3JhLWFwcC1zZXJ2ZXIiLCJuYmYiOjE1MDg3NDgxNTAsImV4cCI6MTYwMDAwMDAwMCwic3ViIjoiYWRtaW4iLCJ1c2VybmFtZSI6ImFkbWluIn0.5LewbkJu3toBtbaSbPAy74kpvnZVQcSrryVrcQIZEKk'
+    req["Content-Type"] = 'application/x-www-form-urlencoded'
+    response = Net::HTTP.start(url.host, url.port, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+      request = Net::HTTP::Get.new url
+      response = http.request req # Net::HTTPResponse object
+    end
+    
+    case response
+     when Net::HTTPSuccess then
+       response
+     when Net::HTTPRedirection then
+       location = response['location']
+       warn "redirected to #{location}"
+       fetch(location, limit - 1)
+        
+     else
       response.value
     end
   end
-
-
-
-
 end
+
