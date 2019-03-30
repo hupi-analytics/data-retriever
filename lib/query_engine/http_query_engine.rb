@@ -9,6 +9,8 @@ class HttpQueryEngine < DefaultQueryEngine
     @port = @settings.fetch(:http_port)
     @query_string = @settings.fetch(:http_query_string)
     @http_call = @settings.fetch(:http_call, "Post") 
+    @http_header = @settings.fetch(:http_header) if @settings.has_key?(:http_header)
+    @http_ssl = @settings.fetch(:http_ssl) if @settings.has_key?(:http_ssl)
   end
 
   def execute(query, info)
@@ -76,9 +78,6 @@ class HttpQueryEngine < DefaultQueryEngine
   end
 
   def predict(query, model_name) 
-    puts "PREDICT #{query.inspect}"
-    
-    
     case @http_call
       when "Post" then 
           query = JSON.parse(query)
@@ -90,31 +89,38 @@ class HttpQueryEngine < DefaultQueryEngine
           req.body = body
           https.request(req)
       when "Get" then
-          uri = URI("http://#{@host}:#{@port}/#{@query_string}#{query}")
+          uri = URI("https://#{@host}:#{@port}/#{@query_string}#{query}")
           fetch(uri).response
     end
   end
 
   def fetch(uri_str, limit = 10)
-  # You should choose a better exception.
-  raise ArgumentError, 'too many HTTP redirects' if limit == 0
-
-  response = Net::HTTP.get_response(URI(uri_str))
-
-  case response
-    when Net::HTTPSuccess then
-      response
-    when Net::HTTPRedirection then
-      location = response['location']
-      warn "redirected to #{location}"
-      fetch(location, limit - 1)
-      
-    else
+    # You should choose a better exception.
+    raise ArgumentError, 'too many HTTP redirects' if limit == 0
+    url = URI(uri_str)
+    req = Net::HTTP::Get.new(url)
+    
+    #Par défaut les http_header sont des tableaux de Hash, il faut donc reaffecter les valeurs
+    @http_header.each do |key, value|
+      req[key.to_s] = value.to_s
+    end unless @http_header.nil?
+    
+    response = Net::HTTP.start(url.host, url.port, :use_ssl =>  @http_ssl == "true", :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+      request = Net::HTTP::Get.new url
+      response = http.request req # Net::HTTPResponse object
+    end
+    
+    case response
+     when Net::HTTPSuccess then
+       response
+     when Net::HTTPRedirection then
+       location = response['location']
+       warn "redirected to #{location}"
+       fetch(location, limit - 1)
+        
+     else
       response.value
     end
   end
-
-
-
-
 end
+
