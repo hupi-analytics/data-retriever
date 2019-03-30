@@ -10,6 +10,7 @@ class HttpQueryEngine < DefaultQueryEngine
     @query_string = @settings.fetch(:http_query_string)
     @http_call = @settings.fetch(:http_call, "Post") 
     @http_header = @settings.fetch(:http_header) if @settings.has_key?(:http_header)
+    @http_ssl = @settings.fetch(:http_ssl) if @settings.has_key?(:http_ssl)
   end
 
   def execute(query, info)
@@ -88,7 +89,6 @@ class HttpQueryEngine < DefaultQueryEngine
           req.body = body
           https.request(req)
       when "Get" then
-          puts "HELLLLLLLL : #{@http_header}"
           uri = URI("https://#{@host}:#{@port}/#{@query_string}#{query}")
           fetch(uri).response
     end
@@ -99,9 +99,13 @@ class HttpQueryEngine < DefaultQueryEngine
     raise ArgumentError, 'too many HTTP redirects' if limit == 0
     url = URI(uri_str)
     req = Net::HTTP::Get.new(url)
-    req["Grpc-Metadata-Authorization"] = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb3JhLWFwcC1zZXJ2ZXIiLCJhdWQiOiJsb3JhLWFwcC1zZXJ2ZXIiLCJuYmYiOjE1MDg3NDgxNTAsImV4cCI6MTYwMDAwMDAwMCwic3ViIjoiYWRtaW4iLCJ1c2VybmFtZSI6ImFkbWluIn0.5LewbkJu3toBtbaSbPAy74kpvnZVQcSrryVrcQIZEKk'
-    req["Content-Type"] = 'application/x-www-form-urlencoded'
-    response = Net::HTTP.start(url.host, url.port, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
+    
+    #Par défaut les http_header sont des tableaux de Hash, il faut donc reaffecter les valeurs
+    @http_header.each do |key, value|
+      req[key.to_s] = value.to_s
+    end unless @http_header.nil?
+    
+    response = Net::HTTP.start(url.host, url.port, :use_ssl =>  @http_ssl == "true", :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
       request = Net::HTTP::Get.new url
       response = http.request req # Net::HTTPResponse object
     end
