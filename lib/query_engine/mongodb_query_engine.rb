@@ -5,6 +5,7 @@ require "lib/core_extensions/json/decode" # For json parsing
 
 class MongodbQueryEngine < DefaultQueryEngine
   def connect
+    @settings[:database] = @database
     @connexion = Mongo::Client.new(@settings[:hosts], @settings)
   end
 
