@@ -101,6 +101,7 @@ GEM
     minitest (5.9.0)
     mongo (2.5.3)
       bson (>= 4.3.0, < 5.0.0)
+    msgpack (1.3.1)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -113,6 +114,9 @@ GEM
     pg (0.18.1)
     poseidon (0.0.5)
     powerpack (0.1.0)
+    presto-client (0.5.14)
+      faraday (~> 0.12)
+      msgpack (>= 0.7.0)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -203,6 +207,7 @@ DEPENDENCIES
   mysql2
   pg
   poseidon
+  presto-client
   pry
   puma
   rack-cors
@@ -220,4 +225,4 @@ RUBY VERSION
    ruby 2.2.4p230
 
 BUNDLED WITH
-   1.16.6
+   1.17.3
