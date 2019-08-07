@@ -6,6 +6,8 @@ gem "grape"
 gem "grape-entity"
 gem "grape-swagger"
 
+gem "presto-client"
+
 gem "puma"
 gem "virtus"
 gem "settingslogic"
