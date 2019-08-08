@@ -6,7 +6,8 @@ require "lib/core_extensions/json/decode" # For json parsing
 class PrestoQueryEngine < DefaultQueryEngine
   def connect
     @settings[:database] = @database
-    @connexion = Presto::Client.new(@settings[:hosts], @settings)
+    @settings[:server] = @settings[:hosts]
+    @connexion = Presto::Client.new(@settings)
   end
 
   def execute(query, _)
