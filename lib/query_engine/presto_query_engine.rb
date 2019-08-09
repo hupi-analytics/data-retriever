@@ -9,6 +9,6 @@ class PrestoQueryEngine < DefaultQueryEngine
   end
 
   def execute(query, _)
-    @connexion.run_with_names(query)
+    @connexion.run(query)
   end
 end
