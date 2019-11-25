@@ -29,8 +29,8 @@ module DataRetriever
             optional :order, types: [String, Hash]
           end
           get "hdr_accounts" do
-            filters = HdrAccount.send(:sanitize_sql_for_order, convert_params(params[:filters]))
-            order = HdrAccount.send(:sanitize_sql_for_order, convert_params(params[:order]))
+            filters = HdrAccount.send(:sanitize_sql_for_conditions, convert_params(params[:filters]))
+            order = HdrAccount.send(:sanitize_sql, convert_params(params[:order]))
 
             begin
               results = HdrAccount.where(filters).order(order)

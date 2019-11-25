@@ -37,7 +37,7 @@ module DataRetriever
                                 params[:method_name],
                                 params[:render_type]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("explain", query, params[:endpoint_type], module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -71,7 +71,7 @@ module DataRetriever
                                 params[:method_name],
                                 params[:render_type]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("explain", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -108,7 +108,7 @@ module DataRetriever
                                 params[:render_type],
                                 params[:query_object_name]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("explain", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -145,7 +145,7 @@ module DataRetriever
                                 params[:render_type],
                                 params[:query_object_name]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("explain", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -179,7 +179,7 @@ module DataRetriever
                                 params[:method_name],
                                 params[:render_type]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("execute", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -213,7 +213,7 @@ module DataRetriever
                                 params[:method_name],
                                 params[:render_type]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("execute", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -250,7 +250,7 @@ module DataRetriever
                                 params[:render_type],
                                 params[:query_object_name]
                               ]))
-                              .order(HdrQueryEndpoint.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("execute", query, "private", module_name: params[:module_name], method_name: params[:method_name])
       end
@@ -287,7 +287,7 @@ module DataRetriever
                                 params[:render_type],
                                 params[:query_object_name]
                               ]))
-                              .order(HdrQueryObject.send(:sanitize_sql_for_order, "hdr_query_objects.updated_at"))
+                              .order("hdr_query_objects.updated_at")
                               .first
         action_on_query("execute", query, "public", module_name: params[:module_name], method_name: params[:method_name])
       end

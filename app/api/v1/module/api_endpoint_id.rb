@@ -33,7 +33,7 @@ module DataRetriever
                                 params[:id],
                                 params[:render_type]
                               ]))
-                                .order(HdrQueryObject.send(:sanitize_sql_for_order, :updated_at))
+                                .order(HdrQueryObject.send(:sanitize_sql, :updated_at))
                               .first
         action_on_query("execute", query, "id", id: params[:id])
       end
@@ -63,7 +63,7 @@ module DataRetriever
                                 params[:id],
                                 params[:render_type]
                               ]))
-                                .order(HdrQueryObject.send(:sanitize_sql_for_order, :updated_at))
+                                .order(HdrQueryObject.send(:sanitize_sql, :updated_at))
                               .first
         action_on_query("explain", query, "hqo_id", id: params[:id])
       end
