@@ -27,13 +27,13 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                              .where(
+                              .where(HdrQueryObject.send(:sanitize_sql_for_conditions, [
                                 "hdr_endpoints.id = ?
                                 AND ? = ANY (hdr_export_types.render_types)",
                                 params[:id],
                                 params[:render_type]
-                              )
-                              .order(:updated_at)
+                              ]))
+                                .order(HdrQueryObject.send(:sanitize_sql_for_order, :updated_at))
                               .first
         action_on_query("execute", query, "id", id: params[:id])
       end
@@ -57,13 +57,13 @@ module DataRetriever
         return error!("no client set", 400) if params[:client].nil? || params[:client] !~ /[^[:space:]]/
 
         query = HdrQueryObject.eager_load(:hdr_export_types, :hdr_filters, hdr_endpoint: :hdr_account)
-                              .where(
+                              .where(HdrQueryObject.send(:sanitize_sql_for_conditions, [
                                 "hdr_query_objects.id = ?
                                 AND ? = ANY (hdr_export_types.render_types)",
                                 params[:id],
                                 params[:render_type]
-                              )
-                              .order(:updated_at)
+                              ]))
+                                .order(HdrQueryObject.send(:sanitize_sql_for_order, :updated_at))
                               .first
         action_on_query("explain", query, "hqo_id", id: params[:id])
       end

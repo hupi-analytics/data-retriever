@@ -8,7 +8,7 @@ class HdrQueryObject < ActiveRecord::Base
   has_many :hdr_export_types, through: :hdr_query_objects_export_types
   has_many :hdr_filters, dependent: :destroy
 
-  validates :name, allow_nil: true, format: { with: /\A[\w-]+\Z/ }
+  validates :name, allow_nil: true, format: { with: /\A[\w-]+\z/ }
   validates :query, presence: true
   validates :hdr_query_engine, presence: true
 

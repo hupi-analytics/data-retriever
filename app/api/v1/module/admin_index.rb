@@ -30,8 +30,8 @@ module DataRetriever
           end
           get ":class_called" do
             class_called = params[:class_called].singularize.camelize.constantize
-            filters = convert_params(params[:filters])
-            order = convert_params(params[:order])
+            filters = HdrEndpoint.send(:sanitize_sql_for_conditions, convert_params(params[:filters]))
+            order = HdrEndpoint.send(:sanitize_sql_for_conditions, convert_params(params[:order]))
 
             begin
               results = if @current_account.superadmin?

@@ -5,8 +5,8 @@ class HdrEndpoint < ActiveRecord::Base
   has_many :hdr_export_types, through: :hdr_query_objects_export_types
   belongs_to :hdr_account
   validates :module_name, :method_name, presence: true
-  validates_format_of :module_name, with: /\A[\w-]+\Z/
-  validates_format_of :method_name, with: /\A[\w-]+\Z/
+  validates_format_of :module_name, with: /\A[\w-]+\z/
+  validates_format_of :method_name, with: /\A[\w-]+\z/
   validates_uniqueness_of :method_name, scope: [:module_name]
 
   accepts_nested_attributes_for :hdr_query_objects, allow_destroy: true
