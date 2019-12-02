@@ -3,7 +3,7 @@ require "query_engine/sql_query_engine"
 
 class ApachedrillQueryEngine < SQLQueryEngine
   def connect
-    @connexion = Drill.new(@settings)
+    @connexion = Drill.new(@settings.url)
   end
 
   def execute(query, _)
