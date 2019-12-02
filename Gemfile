@@ -7,6 +7,7 @@ gem "grape-entity"
 gem "grape-swagger"
 
 gem "presto-client"
+gem "drill-sergeant"
 
 gem "puma"
 gem "virtus"
