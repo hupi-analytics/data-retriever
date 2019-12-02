@@ -50,6 +50,7 @@ GEM
     docile (1.1.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
+    drill-sergeant (0.1.2)
     elasticsearch (6.0.2)
       elasticsearch-api (= 6.0.2)
       elasticsearch-transport (= 6.0.2)
@@ -194,6 +195,7 @@ DEPENDENCIES
   airborne
   airbrake
   ci_reporter_rspec
+  drill-sergeant
   elasticsearch (~> 6.0.2)
   factory_girl
   grape
