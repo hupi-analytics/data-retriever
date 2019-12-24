@@ -72,7 +72,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
     else
       cntResult = result.fetch("hits", {}).fetch("total", 0)
 
-      if cntResult.is_a?
+      if cntResult.is_a?(Hash)
         cntResult = cntResult.fetch("value", 0)
       end
 
