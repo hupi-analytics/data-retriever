@@ -67,7 +67,7 @@ class ElasticsearchQueryEngine < DefaultQueryEngine
   end
 
   def parse_search_result(result)
-    p result
+    DataRetriever::API.logger.error "result : #{result}"
     if result["aggregations"]
       [result["aggregations"]]
     elsif result.fetch("hits", {}).fetch("total", 0) > 0
