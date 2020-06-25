@@ -89,7 +89,7 @@ class HttpQueryEngine < DefaultQueryEngine
           req.body = body
           https.request(req)
       when "Get" then
-          uri = URI("https://#{@host}:#{@port}/#{@query_string}#{query}")
+        uri = URI("http#{@http_ssl == "true" ? 's' : ''}://#{@host}:#{@port}/#{@query_string}#{query}")
           fetch(uri).response
     end
   end
