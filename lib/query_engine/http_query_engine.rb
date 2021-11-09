@@ -73,8 +73,31 @@ class HttpQueryEngine < DefaultQueryEngine
   end
 
   def parse_result(result)
+    if @http_call == "PostKylin" then
+      raw_body =  JSON.parse(result.body)
+      headers = []
+      raw_body["columnMetas"].each{ |raw_hash| headers.append(raw_hash["label"]) }
+
+      parsed_body = []
+      raw_body["results"].each{ |row| 
+        parsed_row = {}
+        row.each_with_index {|value, index| 
+          if headers[index] == "value" then 
+            parsed_row[headers[index]] = value.to_i
+          else
+            parsed_row[headers[index]] = value
+          end
+        }
+        parsed_body.append(parsed_row)
+      }
+      p parsed_body
+      
+    else 
+      parsed_body = [JSON.parse(result.body), {}]
+    end
+
     result.value
-    [JSON.parse(result.body),{}]
+    parsed_body
   end
 
   def predict(query, model_name) 
@@ -88,6 +111,8 @@ class HttpQueryEngine < DefaultQueryEngine
           req.content_type = "application/json"
           req.body = body
           https.request(req)
+      when "PostKylin" then
+        postKylin(query)
       when "Get" then
         uri = URI("http#{@http_ssl == "true" ? 's' : ''}://#{@host}:#{@port}/#{@query_string}#{query}")
           fetch(uri).response
@@ -122,5 +147,32 @@ class HttpQueryEngine < DefaultQueryEngine
       response.value
     end
   end
+
+  def postKylin(query)
+    uri_str = "https://#{@host}:#{@port}/#{@query_string}"
+
+    # Get authorization token (key = authorization, val = ...)
+    header_key = @http_header.split(':')[0]
+    header_val = @http_header.split(':')[1]
+
+    body = query
+    uri = URI(uri_str)
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = true
+    req = Net::HTTP::Post.new uri
+    req.content_type = "application/json"
+    #req[header] = Settings.kylin.auth_token
+    req[header_key] = header_val
+    req.body = body
+
+    # Print headers and body for control
+    # req.each_header { |header| puts header }
+    # req.each_header { |header| puts req[header] }
+    # puts req.body
+
+    https.request(req)
+
+  end
+
 end
 

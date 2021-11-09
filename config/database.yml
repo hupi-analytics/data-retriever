@@ -3,8 +3,10 @@ development:
   encoding: unicode
   database: hdr_development
   pool: 5
-  username: hupi_data_retriever
-  password:
+  username:  <%= ENV["HDR_DATABASE_USERNAME"] %>
+  password:  <%= ENV["HDR_DATABASE_PASSWORD"] %>
+  host: <%= ENV["HDR_DATABASE_HOST"] %>
+  port: <%= ENV["HDR_DATABASE_PORT"] %>
 
 test: &test
   adapter: postgresql
