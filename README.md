@@ -571,6 +571,26 @@ To make a query to this endpoint with the query_object and filter values, your q
 }
 ```
 
+#### Http for Kylin link ####
+We also developped a specific case in the http_query_engine to be able to link our Data-Retriever to an Apache Kylin instance in order to fetch data from olap cubes.
+
+To use this specific formatting, set the `http_call` setting of the query engine to `PostKylin` and don't forget to add, also in the settings, the `http_header`:
+```json
+{
+	...
+	"http_header":"Authorization: Basic <base64 encoded 'user:pwd'> "
+}
+```
+
+For more details on the connection to Kylin using APIs, checkout: [Kylin Documentation](https://cwiki.apache.org/confluence/display/KYLIN/REST+API)
+
+
+Note: When creating an endpoint with this Kylin query engine, the query field should look like: 
+```json
+{ "sql":"select * from aTable",  "project":"Kylin Project Name" }
+```
+
+
 ## Render type ##
 all render type output are JSON. All output presented below are in the `data` key of the response body. When there is an error, the response body contain an `error` key that contain an explanation of the error and the response code is not 201.
 
