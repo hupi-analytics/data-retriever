@@ -47,24 +47,31 @@ class HttpQueryEngine < DefaultQueryEngine
 
   def apply_filters(query, filters = {})
     filters ||= {}
-    patterns = query.scan(/#_(?<pat>(replace)_\w+)_#/i).flatten.uniq
-
+    patterns = query.scan(/#_(?<pat>(replace|where|and|limit|offset)_\w+)_#/i).flatten.uniq
+    
     patterns.each do |pattern|
       pattern_filter = []
       pattern_string = ""
+
       if filters[pattern] && !filters[pattern].empty?
         filters[pattern].each do |f|
-          pattern_filter = case f[:value_type].downcase
-                when "string"
-                  "#{f[:value]}"
-                else
-                  "#{f[:value]}"
-                end
+          val = f[:value_type].casecmp("string").zero? ? "'#{f[:value]}'" : f[:value]
+          case pattern
+          when /limit/
+            pattern_filter << "limit #{val}" if f[:value]
+          when /offset/
+            pattern_filter << "offset #{val}" if f[:value]
+          when /replace/
+            pattern_filter << "#{val}" if f[:value]
+          else
+            pattern_filter << "(#{f[:field]} #{f[:operator]} #{val})" if f[:value]
+          end
         end
-
-        case pattern
-        when /replace/
-          pattern_string << pattern_filter
+        if (pattern =~ /where/) || (pattern =~ /and/)
+          pattern_string += pattern =~ /where/ ? "WHERE " : "AND "
+          pattern_string += pattern_filter.join(" AND ")
+        else
+          pattern_string += pattern_filter.join(" ")
         end
       end
       query.gsub!("#_#{pattern}_#", pattern_string)
@@ -168,7 +175,7 @@ class HttpQueryEngine < DefaultQueryEngine
     # Print headers and body for control
     # req.each_header { |header| puts header }
     # req.each_header { |header| puts req[header] }
-    # puts req.body
+    puts req.body
 
     https.request(req)
 
