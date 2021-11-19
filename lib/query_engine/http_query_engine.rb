@@ -62,7 +62,7 @@ class HttpQueryEngine < DefaultQueryEngine
           when /offset/
             pattern_filter << "offset #{val}" if f[:value]
           when /replace/
-            pattern_filter << "#{val}" if f[:value]
+            pattern_filter = "#{f[:value]}" # Don't take into account the adding of '' for strings
           else
             pattern_filter << "(#{f[:field]} #{f[:operator]} #{val})" if f[:value]
           end
@@ -70,6 +70,8 @@ class HttpQueryEngine < DefaultQueryEngine
         if (pattern =~ /where/) || (pattern =~ /and/)
           pattern_string += pattern =~ /where/ ? "WHERE " : "AND "
           pattern_string += pattern_filter.join(" AND ")
+        elsif (pattern =~ /replace/)
+          pattern_string << pattern_filter
         else
           pattern_string += pattern_filter.join(" ")
         end
