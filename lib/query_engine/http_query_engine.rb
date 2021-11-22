@@ -175,9 +175,9 @@ class HttpQueryEngine < DefaultQueryEngine
     req.body = body
 
     # Print headers and body for control
-    # req.each_header { |header| puts header }
-    # req.each_header { |header| puts req[header] }
-    # puts req.body
+    req.each_header { |header| puts header }
+    req.each_header { |header| puts req[header] }
+    puts req.body
 
     https.request(req)
 
