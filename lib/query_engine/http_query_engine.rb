@@ -99,7 +99,7 @@ class HttpQueryEngine < DefaultQueryEngine
         }
         parsed_body.append(parsed_row)
       }
-      p parsed_body
+      # p parsed_body
       
     else 
       parsed_body = [JSON.parse(result.body), {}]
@@ -174,10 +174,11 @@ class HttpQueryEngine < DefaultQueryEngine
     req[header_key] = header_val
     req.body = body
 
-    # Print headers and body for control
-    req.each_header { |header| puts header }
-    req.each_header { |header| puts req[header] }
-    puts req.body
+    # Log headers and body for debug
+    logstr = "KYLIN Request: HEADERS:\n"
+    req.each_header { |header| logstr << "  " << header << ": " << req[header] << "\n" }
+    logstr << "BODY:\n" << req.body
+    logger.debug(logstr)
 
     https.request(req)
 
