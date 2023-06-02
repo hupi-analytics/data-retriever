@@ -10,7 +10,6 @@ pipeline {
     parameters {
       string(name: 'version', description: 'App version to deploy')
       choice(name: 'env', choices: ['PKG_ONLY','PROD','TEST'], description: 'Environment where the app should be deployed')
-      choice(name: 'env_jira', choices: ['staging','production'], description: 'Environment for jira')
     }
     stages {
       stage("Deploy") {

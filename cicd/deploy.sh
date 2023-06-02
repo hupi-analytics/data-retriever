@@ -27,7 +27,7 @@ function deploy_PKG_ONLY() {
 
 function deploy_PROD() {
 	deploy_PKG_ONLY
-	server=XXXXXXX
+	server=dataretriever_prod.deploy
 	ssh $server  docker image prune  -a -f ;
 	ssh $server  "docker service update dataretriever_dataretriever --image $image;"
 }
@@ -36,7 +36,7 @@ function deploy_PROD() {
 
 function deploy_TEST() {
 	deploy_PKG_ONLY
-	server=XXXXX
+	server=dataretriever_test.deploy
 	ssh $server  docker image prune  -a -f ;
 	ssh $server  "docker service update dataretriever_dataretriever --image $image;"
 }
