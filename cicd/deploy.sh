@@ -13,7 +13,7 @@ fi
 #$2 => la version
 set -e
 # NOM DE L IMAGE en fonction de $1 et $2 :
-image=image=hupi/dataretriever:$2
+image=hupi/dataretriever:$2
 
 
 
