@@ -1,0 +1,3 @@
+#!/bin/bash -x
+# BASE COMMUNE A TOUS LES PROJETS
+

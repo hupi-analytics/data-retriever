@@ -1,0 +1,40 @@
+properties([pipelineTriggers([pollSCM('*/10 * * * *')])])
+
+
+pipeline {
+  agent any
+    options {
+      disableConcurrentBuilds()
+      buildDiscarder(logRotator( numToKeepStr: '10', daysToKeepStr: '180'))
+      copyArtifactPermission('*');
+    }
+  stages {
+    stage('Build') {
+      steps {
+        sh './cicd/build.sh'
+      }
+    }
+
+    stage('Test-Sonar') {
+      steps {
+        sh './cicd/test.sh'
+      }
+    }
+  }
+  post {
+    always {
+      junit testResults: './cicd/TEST/*xml' , allowEmptyResults: true
+      publishHTML (target : [allowMissing: true, keepAll: true, reportDir: 'cicd/TARGET/reports/', reportFiles: '*.html', reportName: 'Reports' ])
+        script {
+          def version = readFile(file: './cicd/TARGET/version')
+          def file = readFile './cicd/ENV'
+          def envL=file.readLines()
+          def jobBaseName = "${env.JOB_NAME}".split('/').first()
+          envL.each { String e ->
+            buildAddUrl(title: "Deploy to ${e} (${version})",  url: "/job/DEPLOY_${jobBaseName}/job/${env.JOB_BASE_NAME}/parambuild?env=${e}&version=${version}")
+          }
+        }
+      archiveArtifacts artifacts: 'cicd/TARGET/*', onlyIfSuccessful: true
+     }
+  }
+}
