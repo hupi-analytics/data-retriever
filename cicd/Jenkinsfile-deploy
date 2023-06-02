@@ -1,0 +1,59 @@
+
+pipeline {
+  agent any
+    options { 
+      disableConcurrentBuilds() 
+      //JE COMMENTE COMME ON VEUT L HISTORIQUE DES DEPLOYS
+      //buildDiscarder(logRotator( numToKeepStr: '5', daysToKeepStr: '5')) 
+    }
+    
+    parameters {
+      string(name: 'version', description: 'App version to deploy')
+      choice(name: 'env', choices: ['PKG_ONLY','PROD','TEST'], description: 'Environment where the app should be deployed')
+      choice(name: 'env_jira', choices: ['staging','production'], description: 'Environment for jira')
+    }
+    stages {
+      stage("Deploy") {
+        when {
+          not {
+            expression {
+              def causes = currentBuild.getBuildCauses()
+                String causesClass = causes._class
+                return causesClass.contains('BranchIndexingCause')
+            }
+          }
+        }
+        // Deploy app version ${params.version} to ${params.env} environment
+        steps {
+          echo "deploying ${params.version} to ${params.env}"
+            sh "./cicd/deploy.sh ${params.env} ${params.version}"
+        }
+      }
+      stage('dashboard') {
+        when {
+          not {
+            expression {
+              def causes = currentBuild.getBuildCauses()
+                String causesClass = causes._class
+                return causesClass.contains('BranchIndexingCause')
+            }
+          }
+        }
+        steps {
+          //add release information to dashboard
+          addDeployToDashboard(env: params.env, buildNumber: params.version)
+        }
+      }
+    }
+  post {
+    always {
+    // DEBUG, SERA SUPPRIME
+      script {
+        def causes = currentBuild.getBuildCauses()
+          echo "*${causes}*"
+      }
+    }
+  }
+}
+
+
