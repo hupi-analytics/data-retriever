@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "json", "~> 1.8.0"
+gem "json"
 gem "grape"
 gem "grape-entity"
 gem "grape-swagger"

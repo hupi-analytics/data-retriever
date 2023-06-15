@@ -1,4 +1,4 @@
-FROM ruby:2.2-alpine as build
+FROM ruby:2.4-alpine as build
 RUN apk update && apk add --no-cache nodejs make gcc musl-dev g++ mariadb-dev postgresql-dev mariadb  postgresql 
 
 RUN adduser -D -H -h /app hupi
