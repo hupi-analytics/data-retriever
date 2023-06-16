@@ -7,6 +7,6 @@ WORKDIR /app/
 
 RUN bundle install --path vendor/bundle --without development --standalone --deployment --binstubs vendor/bin/
 
-HEALTHCHECK --interval=20s --timeout=5s --retries=5 CMD nc -z localhost 400 || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --retries=30 CMD nc -z localhost 4000 || exit 1
 EXPOSE 4000
 CMD /app/start.sh
