@@ -8,7 +8,7 @@ WORKDIR /app/
 
 RUN bundle install --path vendor/bundle --without development --standalone --deployment --binstubs vendor/bin/
 
-FROM ruby:2.2-alpine as run
+FROM ruby:2.4-alpine as run
 RUN apk update && apk add --no-cache nodejs mariadb  postgresql  mariadb-dev
 RUN adduser -D -H -h /app hupi
 USER hupi
