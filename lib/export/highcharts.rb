@@ -11,7 +11,7 @@ module Export
       hash[row["category"]][row["serie"]] = row["value"]
     end
     series_name.uniq!
-    series_name.sort!
+    #series_name.sort!
 
     series_name.each_with_object(categories: tmp.keys, series: []) do |sn, res|
       res[:series] << { name: sn.presence || "none", data: [] }.tap do |serie|
@@ -42,7 +42,7 @@ module Export
       hash[row["category"]][row["serie"]] = row["value"]
     end
     series_name.uniq!
-    series_name.sort! { |a, b| a[:name] <=> b[:name] }
+    #series_name.sort! { |a, b| a[:name] <=> b[:name] }
 
     series_name.each_with_object(categories: tmp.keys, series: []) do |sn, res|
       res[:series] << { name: sn[:name].presence || "none", data: [], stack: sn[:stack] }.tap do |serie|
